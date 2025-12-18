@@ -39,17 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 统计卡片悬停效果
-    const countCards = document.querySelectorAll('.count-card');
-    countCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-5px)';
-        });
-
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-        });
-    });
 
     // 导航链接悬停效果
     const navLinks = document.querySelectorAll('.nav-link');
