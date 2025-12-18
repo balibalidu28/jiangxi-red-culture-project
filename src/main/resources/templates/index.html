@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>江西红色文化信息网 - 弘扬革命精神，传承红色基因</title>
+
+    <!-- Bootstrap 5 CSS (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- 自定义CSS -->
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+
+    <style>
+        /* 红色主题变量 */
+        :root {
+            --red-primary: #b71c1c;
+            --red-dark: #7f0000;
+            --red-light: #f44336;
+            --red-lighter: #ffebee;
+        }
+
+        /* 整体红色主题 */
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: #fff;
+        }
+
+        /* 导航栏红色主题 */
+        .navbar-red {
+            background: linear-gradient(135deg, var(--red-dark), var(--red-primary)) !important;
+            box-shadow: 0 4px 12px rgba(183, 28, 28, 0.3);
+        }
+
+        .navbar-red .navbar-brand {
+            color: white !important;
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .navbar-red .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .navbar-red .nav-link:hover {
+            color: white !important;
+            background-color: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-red {
+            color: var(--red-primary);
+            border-color: var(--red-primary);
+        }
+
+        .btn-outline-red:hover {
+            background-color: var(--red-primary);
+            color: white;
+        }
+
+        /* 首页特有样式 */
+        .hero-banner {
+            background: linear-gradient(rgba(183, 28, 28, 0.9), rgba(127, 0, 0, 0.9)),
+            url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 120px 0;
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><path d="M0,50 L50,0 L100,50 L50,100 Z" fill="white" opacity="0.05"/></svg>');
+            background-size: 100px;
+        }
+
+        .section-title {
+            color: var(--red-primary);
+            border-left: 5px solid var(--red-primary);
+            padding-left: 15px;
+            margin-bottom: 30px;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 15px;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(to right, var(--red-primary), var(--red-light));
+        }
+
+        .card-red {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+            box-shadow: 0 4px 12px rgba(183, 28, 28, 0.1);
+            border-top: 4px solid var(--red-primary);
+        }
+
+        .card-red:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(183, 28, 28, 0.2);
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .card-red:hover .card-img-top {
+            transform: scale(1.05);
+        }
+
+        .card-title-red {
+            color: var(--red-primary);
+            font-weight: bold;
+            border-bottom: 2px solid var(--red-lighter);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .badge-red {
+            background: linear-gradient(135deg, var(--red-primary), var(--red-light));
+            color: white;
+            font-weight: 500;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--red-primary);
+            margin-bottom: 20px;
+            display: inline-block;
+            padding: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--red-lighter), white);
+            box-shadow: 0 5px 15px rgba(183, 28, 28, 0.1);
+            transition: all 0.3s;
+        }
+
+        .feature-icon:hover {
+            transform: rotate(15deg) scale(1.1);
+            box-shadow: 0 10px 25px rgba(183, 28, 28, 0.2);
+        }
+
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-box .form-control:focus {
+            border-color: var(--red-primary);
+            box-shadow: 0 0 0 0.25rem rgba(183, 28, 28, 0.25);
+        }
+
+        .count-card {
+            background: linear-gradient(135deg, var(--red-dark), var(--red-primary));
+            color: white;
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(183, 28, 28, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .count-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(183, 28, 28, 0.4);
+        }
+
+        .count-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            transform: rotate(45deg);
+            opacity: 0.3;
+        }
+
+        .count-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .count-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .upcoming-event {
+            border-left: 5px solid var(--red-primary);
+            background: linear-gradient(to right, var(--red-lighter), white);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            border: 1px solid #ffcdd2;
+        }
+
+        .upcoming-event:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(183, 28, 28, 0.1);
+        }
+
+        .event-date {
+            color: var(--red-primary);
+            font-weight: bold;
+            background: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            border: 2px solid var(--red-primary);
+        }
+
+        /* 按钮红色主题 */
+        .btn-danger {
+            background: linear-gradient(135deg, var(--red-primary), var(--red-light));
+            border: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, var(--red-dark), var(--red-primary));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(183, 28, 28, 0.4);
+        }
+
+        /* 页脚红色主题 */
+        footer {
+            background: linear-gradient(135deg, #2c1810, #1a0f0a);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(to right, var(--red-dark), var(--red-primary));
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+            padding: 5px 0;
+            display: inline-block;
+            border-bottom: 1px solid transparent;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(5px);
+            border-bottom: 1px solid var(--red-primary);
+        }
+
+        /* 红色渐变背景 */
+        .bg-red-gradient {
+            background: linear-gradient(135deg, #fff8e1, #ffebee);
+        }
+
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--red-light), var(--red-primary));
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(var(--red-primary), var(--red-dark));
+        }
+    </style>
+</head>
+<body>
+<!-- 导航栏 - 红色主题 -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-red sticky-top">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="fas fa-landmark me-2"></i>
+            <strong>江西红色文化</strong>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/heroes}">
+                        <i class="fas fa-user-shield me-1"></i> 红色英雄
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/encyclopedias}">
+                        <i class="fas fa-book me-1"></i> 党史大百科
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/scenicspots}">
+                        <i class="fas fa-map-marked-alt me-1"></i> 红色圣地
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/stories}">
+                        <i class="fas fa-book-open me-1"></i> 红色故事
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/explore}">
+                        <i class="fas fa-hiking me-1"></i> 红色寻访
+                    </a>
+                </li>
+            </ul>
+
+            <div class="d-flex">
+                <div class="search-box me-3">
+                    <form th:action="@{/encyclopedias}" method="get" class="input-group">
+                        <input type="text" class="form-control" name="kw" placeholder="搜索党史百科..." aria-label="搜索">
+                        <button class="btn btn-outline-light" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div>
+                    <a th:href="@{/admin}" class="btn btn-outline-warning btn-sm">
+                        <i class="fas fa-user-cog"></i> 管理后台
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- 主横幅 -->
+<section class="hero-banner">
+    <div class="container position-relative" style="z-index: 1;">
+        <h1 class="display-4 fw-bold mb-4">弘扬革命精神，传承红色基因</h1>
+        <p class="lead mb-4">探索江西丰富的红色文化资源，学习革命历史，缅怀英雄先烈</p>
+        <a href="#features" class="btn btn-danger btn-lg me-3">
+            <i class="fas fa-play-circle me-2"></i> 开始探索
+        </a>
+        <a th:href="@{/explore}" class="btn btn-outline-light btn-lg">
+            <i class="fas fa-calendar-alt me-2"></i> 寻访活动
+        </a>
+    </div>
+</section>
+
+<!-- 特色功能区域 -->
+<section id="features" class="py-5 bg-red-gradient">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-md-3 mb-4">
+                <div class="feature-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h4 style="color: var(--red-primary);">英雄事迹</h4>
+                <p>了解革命先烈的英勇事迹，传承红色精神</p>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="feature-icon">
+                    <i class="fas fa-landmark"></i>
+                </div>
+                <h4 style="color: var(--red-primary);">革命圣地</h4>
+                <p>探访红色革命遗址，追寻历史足迹</p>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="feature-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h4 style="color: var(--red-primary);">党史百科</h4>
+                <p>学习党史知识，增强历史使命感</p>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="feature-icon">
+                    <i class="fas fa-hiking"></i>
+                </div>
+                <h4 style="color: var(--red-primary);">红色寻访</h4>
+                <p>参与实践活动，体验革命历程</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 统计数据 -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="count-card">
+                    <div class="count-number" th:text="${heroCount != null ? heroCount : '127'}">127</div>
+                    <div class="count-label">红色英雄</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="count-card">
+                    <div class="count-number" th:text="${spotCount != null ? spotCount : '86'}">86</div>
+                    <div class="count-label">红色圣地</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="count-card">
+                    <div class="count-number" th:text="${storyCount != null ? storyCount : '356'}">356</div>
+                    <div class="count-label">红色故事</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="count-card">
+                    <div class="count-number" th:text="${activityCount != null ? activityCount : '42'}">42</div>
+                    <div class="count-label">寻访活动</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 内容精选区域 -->
+<div class="container py-5">
+    <!-- 红色英雄精选 -->
+    <section class="mb-5">
+        <h3 class="section-title">英雄精选</h3>
+        <div class="row g-4">
+            <div class="col-md-4 col-lg-3" th:each="hero : ${heroes}">
+                <div class="card card-red">
+                    <img th:src="${hero.imageUrl} != null ? ${hero.imageUrl} : 'https://placehold.co/400x300/8B0000/FFFFFF?text=英雄图片'"
+                         class="card-img-top" th:alt="${hero.name}">
+                    <div class="card-body">
+                        <h5 class="card-title card-title-red" th:text="${hero.name}">方志敏</h5>
+                        <p class="card-text" th:text="${#strings.abbreviate(hero.description, 80)}">
+                            无产阶级革命家、军事家，江西农民运动的组织者和领导人...
+                        </p>
+                        <a th:href="@{/heroes/{id}(id=${hero.id})}" class="btn btn-outline-red btn-sm">
+                            了解更多 <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 如果没有数据 -->
+            <div th:if="${#lists.isEmpty(heroes)}" class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle me-2"></i>
+                    暂无英雄数据，管理员正在添加中...
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a th:href="@{/heroes}" class="btn btn-danger">
+                <i class="fas fa-users me-2"></i> 查看所有英雄
+            </a>
+        </div>
+    </section>
+
+    <!-- 红色故事精选 -->
+    <section class="mb-5">
+        <h3 class="section-title">最新故事</h3>
+        <div class="row g-4">
+            <div class="col-md-6" th:each="story : ${stories}">
+                <div class="card card-red">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge badge-red">红色故事</span>
+                            <small class="text-muted" th:text="${#dates.format(story.createDate, 'yyyy-MM-dd')}">2024-03-15</small>
+                        </div>
+                        <h5 class="card-title card-title-red" th:text="${story.title}">井冈山会师的历史意义</h5>
+                        <p class="card-text" th:text="${#strings.abbreviate(story.content, 150)}">
+                            井冈山会师是中国人民解放军建军史上的重要历史事件...
+                        </p>
+                        <a th:href="@{/stories/{id}(id=${story.id})}" class="btn btn-outline-red btn-sm">
+                            阅读全文 <i class="fas fa-book-open ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 如果没有数据 -->
+            <div th:if="${#lists.isEmpty(stories)}" class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle me-2"></i>
+                    暂无故事数据，管理员正在添加中...
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a th:href="@{/stories}" class="btn btn-danger">
+                <i class="fas fa-book-reader me-2"></i> 阅读更多故事
+            </a>
+        </div>
+    </section>
+
+    <!-- 红色圣地推荐 -->
+    <section class="mb-5">
+        <h3 class="section-title">圣地推荐</h3>
+        <div class="row g-4">
+            <div class="col-md-4" th:each="spot : ${scenicSpots}">
+                <div class="card card-red">
+                    <img th:src="${spot.imageUrl} != null ? ${spot.imageUrl} : 'https://placehold.co/400x300/8B0000/FFFFFF?text=红色圣地'"
+                         class="card-img-top" th:alt="${spot.name}">
+                    <div class="card-body">
+                        <h5 class="card-title card-title-red" th:text="${spot.name}">井冈山革命博物馆</h5>
+                        <p class="card-text">
+                            <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                            <span th:text="${spot.location}">江西省井冈山市</span>
+                        </p>
+                        <p class="card-text" th:text="${#strings.abbreviate(spot.description, 100)}">
+                            中国第一个地方性革命史类博物馆，馆藏文物丰富...
+                        </p>
+                        <a th:href="@{/scenicspots/{id}(id=${spot.id})}" class="btn btn-outline-red btn-sm">
+                            查看详情 <i class="fas fa-external-link-alt ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 如果没有数据 -->
+            <div th:if="${#lists.isEmpty(scenicSpots)}" class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle me-2"></i>
+                    暂无圣地数据，管理员正在添加中...
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a th:href="@{/scenicspots}" class="btn btn-danger">
+                <i class="fas fa-map-marked-alt me-2"></i> 探索更多圣地
+            </a>
+        </div>
+    </section>
+
+    <!-- 寻访预告 -->
+    <section class="mb-5">
+        <h3 class="section-title">寻访预告</h3>
+        <div class="row">
+            <div class="col-md-8">
+                <div th:each="explore : ${exploreActivities}">
+                    <div class="upcoming-event">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="mb-0" th:text="${explore.title}">"重走长征路"春季寻访活动</h5>
+                            <span class="event-date" th:text="${#dates.format(explore.date, 'MM月dd日')}">04月15日</span>
+                        </div>
+                        <p class="mb-2" th:text="${explore.content}">
+                            组织参观瑞金、于都等长征出发地，体验革命先辈的艰苦历程...
+                        </p>
+                        <div class="d-flex justify-content-between">
+                            <span>
+                                <i class="fas fa-map-marker-alt me-1"></i>
+                                <span th:text="${explore.location}">瑞金、于都</span>
+                            </span>
+                            <a th:href="@{/explore/{id}(id=${explore.id})}" class="text-danger fw-bold">
+                                立即报名 <i class="fas fa-chevron-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 如果没有数据 -->
+                <div th:if="${#lists.isEmpty(exploreActivities)}" class="upcoming-event">
+                    <h5 class="mb-2">近期暂无寻访活动</h5>
+                    <p class="mb-2">请关注我们的最新动态，将有更多红色寻访活动推出。</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card card-red">
+                    <div class="card-body text-center">
+                        <i class="fas fa-hiking fa-3x text-danger mb-3"></i>
+                        <h5 class="card-title card-title-red">参与红色寻访</h5>
+                        <p class="card-text">亲身走访革命圣地，体验红色文化，传承革命精神</p>
+                        <a th:href="@{/explore}" class="btn btn-danger">
+                            <i class="fas fa-calendar-plus me-2"></i> 查看所有活动
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 党史百科入口 -->
+    <section class="mb-5">
+        <div class="card card-red">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h3 class="card-title-red mb-3">党史大百科</h3>
+                        <p class="card-text">收录丰富的党史知识，从南昌起义到改革开放，全面了解中国共产党在江西的革命历史。</p>
+
+                        <div class="search-box mt-4">
+                            <form th:action="@{/encyclopedias}" method="get" class="input-group input-group-lg">
+                                <input type="text" class="form-control" name="kw" placeholder="搜索党史关键词（如：南昌起义、井冈山）">
+                                <button class="btn btn-danger" type="submit">
+                                    <i class="fas fa-search"></i> 搜索
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <i class="fas fa-book-open fa-6x text-danger"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- 页脚 -->
+<footer class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h4 class="mb-4" style="color: white;">
+                    <i class="fas fa-landmark me-2"></i>
+                    <strong>江西红色文化信息网</strong>
+                </h4>
+                <p style="color: rgba(255,255,255,0.8);">致力于传承和弘扬江西红色文化，提供革命历史学习资源，组织红色文化实践活动。</p>
+                <div class="mt-3">
+                    <a href="#" class="text-white me-3"><i class="fab fa-weixin fa-lg"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-weibo fa-lg"></i></a>
+                    <a href="#" class="text-white"><i class="fas fa-envelope fa-lg"></i></a>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="mb-4" style="color: white;">快速链接</h5>
+                <div class="footer-links">
+                    <p><a th:href="@{/heroes}">红色英雄</a></p>
+                    <p><a th:href="@{/encyclopedias}">党史大百科</a></p>
+                    <p><a th:href="@{/scenicspots}">红色圣地</a></p>
+                    <p><a th:href="@{/stories}">红色故事</a></p>
+                    <p><a th:href="@{/explore}">红色寻访</a></p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="mb-4" style="color: white;">联系我们</h5>
+                <p style="color: rgba(255,255,255,0.8);"><i class="fas fa-map-marker-alt me-2"></i> 江西省南昌市红谷滩区</p>
+                <p style="color: rgba(255,255,255,0.8);"><i class="fas fa-phone me-2"></i> 0791-12345678</p>
+                <p style="color: rgba(255,255,255,0.8);"><i class="fas fa-envelope me-2"></i> contact@jxredculture.com</p>
+
+                <div class="mt-4">
+                    <h6 style="color: white;">开发团队</h6>
+                    <p class="small" style="color: rgba(255,255,255,0.7);">
+                        A - 红色英雄 & 故事<br>
+                        B - 党史百科 & 圣地<br>
+                        C - 红色寻访 & 用户<br>
+                        D - 管理端 & 首页
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <hr style="background-color: rgba(255,255,255,0.2);">
+
+        <div class="row">
+            <div class="col-md-6">
+                <p class="mb-0" style="color: rgba(255,255,255,0.7);">© 2024 江西红色文化信息网. 保留所有权利.</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <p class="mb-0">
+                    <a href="#" class="text-light text-decoration-none me-3">隐私政策</a>
+                    <a href="#" class="text-light text-decoration-none">使用条款</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- 自定义JS -->
+<script th:src="@{/js/main.js}"></script>
+
+<script>
+    // 首页特定交互
+    document.addEventListener('DOMContentLoaded', function() {
+        // 卡片悬停效果增强
+        const cards = document.querySelectorAll('.card-red');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px)';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // 搜索框聚焦效果
+        const searchInputs = document.querySelectorAll('input[name="kw"]');
+        searchInputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('border', 'border-danger', 'rounded');
+            });
+
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('border', 'border-danger', 'rounded');
+            });
+        });
+
+        // 平滑滚动到功能区域
+        const exploreBtn = document.querySelector('a[href="#features"]');
+        if (exploreBtn) {
+            exploreBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const featuresSection = document.querySelector('#features');
+                if (featuresSection) {
+                    featuresSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        }
+
+        // 统计卡片悬停效果
+        const countCards = document.querySelectorAll('.count-card');
+        countCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // 导航链接悬停效果
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+
+            link.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    });
+</script>
+</body>
+</html>
