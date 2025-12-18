@@ -571,3 +571,111 @@ footer::before {
         justify-content: center;
     }
 }
+
+
+/* 功能简介区域样式 */
+.function-intro {
+    background: linear-gradient(135deg, #fff8f8, #fff);
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid var(--red-primary);
+}
+
+.function-intro h5 {
+    color: var(--red-dark);
+    font-weight: 600;
+    border-bottom: 2px solid var(--red-lighter);
+    padding-bottom: 10px;
+}
+
+.function-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.function-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: flex-start;
+}
+
+.function-list li:last-child {
+    border-bottom: none;
+}
+
+.function-list li i {
+    margin-top: 3px;
+}
+
+/* 文化专题区域样式 */
+.culture-item {
+    padding: 15px;
+    border-radius: 8px;
+    background: white;
+    transition: all 0.3s;
+    border: 1px solid #f0f0f0;
+}
+
+.culture-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(183, 28, 28, 0.1);
+    border-color: var(--red-primary);
+}
+
+.culture-image {
+    height: 180px;
+    overflow: hidden;
+    border-radius: 6px;
+}
+
+.culture-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.culture-item:hover .culture-image img {
+    transform: scale(1.05);
+}
+
+/* 调整轮播图和新闻区域对齐 */
+.carousel-container, .news-sidebar {
+    height: 460px; /* 统一高度 */
+}
+
+.carousel-inner {
+    height: 100%;
+}
+
+.carousel-inner .carousel-item {
+    height: 100%;
+}
+
+.carousel-inner img {
+    height: 100%;
+    object-fit: cover;
+}
+
+.news-sidebar {
+    display: flex;
+    flex-direction: column;
+}
+
+.news-content {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* 响应式调整 */
+@media (max-width: 992px) {
+    .carousel-container, .news-sidebar {
+        height: auto;
+        min-height: 400px;
+    }
+
+    .carousel-inner img {
+        height: 400px;
+    }
+}
