@@ -60,4 +60,8 @@ public class RedScenicSpotService {
         /* 1) repo.deleteById(id) */
         throw new UnsupportedOperationException("TODO");
     }
+
+    public List<?> listAll() {
+        throw new UnsupportedOperationException("TODO");
+    }
 }
