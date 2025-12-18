@@ -67,4 +67,12 @@ public class PartyEncyclopediaService {
         /* 1) repo.deleteById(id)（可选先getOrThrow） */
         throw new UnsupportedOperationException("TODO");
     }
+
+    public PartyEncyclopedia save(PartyEncyclopedia encyclopedia) {
+        throw new UnsupportedOperationException("TODO");
+    }
+
+    public void deleteById(Integer id) {
+        throw new UnsupportedOperationException("TODO");
+    }
 }

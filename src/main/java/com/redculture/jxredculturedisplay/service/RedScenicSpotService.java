@@ -61,7 +61,15 @@ public class RedScenicSpotService {
         throw new UnsupportedOperationException("TODO");
     }
 
-    public List<?> listAll() {
+    public List<RedScenicSpot> listAll() {
+        throw new UnsupportedOperationException("TODO");
+    }
+
+    public RedScenicSpot save(RedScenicSpot scenicSpot) {
+        throw new UnsupportedOperationException("TODO");
+    }
+
+    public void deleteById(Integer id) {
         throw new UnsupportedOperationException("TODO");
     }
 }

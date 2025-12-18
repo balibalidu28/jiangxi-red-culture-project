@@ -43,4 +43,12 @@ public class RedHeroService {
         /* 1) repo.deleteById(id)（可选先getOrThrow） */
         throw new UnsupportedOperationException("TODO");
     }
+
+    public void deleteById(Integer id) {
+
+    }
+
+    public RedHero save(RedHero hero) {
+        throw new UnsupportedOperationException("TODO");
+    }
 }

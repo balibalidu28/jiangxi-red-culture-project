@@ -61,7 +61,15 @@ public class RedExploreService {
         throw new UnsupportedOperationException("TODO");
     }
 
-    public List<?> listAll() {
+    public List<RedExplore> listAll() {
+        throw new UnsupportedOperationException("TODO");
+    }
+
+    public RedExplore save(RedExplore explore) {
+        throw new UnsupportedOperationException("TODO");
+    }
+
+    public void deleteById(Integer id) {
         throw new UnsupportedOperationException("TODO");
     }
 }
