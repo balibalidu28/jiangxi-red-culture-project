@@ -60,4 +60,8 @@ public class RedExploreService {
         /* 1) repo.deleteById(id) */
         throw new UnsupportedOperationException("TODO");
     }
+
+    public List<?> listAll() {
+        throw new UnsupportedOperationException("TODO");
+    }
 }

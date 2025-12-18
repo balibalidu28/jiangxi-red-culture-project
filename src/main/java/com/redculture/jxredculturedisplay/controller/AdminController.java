@@ -31,33 +31,33 @@ public class AdminController {
         this.encyclopediaService = encyclopediaService;
     }
 
-//    // GET /api/admin/heroes
-//    @GetMapping("/heroes")
-//    public List<RedHero> getHeroes() {
-//        return heroService.listAll(); // 返回数据库中的所有英雄数据
-//    }
-//
-//    // GET /api/admin/stories
-//    @GetMapping("/stories")
-//    public List<RedStory> getStories() {
-//        return storyService.listAll(); // 返回所有故事数据
-//    }
-//
-//    // GET /api/admin/scenicspots
-//    @GetMapping("/scenicspots")
-//    public List<?> getScenicSpots() {
-//        return scenicSpotService.listAll();
-//    }
-//
-//    // GET /api/admin/explore
-//    @GetMapping("/explore")
-//    public List<?> getExploreActivities() {
-//        return exploreService.listAll();
-//    }
-//
-//    // GET /api/admin/encyclopedias
-//    @GetMapping("/encyclopedias")
-//    public List<?> getEncyclopedias() {
-//        return encyclopediaService.listAll();
-//    }
+    // GET /api/admin/heroes
+    @GetMapping("/heroes")
+    public List<RedHero> getHeroes() {
+        return heroService.listAll(); // 返回数据库中的所有英雄数据
+    }
+
+    // GET /api/admin/stories
+    @GetMapping("/stories")
+    public List<RedStory> getStories() {
+        return storyService.listAll(); // 返回所有故事数据
+    }
+
+    // GET /api/admin/scenicspots
+    @GetMapping("/scenicspots")
+    public List<?> getScenicSpots() {
+        return scenicSpotService.listAll();
+    }
+
+    // GET /api/admin/explore
+    @GetMapping("/explore")
+    public List<?> getExploreActivities() {
+        return exploreService.listAll();
+    }
+
+    // GET /api/admin/encyclopedias
+    @GetMapping("/encyclopedias")
+    public List<?> getEncyclopedias() {
+        return encyclopediaService.listAll();
+    }
 }
