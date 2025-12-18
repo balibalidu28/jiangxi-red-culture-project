@@ -51,4 +51,12 @@ public class RedStoryService {
     public List<RedStory> listAll() {
         throw new UnsupportedOperationException("TODO");
     }
+
+    public RedStory save(RedStory story) {
+        throw new UnsupportedOperationException("TODO");
+    }
+
+    public void deleteById(Integer id) {
+    }
+
 }

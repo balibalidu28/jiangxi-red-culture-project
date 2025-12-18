@@ -1,7 +1,6 @@
 package com.redculture.jxredculturedisplay.controller;
 
-import com.redculture.jxredculturedisplay.model.RedHero;
-import com.redculture.jxredculturedisplay.model.RedStory;
+import com.redculture.jxredculturedisplay.model.*;
 import com.redculture.jxredculturedisplay.service.RedHeroService;
 import com.redculture.jxredculturedisplay.service.RedStoryService;
 import com.redculture.jxredculturedisplay.service.RedScenicSpotService;
@@ -31,33 +30,87 @@ public class AdminController {
         this.encyclopediaService = encyclopediaService;
     }
 
-    // GET /api/admin/heroes
+    // 英雄增删改查
     @GetMapping("/heroes")
-    public List<RedHero> getHeroes() {
-        return heroService.listAll(); // 返回数据库中的所有英雄数据
+    public List<RedHero> getAllHeroes() {
+        return heroService.listAll();
     }
 
-    // GET /api/admin/stories
-    @GetMapping("/stories")
-    public List<RedStory> getStories() {
-        return storyService.listAll(); // 返回所有故事数据
+    @PostMapping("/heroes")
+    public RedHero createHero(@RequestBody RedHero hero) {
+        return heroService.save(hero);
     }
 
-    // GET /api/admin/scenicspots
+    @PutMapping("/heroes/{id}")
+    public RedHero updateHero(@PathVariable Integer id, @RequestBody RedHero heroDetails) {
+        return heroService.update(id, heroDetails);
+    }
+
+    @DeleteMapping("/heroes/{id}")
+    public void deleteHero(@PathVariable Integer id) {
+        heroService.deleteById(id);
+    }
+
+    // 圣地增删改查
     @GetMapping("/scenicspots")
-    public List<?> getScenicSpots() {
+    public List<RedScenicSpot> getAllScenicSpots() {
         return scenicSpotService.listAll();
     }
 
-    // GET /api/admin/explore
+    @PostMapping("/scenicspots")
+    public RedScenicSpot createScenicSpot(@RequestBody RedScenicSpot scenicSpot) {
+        return scenicSpotService.save(scenicSpot);
+    }
+
+    @PutMapping("/scenicspots/{id}")
+    public RedScenicSpot updateScenicSpot(@PathVariable Integer id, @RequestBody RedScenicSpot scenicSpotDetails) {
+        return scenicSpotService.update(id, scenicSpotDetails);
+    }
+
+    @DeleteMapping("/scenicspots/{id}")
+    public void deleteScenicSpot(@PathVariable Integer id) {
+        scenicSpotService.deleteById(id);
+    }
+
+    // 活动增删改查
     @GetMapping("/explore")
-    public List<?> getExploreActivities() {
+    public List<RedExplore> getAllExplores() {
         return exploreService.listAll();
     }
 
-    // GET /api/admin/encyclopedias
+    @PostMapping("/explore")
+    public RedExplore createExplore(@RequestBody RedExplore explore) {
+        return exploreService.save(explore);
+    }
+
+    @PutMapping("/explore/{id}")
+    public RedExplore updateExplore(@PathVariable Integer id, @RequestBody RedExplore exploreDetails) {
+        return exploreService.update(id, exploreDetails);
+    }
+
+    @DeleteMapping("/explore/{id}")
+    public void deleteExplore(@PathVariable Integer id) {
+        exploreService.deleteById(id);
+    }
+
+    // 百科增删改查
     @GetMapping("/encyclopedias")
-    public List<?> getEncyclopedias() {
+    public List<PartyEncyclopedia> getAllEncyclopedias() {
         return encyclopediaService.listAll();
+    }
+
+    @PostMapping("/encyclopedias")
+    public PartyEncyclopedia createEncyclopedia(@RequestBody PartyEncyclopedia encyclopedia) {
+        return encyclopediaService.save(encyclopedia);
+    }
+
+    @PutMapping("/encyclopedias/{id}")
+    public PartyEncyclopedia updateEncyclopedia(@PathVariable Integer id, @RequestBody PartyEncyclopedia encyclopediaDetails) {
+        return encyclopediaService.update(id, encyclopediaDetails);
+    }
+
+    @DeleteMapping("/encyclopedias/{id}")
+    public void deleteEncyclopedia(@PathVariable Integer id) {
+        encyclopediaService.deleteById(id);
     }
 }
