@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台</title>
+    <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+<div class="sidebar">
+    <div class="sidebar-header">管理后台</div>
+    <ul class="sidebar-nav">
+        <li class="active" data-target="heroes">英雄管理</li>
+        <li data-target="stories">故事管理</li>
+        <li data-target="scenicspots">圣地管理</li>
+        <li data-target="explore">活动管理</li>
+        <li data-target="encyclopedias">百科管理</li>
+    </ul>
+</div>
+
+<div class="content">
+    <!-- 英雄管理模块 -->
+    <section id="heroes" class="module-section active">
+        <h2>英雄管理</h2>
+        <button onclick="createHero()">新增英雄</button>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>姓名</th>
+                <th>简介</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>1</td>
+                <td>毛泽东</td>
+                <td>中国革命的伟大领袖</td>
+                <td>
+                    <button onclick="editHero(1)">编辑</button>
+                    <button onclick="deleteHero(1)">删除</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- 故事管理模块 -->
+    <section id="stories" class="module-section">
+        <h2>故事管理</h2>
+        <button onclick="createStory()">新增故事</button>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>标题</th>
+                <th>来源</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>101</td>
+                <td>井冈山革命的故事</td>
+                <td>江西日报</td>
+                <td>
+                    <button onclick="editStory(101)">编辑</button>
+                    <button onclick="deleteStory(101)">删除</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- 圣地管理模块 -->
+    <section id="scenicspots" class="module-section">
+        <h2>圣地管理</h2>
+        <button onclick="createScenic()">新增圣地</button>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>名称</th>
+                <th>地点</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>201</td>
+                <td>井冈山</td>
+                <td>江西</td>
+                <td>
+                    <button onclick="editScenic(201)">编辑</button>
+                    <button onclick="deleteScenic(201)">删除</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- 活动管理模块 -->
+    <section id="explore" class="module-section">
+        <h2>活动管理</h2>
+        <button onclick="createExplore()">新增活动</button>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>活动名称</th>
+                <th>日期</th>
+                <th>地点</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>301</td>
+                <td>红色之旅</td>
+                <td>2025-12-01</td>
+                <td>井冈山</td>
+                <td>
+                    <button onclick="editExplore(301)">编辑</button>
+                    <button onclick="deleteExplore(301)">删除</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- 百科管理模块 -->
+    <section id="encyclopedias" class="module-section">
+        <h2>百科管理</h2>
+        <button onclick="createEncyclopedia()">新增百科</button>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>词条标题</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>401</td>
+                <td>井冈山革命</td>
+                <td>
+                    <button onclick="editEncyclopedia(401)">编辑</button>
+                    <button onclick="deleteEncyclopedia(401)">删除</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+
+<script src="/static/js/admin.js"></script>
+</body>
+</html>
