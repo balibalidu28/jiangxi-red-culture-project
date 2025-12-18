@@ -64,14 +64,32 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // 新闻链接悬停效果
-    const newsLinks = document.querySelectorAll('.news-link');
+    const newsLinks = document.querySelectorAll('.news-list a');
     newsLinks.forEach(link => {
         link.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateX(5px)';
+            this.style.transform = 'translateX(3px)';
         });
 
         link.addEventListener('mouseleave', function() {
             this.style.transform = 'translateX(0)';
+        });
+    });
+
+    // 新闻标签切换
+    const newsTabs = document.querySelectorAll('.news-tabs span');
+    newsTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            newsTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // 新闻日期导航切换
+    const dateTabs = document.querySelectorAll('.news-date-nav span');
+    dateTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            dateTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
         });
     });
 
@@ -83,4 +101,34 @@ document.addEventListener('DOMContentLoaded', function() {
             wrap: true
         });
     }
+
+    // 登录图标悬停效果
+    const loginIcon = document.querySelector('.login-icon');
+    if (loginIcon) {
+        loginIcon.addEventListener('mouseenter', function() {
+            this.style.backgroundColor = 'rgba(255,255,255,0.1)';
+        });
+
+        loginIcon.addEventListener('mouseleave', function() {
+            this.style.backgroundColor = 'transparent';
+        });
+    }
+
+    // 更多链接悬停效果
+    const moreLinks = document.querySelectorAll('.more-link a');
+    moreLinks.forEach(link => {
+        link.addEventListener('mouseenter', function() {
+            const icon = this.querySelector('i');
+            if (icon) {
+                icon.style.transform = 'translateX(3px)';
+            }
+        });
+
+        link.addEventListener('mouseleave', function() {
+            const icon = this.querySelector('i');
+            if (icon) {
+                icon.style.transform = 'translateX(0)';
+            }
+        });
+    });
 });
