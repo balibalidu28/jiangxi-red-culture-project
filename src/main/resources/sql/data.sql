@@ -1,3 +1,7 @@
+CREATE DATABASE IF NOT EXISTS red_culture
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
+USE red_culture;
 INSERT INTO red_scenic_spot (name, location, description, image_url)
 SELECT '井冈山', '江西省', '这是一个革命圣地', NULL
     WHERE NOT EXISTS (
