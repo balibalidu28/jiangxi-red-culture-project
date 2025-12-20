@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 统计卡片悬停效果
+    // 统计卡片悬停效果的
     const countCards = document.querySelectorAll('.count-card');
     countCards.forEach(card => {
         card.addEventListener('mouseenter', function() {
