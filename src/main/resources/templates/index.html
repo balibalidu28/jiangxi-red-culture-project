@@ -59,7 +59,7 @@
             <div class="d-flex align-items-center">
                 <div class="search-box me-3">
                     <form th:action="@{/encyclopedias}" method="get" class="input-group">
-                        <input type="text" class="form-control" name="kw" placeholder="搜索党史百科..." aria-label="搜索">
+                        <input type="text" class="form-control" name="kw" placeholder="搜索..." aria-label="搜索">
                         <button class="btn btn-outline-light" type="submit">
                             <i class="fas fa-search"></i>
                         </button>
@@ -626,7 +626,9 @@
 
                         <div class="search-box mt-4">
                             <form th:action="@{/encyclopedias}" method="get" class="input-group input-group-lg">
-                                <input type="text" class="form-control" name="kw" placeholder="搜索党史关键词（如：南昌起义、井冈山）">
+                                <input type="text" class="form-control" name="kw"
+                                       th:value="${currentKw}"
+                                       placeholder="输入关键词...">
                                 <button class="btn btn-danger" type="submit">
                                     <i class="fas fa-search"></i> 搜索
                                 </button>

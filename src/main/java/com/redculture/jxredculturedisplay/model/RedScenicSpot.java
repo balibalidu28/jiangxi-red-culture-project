@@ -16,13 +16,13 @@ public class RedScenicSpot {
     private Integer id;
 
     @Column(nullable = false, length = 120)
-    private String name;
+    private String name; // 地点名称，如：井冈山革命博物馆
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
+    @Column(columnDefinition = "TEXT")// 大文本类型，可以存很长的历史介绍
+    private String description;// 简介/历史意义
 
     @Column(length = 120)
-    private String location;
+    private String location;// 所属地区，如：井冈山、南昌
 
     @Column(name = "image_url", length = 255)
     private String imageUrl;

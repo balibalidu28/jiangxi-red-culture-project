@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>红色圣地 - 江西红色文化</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/main.css" th:href="@{/css/main.css}">
+
+    <style>
+        /* 头部背景 */
+        .scenic-header {
+            background: linear-gradient(rgba(139, 0, 0, 0.8), rgba(50, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1599571234909-29ed5d1321d6?q=80&w=1920');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 30px;
+        }
+
+        /* 筛选区容器样式 */
+        .filter-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+        }
+
+        /* 城市按钮样式 */
+        .city-btn {
+            display: inline-block;
+            padding: 6px 16px;
+            margin: 5px;
+            color: #555;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            background: #fff;
+        }
+
+        /* 鼠标悬停 */
+        .city-btn:hover {
+            border-color: #d9534f;
+            color: #d9534f;
+            background-color: #fff5f5;
+        }
+
+        /* 选中激活状态 - 红色实心 */
+        .city-btn.active {
+            background-color: #d9534f;
+            color: white;
+            border-color: #d9534f;
+            font-weight: bold;
+        }
+
+        /* 热门标签（井冈山、瑞金）特殊样式 */
+        .hot-tag {
+            border-color: #ffc107 !important;
+            color: #b35600;
+        }
+        .hot-tag.active {
+            background-color: #ffc107 !important;
+            color: #000 !important;
+            border-color: #ffc107 !important;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<!-- 导航栏 -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-red sticky-top">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}"><i class="fas fa-landmark me-2"></i><strong>江西红色文化</strong></a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/heroes}">红色英雄</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/encyclopedia/search}">党史大百科</a></li>
+                <li class="nav-item"><a class="nav-link active" th:href="@{/scenicspots}">红色圣地</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/stories}">红色故事</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/explore}">红色寻访</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- 头部横幅 -->
+<div class="scenic-header text-center">
+    <div class="container">
+        <h2 class="display-5 fw-bold"><i class="fas fa-map-signs me-3"></i>江西红色地图</h2>
+        <p class="lead mt-2">遍布赣鄱大地的革命足迹</p>
+    </div>
+</div>
+
+<div class="container pb-5">
+
+    <!-- 【核心修改】分类搜索区域 -->
+    <div class="filter-section">
+        <div class="row align-items-center">
+            <div class="col-md-2 text-md-end border-end border-danger border-3">
+                <h5 class="mb-0 fw-bold text-danger">
+                    <i class="fas fa-filter me-2"></i>地区筛选
+                </h5>
+            </div>
+            <div class="col-md-10 ps-md-4">
+                <!-- 1. 全部 -->
+                <a th:href="@{/scenicspots}"
+                   class="city-btn"
+                   th:classappend="${currentLoc == null} ? 'active'">
+                    <i class="fas fa-th-large me-1"></i>全部
+                </a>
+
+                <div class="my-2 border-top"></div> <!-- 分隔线 -->
+
+                <!-- 2. 重点推荐 (保留井冈山和瑞金，因为它们太重要了) -->
+                <span class="text-muted small me-2">热门:</span>
+                <a th:href="@{/scenicspots(loc='井冈山')}" class="city-btn hot-tag" th:classappend="${currentLoc == '井冈山'} ? 'active'">井冈山</a>
+                <a th:href="@{/scenicspots(loc='瑞金')}" class="city-btn hot-tag" th:classappend="${currentLoc == '瑞金'} ? 'active'">瑞金</a>
+                <a th:href="@{/scenicspots(loc='于都')}" class="city-btn hot-tag" th:classappend="${currentLoc == '于都'} ? 'active'">于都</a>
+
+                <div class="my-2 border-top"></div> <!-- 分隔线 -->
+
+                <!-- 3. 江西11个地级市全排列 -->
+                <span class="text-muted small me-2">按市:</span>
+
+                <a th:href="@{/scenicspots(loc='南昌')}" class="city-btn" th:classappend="${currentLoc == '南昌'} ? 'active'">南昌市</a>
+                <a th:href="@{/scenicspots(loc='九江')}" class="city-btn" th:classappend="${currentLoc == '九江'} ? 'active'">九江市</a>
+                <a th:href="@{/scenicspots(loc='景德镇')}" class="city-btn" th:classappend="${currentLoc == '景德镇'} ? 'active'">景德镇市</a>
+                <a th:href="@{/scenicspots(loc='萍乡')}" class="city-btn" th:classappend="${currentLoc == '萍乡'} ? 'active'">萍乡市</a>
+                <a th:href="@{/scenicspots(loc='新余')}" class="city-btn" th:classappend="${currentLoc == '新余'} ? 'active'">新余市</a>
+                <a th:href="@{/scenicspots(loc='鹰潭')}" class="city-btn" th:classappend="${currentLoc == '鹰潭'} ? 'active'">鹰潭市</a>
+                <a th:href="@{/scenicspots(loc='赣州')}" class="city-btn" th:classappend="${currentLoc == '赣州'} ? 'active'">赣州市</a>
+                <a th:href="@{/scenicspots(loc='吉安')}" class="city-btn" th:classappend="${currentLoc == '吉安'} ? 'active'">吉安市</a>
+                <a th:href="@{/scenicspots(loc='宜春')}" class="city-btn" th:classappend="${currentLoc == '宜春'} ? 'active'">宜春市</a>
+                <a th:href="@{/scenicspots(loc='抚州')}" class="city-btn" th:classappend="${currentLoc == '抚州'} ? 'active'">抚州市</a>
+                <a th:href="@{/scenicspots(loc='上饶')}" class="city-btn" th:classappend="${currentLoc == '上饶'} ? 'active'">上饶市</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 列表展示区域 (保持不变，只是为了完整性贴在这里) -->
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-4" th:each="spot : ${spots}">
+            <div class="card h-100 border-0 shadow-sm card-red hover-shadow">
+                <div class="position-relative">
+                    <img th:src="${spot.imageUrl != null} ? ${spot.imageUrl} : 'https://placehold.co/600x400/8B0000/FFFFFF?text=暂无图片'"
+                         class="card-img-top" style="height: 200px; object-fit: cover;">
+                    <span class="position-absolute top-0 end-0 m-2 badge bg-danger shadow">
+                            <i class="fas fa-map-marker-alt me-1"></i>[[${spot.location}]]
+                        </span>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title fw-bold text-danger" th:text="${spot.name}">景点名</h5>
+                    <p class="card-text text-muted small flex-grow-1" th:text="${#strings.abbreviate(spot.description, 55)}">简介...</p>
+                    <div class="text-end mt-3">
+                        <a th:href="@{/scenicspots/{id}(id=${spot.id})}" class="btn btn-sm btn-outline-danger w-100">
+                            走进圣地 <i class="fas fa-chevron-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 空状态 -->
+        <div th:if="${#lists.isEmpty(spots)}" class="col-12 text-center py-5">
+            <div class="bg-white p-5 rounded shadow-sm">
+                <i class="fas fa-map-marked-alt fa-4x text-muted mb-3"></i>
+                <h4 class="text-secondary">该城市暂无录入数据</h4>
+                <p class="text-muted">管理员正在努力收录该地区的红色资源...</p>
+                <a th:href="@{/scenicspots}" class="btn btn-outline-danger mt-2">查看全部</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

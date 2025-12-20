@@ -1,68 +1,51 @@
 package com.redculture.jxredculturedisplay.controller;
 
-import com.redculture.jxredculturedisplay.model.PartyEncyclopedia;
+import com.redculture.jxredculturedisplay.service.PartyEncyclopediaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class EncyclopediaController {
-    // TODO: 注入 PartyEncyclopediaService
 
-    @GetMapping("/encyclopedias")
-    public String pageList(@RequestParam(required = false) String kw, Model model) {
-        /*
-         * 1) list = service.search(kw)
-         * 2) model.addAttribute("list", list)
-         * 3) model.addAttribute("kw", kw)
-         * 4) return "encyclopedia/list"
-         */
-        return "encyclopedia/list";
+    @Autowired
+    private PartyEncyclopediaService service;
+
+    /**
+     * 【改动1】搜索/检索页
+     * 旧逻辑：展示列表
+     * 新逻辑：这就是一个搜索结果页
+     * URL: /encyclopedia/search?kw=xxx
+     */
+    @GetMapping("/encyclopedia/search") // URL变了
+    public String searchPage(
+            @RequestParam(value = "kw", required = false) String keyword,
+            Model model
+    ) {
+        // 业务逻辑不变：还是去搜
+        var list = service.search(keyword);
+
+        model.addAttribute("entries", list);
+        model.addAttribute("currentKw", keyword);
+
+        // 【关键】返回新的文件名 search.html
+        return "search/search";
     }
 
-    @GetMapping("/encyclopedias/{id}")
-    public String pageDetail(@PathVariable Integer id, Model model) {
-        /*
-         * 1) item = service.getOrThrow(id)
-         * 2) model.addAttribute("item", item)
-         * 3) return "encyclopedia/detail"
-         */
-        return "encyclopedia/detail";
-    }
+    /**
+     * 【改动2】百科词条页
+     * URL: /encyclopedia/entry?id=1
+     */
+    @GetMapping("/encyclopedia/entry") // URL变了
+    public String entryPage(@RequestParam("id") Long id, Model model) {
+        // 业务逻辑不变：查单个
+        var item = service.getOrThrow(id);
 
-    @GetMapping("/api/encyclopedias")
-    @ResponseBody
-    public List<PartyEncyclopedia> apiList(@RequestParam(required = false) String kw) {
-        /* 1) return service.search(kw) */
-        return null;
-    }
+        model.addAttribute("item", item);
 
-    @GetMapping("/api/encyclopedias/{id}")
-    @ResponseBody
-    public PartyEncyclopedia apiDetail(@PathVariable Integer id) {
-        /* 1) return service.getOrThrow(id) */
-        return null;
-    }
-
-    @PostMapping("/api/admin/encyclopedias")
-    @ResponseBody
-    public PartyEncyclopedia apiCreate(@RequestBody PartyEncyclopedia item) {
-        /* 1) return service.create(item) */
-        return null;
-    }
-
-    @PutMapping("/api/admin/encyclopedias/{id}")
-    @ResponseBody
-    public PartyEncyclopedia apiUpdate(@PathVariable Integer id, @RequestBody PartyEncyclopedia item) {
-        /* 1) return service.update(id, item) */
-        return null;
-    }
-
-    @DeleteMapping("/api/admin/encyclopedias/{id}")
-    @ResponseBody
-    public void apiDelete(@PathVariable Integer id) {
-        /* 1) service.delete(id) */
+        // 【关键】返回新的文件名 entry.html
+        return "encyclopedia/entry";
     }
 }

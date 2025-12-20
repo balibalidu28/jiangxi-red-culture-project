@@ -1,75 +1,96 @@
 package com.redculture.jxredculturedisplay.service;
 
 import com.redculture.jxredculturedisplay.model.RedScenicSpot;
+import com.redculture.jxredculturedisplay.repository.RedScenicSpotRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * 【业务层】RedScenicSpotService
+ * 负责处理红色圣地的增删改查逻辑
+ */
 @Service
 public class RedScenicSpotService {
-    // TODO: 注入 RedScenicSpotRepository
 
+    @Autowired
+    private RedScenicSpotRepository repository; // 注入仓库
+
+    /**
+     * 统计总数
+     */
     public long count() {
-        /* 1) repo.count() */
-        throw new UnsupportedOperationException("TODO");
+        return repository.count();
     }
 
+    /**
+     * 首页推荐用（最新N条）
+     */
     public List<RedScenicSpot> listTop(int n) {
-        /*
-         * 1) 查询前n条（可后续加排序字段）
-         * 2) return（供首页推荐）
-         */
-        throw new UnsupportedOperationException("TODO");
+        return repository.findAll(
+                PageRequest.of(0, n, Sort.by(Sort.Direction.DESC, "id"))
+        ).getContent();
     }
 
-    public List<RedScenicSpot> list(String location) {
-        /*
-         * 1) location为空 -> repo.findAll()
-         * 2) location不为空 -> repo按location筛选（可选实现）
-         * 3) return
-         */
-        throw new UnsupportedOperationException("TODO");
-    }
-
-    public RedScenicSpot getOrThrow(Integer id) {
-        /* 1) repo.findById 2) 不存在抛异常 */
-        throw new UnsupportedOperationException("TODO");
-    }
-
-    public RedScenicSpot create(RedScenicSpot spot) {
-        /*
-         * 1) 校验name必填（location建议必填）
-         * 2) spot.id=null
-         * 3) repo.save
-         * 4) return
-         */
-        throw new UnsupportedOperationException("TODO");
-    }
-
-    public RedScenicSpot update(Integer id, RedScenicSpot spot) {
-        /*
-         * 1) db=getOrThrow(id)
-         * 2) 更新字段：name/description/location/imageUrl
-         * 3) repo.save(db)
-         * 4) return
-         */
-        throw new UnsupportedOperationException("TODO");
-    }
-
-    public void delete(Integer id) {
-        /* 1) repo.deleteById(id) */
-        throw new UnsupportedOperationException("TODO");
-    }
-
+    /**
+     * 【新增方法】获取所有数据（无筛选）
+     * 专门给 AdminController 的 listAll() 调用
+     */
     public List<RedScenicSpot> listAll() {
-        throw new UnsupportedOperationException("TODO");
+        return repository.findAll();
     }
 
-    public RedScenicSpot save(RedScenicSpot scenicSpot) {
-        throw new UnsupportedOperationException("TODO");
+    /**
+     * 前台列表查询（带筛选逻辑）
+     * @param location 如果为空则查全部，不为空则模糊查
+     */
+    public List<RedScenicSpot> list(String location) {
+        if (location == null || location.trim().isEmpty()) {
+            return repository.findAll();
+        } else {
+            return repository.findByLocationContaining(location);
+        }
     }
 
-    public void deleteById(Integer id) {
-        throw new UnsupportedOperationException("TODO");
+    /**
+     * 获取详情，找不到抛异常
+     */
+    public RedScenicSpot getOrThrow(Integer id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("未找到ID为 " + id + " 的红色圣地"));
+    }
+
+    /**
+     * 新增
+     */
+    public RedScenicSpot create(RedScenicSpot spot) {
+        if (spot.getName() == null || spot.getName().isEmpty()) {
+            throw new RuntimeException("圣地名称不能为空");
+        }
+        spot.setId(null); // 确保是新增
+        return repository.save(spot);
+    }
+
+    /**
+     * 修改
+     */
+    public RedScenicSpot update(Integer id, RedScenicSpot spot) {
+        RedScenicSpot dbSpot = getOrThrow(id);
+        dbSpot.setName(spot.getName());
+        dbSpot.setDescription(spot.getDescription());
+        dbSpot.setLocation(spot.getLocation());
+        dbSpot.setImageUrl(spot.getImageUrl());
+        return repository.save(dbSpot);
+    }
+
+    /**
+     * 删除
+     */
+    public void delete(Integer id) {
+        getOrThrow(id);
+        repository.deleteById(id);
     }
 }
