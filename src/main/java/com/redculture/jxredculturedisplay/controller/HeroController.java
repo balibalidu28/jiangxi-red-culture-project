@@ -1,7 +1,6 @@
 package com.redculture.jxredculturedisplay.controller;
 
 import com.redculture.jxredculturedisplay.model.RedHero;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -9,47 +8,34 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
+@RequestMapping("/heroes") // 用户功能路径，完全独立
 public class HeroController {
+
     // TODO: 注入 RedHeroService
 
-    @GetMapping("/heroes")
+    @GetMapping
     public String pageList(Model model) {
-        /* 1) heroes=service.listAll 2) model.addAttribute 3) return hero/list */
+        // 用户侧页面逻辑：查询英雄列表填充页面数据
         return "hero/list";
     }
 
-    @GetMapping("/heroes/{id}")
+    @GetMapping("/{id}")
     public String pageDetail(@PathVariable Integer id, Model model) {
-        /* 1) hero=service.getOrThrow 2) model.addAttribute 3) return hero/detail */
+        // 用户侧页面逻辑：查询英雄详情填充页面数据
         return "hero/detail";
     }
 
-    @GetMapping("/api/heroes")
+    @GetMapping("/api")
     @ResponseBody
     public List<RedHero> apiList() {
+        // 返回 JSON 数据
         return null;
     }
 
-    @GetMapping("/api/heroes/{id}")
+    @GetMapping("/api/{id}")
     @ResponseBody
     public RedHero apiDetail(@PathVariable Integer id) {
+        // 返回英雄的 JSON 数据详情
         return null;
-    }
-
-    @PostMapping("/api/admin/heroes")
-    @ResponseBody
-    public RedHero apiCreate(@RequestBody RedHero hero) {
-        return null;
-    }
-
-    @PutMapping("/api/admin/heroes/{id}")
-    @ResponseBody
-    public RedHero apiUpdate(@PathVariable Integer id, @RequestBody RedHero hero) {
-        return null;
-    }
-
-    @DeleteMapping("/api/admin/heroes/{id}")
-    public ResponseEntity<Void> apiDelete(@PathVariable Integer id) {
-        return ResponseEntity.noContent().build();
     }
 }

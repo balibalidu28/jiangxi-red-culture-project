@@ -93,4 +93,8 @@ public class RedScenicSpotService {
         getOrThrow(id);
         repository.deleteById(id);
     }
+
+    public RedScenicSpot save(RedScenicSpot scenicSpot) {
+        return repository.save(scenicSpot);
+    }
 }

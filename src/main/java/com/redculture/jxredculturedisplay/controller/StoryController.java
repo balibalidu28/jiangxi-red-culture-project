@@ -37,19 +37,19 @@ public class StoryController {
         return null;
     }
 
-    @PostMapping("/api/admin/stories")
-    @ResponseBody
-    public RedStory apiCreate(@RequestBody RedStory story) {
-        return null;
-    }
+//    @PostMapping("/api/admin/stories")
+//    @ResponseBody
+//    public RedStory apiCreate(@RequestBody RedStory story) {
+//        return null;
+//    }
 
-    @PutMapping("/api/admin/stories/{id}")
-    @ResponseBody
-    public RedStory apiUpdate(@PathVariable Integer id, @RequestBody RedStory story) {
-        return null;
-    }
+//    @PutMapping("/api/admin/stories/{id}")
+//    @ResponseBody
+//    public RedStory apiUpdate(@PathVariable Integer id, @RequestBody RedStory story) {
+//        return null;
+//    }
 
-    @DeleteMapping("/api/admin/stories/{id}")
-    @ResponseBody
-    public void apiDelete(@PathVariable Integer id) { }
+//    @DeleteMapping("/api/admin/stories/{id}")
+//    @ResponseBody
+//    public void apiDelete(@PathVariable Integer id) { }
 }

@@ -7,7 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class JxRedCultureDisplayApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(JxRedCultureDisplayApplication.class, args);
+        SpringApplication.run(
+                JxRedCultureDisplayApplication.class, args);
     }
 
 }
