@@ -18,34 +18,3 @@ navItems.forEach(item => {
         });
     });
 });
-
-// 示例功能：增删改
-function createHero() {
-    alert('新增英雄功能待完成');
-}
-
-function editHero(id) {
-    alert('编辑英雄 ID: ' + id);
-}
-
-function deleteHero(id) {
-    if (confirm('确定要删除该英雄？')) {
-        alert('已成功删除英雄 ID: ' + id);
-    }
-}
-
-function createStory() {
-    alert('新增故事功能待完成');
-}
-
-function editStory(id) {
-    alert('编辑故事 ID: ' + id);
-}
-
-function deleteStory(id) {
-    if (confirm('确定要删除该故事？')) {
-        alert('已成功删除故事 ID: ' + id);
-    }
-}
-
-// 其他模块功能继续补充...
