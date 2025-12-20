@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-
     // 导航链接悬停效果
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
@@ -73,33 +72,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 新闻日期导航切换
-    const dateTabs = document.querySelectorAll('.news-date-nav span');
-    dateTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            dateTabs.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
-
     // 轮播图自动播放
     const heroCarousel = document.getElementById('heroCarousel');
     if (heroCarousel) {
         const carousel = new bootstrap.Carousel(heroCarousel, {
             interval: 5000,
             wrap: true
-        });
-    }
-
-    // 登录图标悬停效果
-    const loginIcon = document.querySelector('.login-icon');
-    if (loginIcon) {
-        loginIcon.addEventListener('mouseenter', function() {
-            this.style.backgroundColor = 'rgba(255,255,255,0.1)';
-        });
-
-        loginIcon.addEventListener('mouseleave', function() {
-            this.style.backgroundColor = 'transparent';
         });
     }
 
@@ -117,6 +95,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const icon = this.querySelector('i');
             if (icon) {
                 icon.style.transform = 'translateX(0)';
+            }
+        });
+    });
+
+    // 功能区域按钮跳转模拟
+    const featureBtns = document.querySelectorAll('#features .btn-outline-danger');
+    featureBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const href = this.getAttribute('href');
+            if (href) {
+                window.location.href = href;
             }
         });
     });

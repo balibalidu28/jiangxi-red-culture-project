@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>红色故事 | 文章列表</title>
+    <link rel="stylesheet" href="/static/css/story.css">
+</head>
+<body>
+<header>
+    <h1>红色故事荟萃</h1>
+    <form class="search-bar" method="get" action="/stories">
+        <input type="text" name="q" placeholder="按标题搜索..." value="">
+        <button type="submit">搜索</button>
+    </form>
+</header>
+<main>
+    <section class="story-list">
+        <!-- 文章可通过循环动态生成 -->
+        <article class="story-article">
+            <h2>血色湘赣：长征路上的红色记忆</h2>
+            <div class="story-meta">
+                <span>作者：李红</span> |
+                <span>2024-06-01</span>
+            </div>
+            <p>
+                1934年秋，红军面临腥风血雨的第五次反“围剿”。在江西瑞金，年仅16岁的魏汉勇毅然递交参军申请。在艰苦的长征途中，他与战友们共克险阻，不畏牺牲。敌人的重兵围堵并没有让他们退步，反而更加坚定了革命信念。
+            </p>
+            <p>
+                在一次强渡乌江的战斗中，魏汉勇主动请缨，带领突击队第一个冲上江岸，成功打开了突破口。长征胜利后，他光荣牺牲在抗日战场，他的事迹激励了一代又一代中国青年。
+            </p>
+            <footer class="story-footer">
+                <a href="/stories/1" class="read-more">阅读全文</a>
+            </footer>
+        </article>
+        <!-- 示例2 -->
+        <article class="story-article">
+            <h2>星火燎原：南昌起义背后的江南英烈</h2>
+            <div class="story-meta">
+                <span>作者：王青</span> |
+                <span>2024-05-21</span>
+            </div>
+            <p>南昌起义点燃了中国大地的革命烈焰。江西的青年志士响应号召，无数英雄在战火中留下不朽的身影，塑造了共和国的基石。</p>
+            <footer class="story-footer">
+                <a href="/stories/2" class="read-more">阅读全文</a>
+            </footer>
+        </article>
+        <!-- 可通过后端分页，下一页按钮等 -->
+    </section>
+    <div class="pagination">
+        <a class="page-link" href="?page=1">1</a>
+        <a class="page-link active" href="?page=2">2</a>
+        <a class="page-link" href="?page=3">3</a>
+        <span>...</span>
+    </div>
+</main>
+<footer>
+    <p>© 2025 江西红色文化展示项目组</p>
+</footer>
+</body>
+</html>
