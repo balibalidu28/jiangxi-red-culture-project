@@ -1,253 +1,567 @@
 // DOM 加载完成后执行
 document.addEventListener('DOMContentLoaded', function() {
-    // 获取表单和输入元素
+    // 获取DOM元素
     const registerForm = document.getElementById('registerForm');
-    const resetBtn = document.getElementById('resetBtn');
-
-    const phoneInput = document.getElementById('phone');
-    const usernameInput = document.getElementById('username');
+    const togglePasswordBtn = document.getElementById('togglePassword');
+    const toggleConfirmPasswordBtn = document.getElementById('toggleConfirmPassword');
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('confirmPassword');
+    const phoneInput = document.getElementById('phone');
+    const usernameInput = document.getElementById('username');
+    const agreeTermsCheckbox = document.getElementById('agreeTerms');
+    const loginLink = document.getElementById('loginLink');
+    const termsLink = document.getElementById('termsLink');
+    const privacyLink = document.getElementById('privacyLink');
+    const passwordStrengthBar = document.getElementById('passwordStrength');
+    const strengthText = document.getElementById('strengthText');
 
-    // 表单提交事件
+    // 密码强度指示器父元素
+    const passwordStrengthContainer = document.querySelector('.password-strength');
+
+    // 初始动画效果
+    const registerBox = document.querySelector('.register-box');
+    registerBox.style.opacity = '0';
+    registerBox.style.transform = 'translateY(30px) scale(0.95)';
+
+    setTimeout(() => {
+        registerBox.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        registerBox.style.opacity = '1';
+        registerBox.style.transform = 'translateY(0) scale(1)';
+    }, 200);
+
+    // 自动聚焦到手机号输入框
+    setTimeout(() => {
+        phoneInput.focus();
+    }, 500);
+
+    // 切换密码显示/隐藏
+    togglePasswordBtn.addEventListener('click', function() {
+        togglePasswordVisibility(passwordInput, this);
+    });
+
+    toggleConfirmPasswordBtn.addEventListener('click', function() {
+        togglePasswordVisibility(confirmPasswordInput, this);
+    });
+
+    // 密码输入时检查强度
+    passwordInput.addEventListener('input', function() {
+        checkPasswordStrength(this.value);
+    });
+
+    // 表单提交处理
     registerForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // 阻止表单默认提交
+        event.preventDefault();
 
-        // 清除之前的错误信息
-        clearErrors();
+        // 获取表单数据
+        const phone = phoneInput.value.trim();
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
+        const confirmPassword = confirmPasswordInput.value.trim();
+        const agreeTerms = agreeTermsCheckbox.checked;
+
+        // 清除之前的错误
+        clearAllErrors();
 
         // 验证表单
-        const isValid = validateForm();
-
-        if (isValid) {
-            // 表单验证通过，模拟提交
-            simulateFormSubmit();
+        if (!validateForm(phone, username, password, confirmPassword, agreeTerms)) {
+            return;
         }
+
+        // 执行注册
+        performRegistration(phone, username, password);
     });
 
     // 重置按钮事件
-    resetBtn.addEventListener('click', function() {
-        clearForm();
-        clearErrors();
-        showMessage('表单已重置', 'info');
+    registerForm.addEventListener('reset', function() {
+        setTimeout(() => {
+            clearAllErrors();
+            phoneInput.focus();
+            resetPasswordStrength();
+        }, 0);
     });
 
-    // 实时验证输入
-    phoneInput.addEventListener('blur', validatePhone);
-    usernameInput.addEventListener('blur', validateUsername);
-    passwordInput.addEventListener('blur', validatePassword);
-    confirmPasswordInput.addEventListener('blur', validateConfirmPassword);
+    // 登录链接点击事件
+    loginLink.addEventListener('click', function(event) {
+        event.preventDefault();
+        window.location.href = 'login.html';
+    });
 
-    // 验证手机号
-    function validatePhone() {
-        const phone = phoneInput.value.trim();
-        const phoneError = document.getElementById('phoneError');
+    // 用户协议链接
+    termsLink.addEventListener('click', function(event) {
+        event.preventDefault();
+        showModal('用户服务协议', '请仔细阅读《江西红色文化信息网用户服务协议》内容...');
+    });
 
+    // 隐私政策链接
+    privacyLink.addEventListener('click', function(event) {
+        event.preventDefault();
+        showModal('隐私政策', '请仔细阅读《江西红色文化信息网隐私政策》内容...');
+    });
+
+    // 切换密码可见性
+    function togglePasswordVisibility(passwordField, toggleButton) {
+        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordField.setAttribute('type', type);
+
+        // 切换图标
+        const icon = toggleButton.querySelector('i');
+        if (type === 'text') {
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+            toggleButton.setAttribute('title', '隐藏密码');
+        } else {
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+            toggleButton.setAttribute('title', '显示密码');
+        }
+    }
+
+    // 检查密码强度
+    function checkPasswordStrength(password) {
+        let strength = 0;
+        let text = '密码强度：弱';
+
+        // 重置样式
+        passwordStrengthContainer.className = 'password-strength strength-weak';
+
+        if (password.length === 0) {
+            strengthText.textContent = '请输入密码';
+            passwordStrengthBar.style.width = '0%';
+            return;
+        }
+
+        // 长度评分
+        if (password.length >= 8) strength += 1;
+        if (password.length >= 12) strength += 1;
+
+        // 包含数字
+        if (/\d/.test(password)) strength += 1;
+
+        // 包含小写字母
+        if (/[a-z]/.test(password)) strength += 1;
+
+        // 包含大写字母
+        if (/[A-Z]/.test(password)) strength += 1;
+
+        // 包含特殊字符
+        if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+
+        // 根据强度设置显示
+        if (strength <= 2) {
+            text = '密码强度：弱';
+            passwordStrengthContainer.className = 'password-strength strength-weak';
+            passwordStrengthBar.style.width = '30%';
+        } else if (strength <= 4) {
+            text = '密码强度：中';
+            passwordStrengthContainer.className = 'password-strength strength-medium';
+            passwordStrengthBar.style.width = '60%';
+        } else {
+            text = '密码强度：强';
+            passwordStrengthContainer.className = 'password-strength strength-strong';
+            passwordStrengthBar.style.width = '90%';
+        }
+
+        strengthText.textContent = text;
+    }
+
+    // 重置密码强度显示
+    function resetPasswordStrength() {
+        passwordStrengthContainer.className = 'password-strength';
+        passwordStrengthBar.style.width = '0%';
+        strengthText.textContent = '密码强度：弱';
+    }
+
+    // 表单验证函数
+    function validateForm(phone, username, password, confirmPassword, agreeTerms) {
+        let isValid = true;
+
+        // 验证手机号
         if (!phone) {
-            phoneError.textContent = '手机号不能为空';
-            return false;
+            showError(phoneInput, '请输入手机号');
+            isValid = false;
+        } else if (!/^1[3-9]\d{9}$/.test(phone)) {
+            showError(phoneInput, '请输入有效的11位手机号码');
+            isValid = false;
         }
 
-        const phoneRegex = /^1[3-9]\d{9}$/;
-        if (!phoneRegex.test(phone)) {
-            phoneError.textContent = '请输入有效的11位手机号码';
-            return false;
-        }
-
-        return true;
-    }
-
-    // 验证用户名
-    function validateUsername() {
-        const username = usernameInput.value.trim();
-        const usernameError = document.getElementById('usernameError');
-
+        // 验证用户名
         if (!username) {
-            usernameError.textContent = '用户名不能为空';
-            return false;
+            showError(usernameInput, '请输入用户名');
+            isValid = false;
+        } else if (username.length < 2 || username.length > 16) {
+            showError(usernameInput, '用户名长度应为2-16个字符');
+            isValid = false;
+        } else if (!/^[\u4e00-\u9fa5a-zA-Z0-9_]+$/.test(username)) {
+            showError(usernameInput, '用户名只能包含中文、字母、数字和下划线');
+            isValid = false;
         }
 
-        if (username.length < 2 || username.length > 20) {
-            usernameError.textContent = '用户名长度应为2-20个字符';
-            return false;
-        }
-
-        // 允许中文、字母、数字和下划线
-        const usernameRegex = /^[\u4e00-\u9fa5a-zA-Z0-9_]+$/;
-        if (!usernameRegex.test(username)) {
-            usernameError.textContent = '用户名只能包含中文、字母、数字和下划线';
-            return false;
-        }
-
-        return true;
-    }
-
-    // 验证密码
-    function validatePassword() {
-        const password = passwordInput.value;
-        const passwordError = document.getElementById('passwordError');
-
+        // 验证密码
         if (!password) {
-            passwordError.textContent = '密码不能为空';
-            return false;
+            showError(passwordInput, '请输入密码');
+            isValid = false;
+        } else if (password.length < 8 || password.length > 24) {
+            showError(passwordInput, '密码长度应为8-24个字符');
+            isValid = false;
+        } else if (!/(?=.*[a-zA-Z])(?=.*\d)/.test(password)) {
+            showError(passwordInput, '密码必须包含字母和数字');
+            isValid = false;
         }
 
-        if (password.length < 8 || password.length > 24) {
-            passwordError.textContent = '密码长度应为8-24个字符';
-            return false;
-        }
-
-        // 必须包含字母和数字
-        const hasLetter = /[a-zA-Z]/.test(password);
-        const hasNumber = /\d/.test(password);
-
-        if (!hasLetter || !hasNumber) {
-            passwordError.textContent = '密码必须包含字母和数字';
-            return false;
-        }
-
-        return true;
-    }
-
-    // 验证确认密码
-    function validateConfirmPassword() {
-        const password = passwordInput.value;
-        const confirmPassword = confirmPasswordInput.value;
-        const confirmPasswordError = document.getElementById('confirmPasswordError');
-
+        // 验证确认密码
         if (!confirmPassword) {
-            confirmPasswordError.textContent = '请再次输入密码';
-            return false;
+            showError(confirmPasswordInput, '请确认密码');
+            isValid = false;
+        } else if (password !== confirmPassword) {
+            showError(confirmPasswordInput, '两次输入的密码不一致');
+            isValid = false;
         }
 
-        if (password !== confirmPassword) {
-            confirmPasswordError.textContent = '两次输入的密码不一致';
-            return false;
+        // 验证是否同意条款
+        if (!agreeTerms) {
+            showError(agreeTermsCheckbox, '请同意用户服务协议和隐私政策');
+            isValid = false;
         }
 
-        return true;
+        return isValid;
     }
 
-    // 验证整个表单
-    function validateForm() {
-        const isPhoneValid = validatePhone();
-        const isUsernameValid = validateUsername();
-        const isPasswordValid = validatePassword();
-        const isConfirmPasswordValid = validateConfirmPassword();
+    // 显示错误信息
+    function showError(inputElement, message) {
+        // 移除之前的错误提示
+        const existingError = inputElement.parentNode.querySelector('.error-message');
+        if (existingError) {
+            existingError.remove();
+        }
 
-        return isPhoneValid && isUsernameValid && isPasswordValid && isConfirmPasswordValid;
+        // 对于复选框特殊处理
+        if (inputElement.type === 'checkbox') {
+            // 为复选框的父元素添加错误样式
+            const parentLabel = inputElement.closest('.checkbox-label');
+            if (parentLabel) {
+                parentLabel.style.color = '#e74c3c';
+
+                // 创建错误消息元素
+                const errorElement = document.createElement('div');
+                errorElement.className = 'error-message';
+                errorElement.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+
+                // 插入错误消息
+                parentLabel.parentNode.appendChild(errorElement);
+
+                // 点击复选框时移除错误样式
+                const clearError = function() {
+                    parentLabel.style.color = '#555';
+                    if (errorElement.parentNode) {
+                        errorElement.remove();
+                    }
+                    inputElement.removeEventListener('change', clearError);
+                };
+
+                inputElement.addEventListener('change', clearError);
+            }
+            return;
+        }
+
+        // 为其他输入框添加错误样式
+        inputElement.style.borderColor = '#e74c3c';
+        inputElement.style.boxShadow = '0 0 0 3px rgba(231, 76, 60, 0.1)';
+
+        // 创建错误消息元素
+        const errorElement = document.createElement('div');
+        errorElement.className = 'error-message';
+        errorElement.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+
+        // 插入错误消息
+        inputElement.parentNode.appendChild(errorElement);
+
+        // 输入时移除错误样式
+        const clearError = function() {
+            inputElement.style.borderColor = '#ddd';
+            inputElement.style.boxShadow = 'none';
+            if (errorElement.parentNode) {
+                errorElement.remove();
+            }
+            inputElement.removeEventListener('input', clearError);
+        };
+
+        inputElement.addEventListener('input', clearError);
+
+        // 聚焦到错误字段
+        inputElement.focus();
     }
 
-    // 清除所有错误信息
-    function clearErrors() {
-        const errorElements = document.querySelectorAll('.error-message');
-        errorElements.forEach(element => {
-            element.textContent = '';
+    // 清除所有错误
+    function clearAllErrors() {
+        // 移除所有错误消息
+        document.querySelectorAll('.error-message').forEach(error => {
+            error.remove();
         });
+
+        // 重置输入框样式
+        document.querySelectorAll('.form-group input').forEach(input => {
+            input.style.borderColor = '#ddd';
+            input.style.boxShadow = 'none';
+        });
+
+        // 重置复选框标签样式
+        const checkboxLabel = document.querySelector('.checkbox-label');
+        if (checkboxLabel) {
+            checkboxLabel.style.color = '#555';
+        }
     }
 
-    // 清除表单
-    function clearForm() {
-        registerForm.reset();
-    }
-
-    // 模拟表单提交
-    function simulateFormSubmit() {
+    // 执行注册
+    function performRegistration(phone, username, password) {
         // 显示加载状态
-        const submitBtn = document.querySelector('.btn-submit');
+        const submitBtn = registerForm.querySelector('.btn-submit');
         const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 提交中...';
+        const originalBg = submitBtn.style.background;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 注册中...';
         submitBtn.disabled = true;
 
         // 模拟API请求延迟
         setTimeout(() => {
-            // 恢复按钮状态
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
+            // 这里应该是实际的注册API调用
+            // 模拟检查用户名和手机号是否已存在
+            const existingUsers = JSON.parse(localStorage.getItem('redCultureUsers') || '[]');
 
-            // 显示成功消息
-            showMessage('注册成功！正在跳转到首页...', 'success');
+            let registrationSuccess = true;
+            let errorMessage = '';
 
-            // 模拟跳转
-            setTimeout(() => {
-                // 在实际应用中，这里会进行页面跳转
-                // window.location.href = 'index.html';
+            // 检查手机号是否已注册
+            if (existingUsers.some(user => user.phone === phone)) {
+                registrationSuccess = false;
+                errorMessage = '该手机号已被注册';
+                showError(phoneInput, errorMessage);
+            }
 
-                // 这里只是演示，实际使用时请取消上面的注释
-                console.log('跳转到首页');
-                alert('注册成功！在实际应用中，这里会跳转到首页。');
-                clearForm();
-            }, 1500);
+            // 检查用户名是否已存在
+            if (registrationSuccess && existingUsers.some(user => user.username === username)) {
+                registrationSuccess = false;
+                errorMessage = '该用户名已被使用';
+                showError(usernameInput, errorMessage);
+            }
+
+            // 模拟注册成功率（如果不是由于重复注册失败）
+            if (registrationSuccess) {
+                registrationSuccess = Math.random() > 0.2; // 80%的成功率用于演示
+                if (!registrationSuccess) {
+                    errorMessage = '注册失败，请稍后重试';
+                }
+            }
+
+            if (registrationSuccess) {
+                // 注册成功
+                submitBtn.innerHTML = '<i class="fas fa-check"></i> 注册成功';
+                submitBtn.style.background = 'linear-gradient(to right, #27ae60, #219653)';
+
+                // 模拟保存用户数据到本地存储（实际应用中应在服务器端完成）
+                const newUser = {
+                    phone: phone,
+                    username: username,
+                    password: password, // 注意：实际应用中密码应该在服务器端哈希加密
+                    registerTime: new Date().toISOString()
+                };
+
+                existingUsers.push(newUser);
+                localStorage.setItem('redCultureUsers', JSON.stringify(existingUsers));
+
+                // 显示成功消息
+                showSuccessMessage(`注册成功！欢迎 ${username} 加入江西红色文化信息网。`);
+
+                // 模拟跳转延迟
+                setTimeout(() => {
+                    // 在实际应用中，这里可能自动登录或跳转到登录页面
+                    alert(`注册成功！\n用户名: ${username}\n手机号: ${phone}\n\n即将跳转到登录页面...`);
+
+                    // 重置表单
+                    registerForm.reset();
+                    resetPasswordStrength();
+
+                    // 恢复按钮状态
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.style.background = originalBg;
+                    submitBtn.disabled = false;
+
+                    // 跳转到登录页面（模拟）
+                    // window.location.href = 'login.html';
+
+                }, 2000);
+            } else {
+                // 注册失败
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+
+                if (errorMessage) {
+                    // 如果已经有特定错误信息显示，不再显示通用错误
+                    if (!phoneInput.parentNode.querySelector('.error-message') &&
+                        !usernameInput.parentNode.querySelector('.error-message')) {
+                        showError(passwordInput, errorMessage);
+                    }
+                } else {
+                    showError(passwordInput, '注册失败，请稍后重试');
+                }
+            }
         }, 2000);
     }
 
-    // 显示消息提示
-    function showMessage(message, type) {
-        // 移除已有的消息提示
-        const existingMessage = document.querySelector('.message-alert');
-        if (existingMessage) {
-            existingMessage.remove();
-        }
+    // 显示成功消息
+    function showSuccessMessage(message) {
+        // 创建成功消息元素
+        const successElement = document.createElement('div');
+        successElement.className = 'success-message';
+        successElement.style.backgroundColor = '#d4edda';
+        successElement.style.color = '#155724';
+        successElement.style.padding = '15px';
+        successElement.style.borderRadius = '6px';
+        successElement.style.marginBottom = '20px';
+        successElement.style.border = '1px solid #c3e6cb';
+        successElement.style.textAlign = 'center';
+        successElement.style.animation = 'fadeIn 0.5s ease';
+        successElement.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
 
-        // 创建消息元素
-        const messageElement = document.createElement('div');
-        messageElement.className = `message-alert message-${type}`;
-        messageElement.innerHTML = `
-            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i>
-            ${message}
-        `;
+        // 插入到表单前
+        const registerHeader = document.querySelector('.register-header');
+        registerHeader.parentNode.insertBefore(successElement, registerHeader.nextSibling);
 
-        // 添加到页面
-        document.querySelector('.register-card').prepend(messageElement);
-
-        // 3秒后自动移除
+        // 3秒后移除成功消息
         setTimeout(() => {
-            if (messageElement.parentNode) {
-                messageElement.remove();
+            if (successElement.parentNode) {
+                successElement.style.opacity = '0';
+                successElement.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => {
+                    if (successElement.parentNode) {
+                        successElement.remove();
+                    }
+                }, 500);
             }
         }, 3000);
     }
 
-    // 添加消息提示的CSS
-    const style = document.createElement('style');
-    style.textContent = `
-        .message-alert {
-            padding: 12px 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            font-weight: 500;
-            animation: slideDown 0.3s ease-out;
+    // 显示模态框（用于显示用户协议和隐私政策）
+    function showModal(title, content) {
+        // 创建模态框
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        modal.style.display = 'flex';
+        modal.style.justifyContent = 'center';
+        modal.style.alignItems = 'center';
+        modal.style.zIndex = '1000';
+        modal.style.opacity = '0';
+        modal.style.transition = 'opacity 0.3s ease';
+
+        // 模态框内容
+        const modalContent = document.createElement('div');
+        modalContent.style.backgroundColor = 'white';
+        modalContent.style.borderRadius = '8px';
+        modalContent.style.padding = '30px';
+        modalContent.style.maxWidth = '90%';
+        modalContent.style.width = '500px';
+        modalContent.style.maxHeight = '80%';
+        modalContent.style.overflowY = 'auto';
+        modalContent.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.2)';
+        modalContent.style.transform = 'translateY(-30px)';
+        modalContent.style.transition = 'transform 0.3s ease';
+
+        // 标题
+        const modalTitle = document.createElement('h3');
+        modalTitle.textContent = title;
+        modalTitle.style.color = '#a00000';
+        modalTitle.style.marginBottom = '20px';
+        modalTitle.style.fontSize = '22px';
+        modalTitle.style.borderBottom = '2px solid #f0f0f0';
+        modalTitle.style.paddingBottom = '10px';
+
+        // 内容
+        const modalBody = document.createElement('div');
+        modalBody.innerHTML = content;
+        modalBody.style.marginBottom = '30px';
+        modalBody.style.lineHeight = '1.6';
+        modalBody.style.color = '#555';
+
+        // 关闭按钮
+        const closeButton = document.createElement('button');
+        closeButton.textContent = '关闭';
+        closeButton.style.backgroundColor = '#a00000';
+        closeButton.style.color = 'white';
+        closeButton.style.border = 'none';
+        closeButton.style.padding = '12px 24px';
+        closeButton.style.borderRadius = '6px';
+        closeButton.style.cursor = 'pointer';
+        closeButton.style.fontSize = '16px';
+        closeButton.style.fontWeight = '600';
+        closeButton.style.width = '100%';
+        closeButton.style.transition = 'all 0.3s';
+
+        closeButton.addEventListener('mouseover', function() {
+            this.style.backgroundColor = '#8b0000';
+        });
+
+        closeButton.addEventListener('mouseout', function() {
+            this.style.backgroundColor = '#a00000';
+        });
+
+        // 组装模态框
+        modalContent.appendChild(modalTitle);
+        modalContent.appendChild(modalBody);
+        modalContent.appendChild(closeButton);
+        modal.appendChild(modalContent);
+
+        // 添加到页面
+        document.body.appendChild(modal);
+
+        // 显示动画
+        setTimeout(() => {
+            modal.style.opacity = '1';
+            modalContent.style.transform = 'translateY(0)';
+        }, 10);
+
+        // 关闭模态框
+        function closeModal() {
+            modal.style.opacity = '0';
+            modalContent.style.transform = 'translateY(-30px)';
+            setTimeout(() => {
+                if (modal.parentNode) {
+                    modal.parentNode.removeChild(modal);
+                }
+            }, 300);
         }
-        
-        .message-success {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-            border-left: 4px solid #4caf50;
-        }
-        
-        .message-info {
-            background-color: #e3f2fd;
-            color: #1565c0;
-            border-left: 4px solid #2196f3;
-        }
-        
-        .message-alert i {
-            margin-right: 10px;
-            font-size: 18px;
-        }
-        
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
+
+        // 点击关闭按钮关闭模态框
+        closeButton.addEventListener('click', closeModal);
+
+        // 点击模态框背景关闭模态框
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                closeModal();
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+        });
+
+        // 按ESC键关闭模态框
+        document.addEventListener('keydown', function escClose(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+                document.removeEventListener('keydown', escClose);
             }
-        }
-    `;
-    document.head.appendChild(style);
+        });
+    }
+
+    // 添加输入框焦点效果
+    const formInputs = document.querySelectorAll('input[type="text"], input[type="password"], input[type="tel"]');
+    formInputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+
+        input.addEventListener('blur', function() {
+            this.parentElement.classList.remove('focused');
+        });
+    });
 });

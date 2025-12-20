@@ -3,126 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>红色文化信息网 - 用户注册</title>
+    <title>江西红色文化信息网 - 用户注册</title>
     <link rel="stylesheet" href="/static/css/entry/register.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 <div class="container">
-    <!-- 顶部导航栏 -->
     <header class="header">
-        <div class="logo-container">
-            <div class="logo">
-                <i class="fas fa-flag"></i>
-                <span>红色文化信息网</span>
-            </div>
-            <div class="site-url">redculture.cn</div>
+        <div class="logo-area">
+            <h1 class="site-title">江西红色文化信息网</h1>
+            <div class="site-subtitle">传承红色基因 · 弘扬革命精神</div>
         </div>
-
-        <nav class="nav-links">
-            <a href="index.html" class="nav-link">首页</a>
-            <a href="#" class="nav-link">帮助</a>
-        </nav>
+        <div class="header-links">
+            <a href="/templates/index.html" class="home-link">首页</a>
+            <a href="#" class="help-link">帮助</a>
+        </div>
     </header>
 
-    <!-- 注册区域 -->
-    <main class="register-container">
-        <div class="register-card">
-            <h1 class="register-title">
-                <i class="fas fa-user-plus"></i>
-                用户注册
-            </h1>
-
-            <form id="registerForm" class="register-form">
-                <!-- 手机号 -->
-                <div class="form-group">
-                    <label for="phone">
-                        <i class="fas fa-mobile-alt"></i>
-                        手机号：
-                    </label>
-                    <div class="input-hint">请使用手机号注册，注册后可用于登录本站所有服务</div>
-                    <input type="tel" id="phone" name="phone" placeholder="请输入11位手机号码" required>
-                    <div class="error-message" id="phoneError"></div>
+    <main class="main-content">
+        <div class="register-container">
+            <div class="register-box">
+                <div class="register-header">
+                    <h2><i class="fas fa-user-plus"></i> 用户注册</h2>
+                    <p>创建新账户，开启江西红色文化之旅</p>
                 </div>
 
-                <!-- 账号 -->
-                <div class="form-group">
-                    <label for="username">
-                        <i class="fas fa-user"></i>
-                        用户名：
-                    </label>
-                    <div class="input-hint">2-20个字符，可使用字母、数字或中文</div>
-                    <input type="text" id="username" name="username" placeholder="请输入用户名" required>
-                    <div class="error-message" id="usernameError"></div>
-                </div>
+                <form id="registerForm" class="register-form">
+                    <div class="form-group">
+                        <label for="phone">
+                            <i class="fas fa-mobile-alt"></i> 手机号
+                        </label>
+                        <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                placeholder="请输入11位手机号码"
+                                required
+                        >
+                        <div class="form-hint">
+                            请输入有效的中国大陆手机号码
+                        </div>
+                    </div>
 
-                <!-- 密码 -->
-                <div class="form-group">
-                    <label for="password">
-                        <i class="fas fa-lock"></i>
-                        密码：
-                    </label>
-                    <div class="input-hint">8-24个字符，必须包含字母和数字</div>
-                    <input type="password" id="password" name="password" placeholder="请输入密码" required>
-                    <div class="error-message" id="passwordError"></div>
-                </div>
+                    <div class="form-group">
+                        <label for="username">
+                            <i class="fas fa-user"></i> 用户名
+                        </label>
+                        <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                placeholder="请输入2-16位用户名"
+                                required
+                        >
+                        <div class="form-hint">
+                            2-16个字符，可包含中文、字母、数字和下划线
+                        </div>
+                    </div>
 
-                <!-- 确认密码 -->
-                <div class="form-group">
-                    <label for="confirmPassword">
-                        <i class="fas fa-lock"></i>
-                        确认密码：
-                    </label>
-                    <div class="input-hint">请再次输入密码</div>
-                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="请再次输入密码" required>
-                    <div class="error-message" id="confirmPasswordError"></div>
-                </div>
+                    <div class="form-group">
+                        <label for="password">
+                            <i class="fas fa-lock"></i> 密码
+                        </label>
+                        <div class="password-input-wrapper">
+                            <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    placeholder="请输入8-24位密码"
+                                    required
+                            >
+                            <button type="button" class="toggle-password" id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength">
+                            <div class="strength-bar">
+                                <div class="strength-fill" id="passwordStrength"></div>
+                            </div>
+                            <div class="strength-text" id="strengthText">密码强度：弱</div>
+                        </div>
+                        <div class="form-hint">
+                            8-24个字符，必须包含字母和数字，建议使用特殊字符
+                        </div>
+                    </div>
 
-                <!-- 按钮组 -->
-                <div class="button-group">
-                    <button type="submit" class="btn btn-submit">
-                        <i class="fas fa-check"></i>
-                        提交注册
-                    </button>
-                    <button type="button" id="resetBtn" class="btn btn-reset">
-                        <i class="fas fa-redo"></i>
-                        重置
-                    </button>
-                </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">
+                            <i class="fas fa-lock"></i> 确认密码
+                        </label>
+                        <div class="password-input-wrapper">
+                            <input
+                                    type="password"
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    placeholder="请再次输入密码"
+                                    required
+                            >
+                            <button type="button" class="toggle-password" id="toggleConfirmPassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-hint">
+                            请再次输入密码以确认
+                        </div>
+                    </div>
 
-                <div class="login-link">
-                    已有账号？<a href="login.html">立即登录</a>
-                </div>
-            </form>
+                    <div class="form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                            <span>我已阅读并同意<a href="#" id="termsLink">《用户服务协议》</a>和<a href="#" id="privacyLink">《隐私政策》</a></span>
+                        </label>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-user-plus"></i> 注册
+                        </button>
+                        <button type="reset" class="btn-reset">
+                            <i class="fas fa-redo"></i> 重置
+                        </button>
+                    </div>
+
+                    <div class="login-link">
+                        已有账户？<a href="login.html" id="loginLink">立即登录</a>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <!-- 侧边信息栏 -->
-        <aside class="sidebar">
-            <div class="sidebar-card">
-                <h3><i class="fas fa-info-circle"></i> 注册须知</h3>
-                <ul class="notice-list">
-                    <li>注册后可以浏览更多红色文化资源</li>
-                    <li>可参与线上学习和答题活动</li>
-                    <li>可预约参观红色教育基地</li>
-                    <li>获得个性化学习推荐</li>
-                </ul>
-            </div>
-
-            <div class="sidebar-card">
-                <h3><i class="fas fa-calendar-alt"></i> 今日红色记忆</h3>
-                <div class="today-memory">
-                    <div class="memory-date">2023年12月18日</div>
-                    <p class="memory-content">毛泽东同志诞辰130周年纪念日</p>
-                    <a href="#" class="memory-link">了解更多 <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </aside>
     </main>
 
-    <!-- 页脚 -->
     <footer class="footer">
-        <p>红色文化信息网 &copy; 2023 版权所有 | 传承红色基因，弘扬革命精神</p>
-        <p>京ICP备202300001号 | 举报电话：12388</p>
+        <div class="footer-content">
+            <p>江西红色文化信息网 &copy; 2023 版权所有</p>
+            <p>弘扬井冈山精神、苏区精神和长征精神</p>
+            <div class="footer-links">
+                <a href="#">关于我们</a> |
+                <a href="#">联系我们</a> |
+                <a href="#">隐私政策</a> |
+                <a href="#">使用条款</a>
+            </div>
+        </div>
     </footer>
 </div>
 
