@@ -18,7 +18,7 @@
 <!-- 导航栏 - 红色主题 -->
 <nav class="navbar navbar-expand-lg navbar-dark navbar-red sticky-top">
     <div class="container">
-        <a class="navbar-brand" th:href="@{/}">
+        <a class="navbar-brand" href="">
             <i class="fas fa-landmark me-2"></i>
             <strong>江西红色文化</strong>
         </a>
@@ -30,27 +30,27 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/heroes}">
+                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/hero/list.html">
                         <i class="fas fa-user-shield me-1"></i> 红色英雄
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/encyclopedias}">
+                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/encyclopedias/entry.html">
                         <i class="fas fa-book me-1"></i> 党史大百科
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/scenicspots}">
+                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/RedScenicSpot/list.html">
                         <i class="fas fa-map-marked-alt me-1"></i> 红色圣地
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/stories}">
+                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html">
                         <i class="fas fa-book-open me-1"></i> 红色故事
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/explore}">
+                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/explore.html">
                         <i class="fas fa-hiking me-1"></i> 红色寻访
                     </a>
                 </li>
@@ -58,7 +58,7 @@
 
             <div class="d-flex align-items-center">
                 <div class="search-box me-3">
-                    <form th:action="@{/encyclopedias}" method="get" class="input-group">
+                    <form action="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/search/search.html" method="get" class="input-group">
                         <input type="text" class="form-control" name="kw" placeholder="搜索..." aria-label="搜索">
                         <button class="btn btn-outline-light" type="submit">
                             <i class="fas fa-search"></i>
@@ -68,15 +68,16 @@
 
                 <!-- 登录图标 -->
                 <div class="login-icon-container">
-                    <a th:href="@{/login}" class="login-icon" title="登录">
+                    <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/entry/register.html" class="login-icon" title="登录">
                         <i class="fas fa-user-circle fa-lg"></i>
-                        <span class="login-text">登录</span>
+<!--                        <span class="login-text">登录</span>-->
                     </a>
                 </div>
             </div>
         </div>
     </div>
 </nav>
+
 <!-- 轮播图与新闻左右分区 -->
 <div class="container-fluid main-content-container">
     <div class="row g-4">
@@ -425,22 +426,25 @@
                 <div class="feature-icon">
                     <i class="fas fa-user-shield"></i>
                 </div>
-                <h4 style="color: var(--red-primary);">英雄事迹</h4>
+                <h4 style="color: var(--red-primary);">红色英雄</h4>
                 <p>了解革命先烈的英勇事迹，传承红色精神</p>
+                <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/hero/list.html" class="btn btn-sm btn-outline-danger mt-2">了解更多</a>
             </div>
             <div class="col-md-3 mb-4">
                 <div class="feature-icon">
                     <i class="fas fa-landmark"></i>
                 </div>
-                <h4 style="color: var(--red-primary);">革命圣地</h4>
+                <h4 style="color: var(--red-primary);">红色圣地</h4>
                 <p>探访红色革命遗址，追寻历史足迹</p>
+                <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/RedScenicSpot/list.html" class="btn btn-sm btn-outline-danger mt-2">了解更多</a>
             </div>
             <div class="col-md-3 mb-4">
                 <div class="feature-icon">
                     <i class="fas fa-book"></i>
                 </div>
-                <h4 style="color: var(--red-primary);">党史百科</h4>
+                <h4 style="color: var(--red-primary);">党史大百科</h4>
                 <p>学习党史知识，增强历史使命感</p>
+                <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/encyclopedias/entry.html" class="btn btn-sm btn-outline-danger mt-2">了解更多</a>
             </div>
             <div class="col-md-3 mb-4">
                 <div class="feature-icon">
@@ -448,6 +452,15 @@
                 </div>
                 <h4 style="color: var(--red-primary);">红色寻访</h4>
                 <p>参与实践活动，体验革命历程</p>
+                <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/explore.html" class="btn btn-sm btn-outline-danger mt-2">了解更多</a>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="feature-icon">
+                    <i class="fas fa-landmark"></i>
+                </div>
+                <h4 style="color: var(--red-primary);">红色故事</h4>
+                <p>探访红色</p>
+                <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html" class="btn btn-sm btn-outline-danger mt-2">了解更多</a>
             </div>
         </div>
     </div>
