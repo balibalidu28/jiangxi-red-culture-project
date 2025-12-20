@@ -120,7 +120,8 @@ public class AdminController {
     // 创建圣地
     @PostMapping("/scenicspots")
     public RedScenicSpot createScenicSpot(@RequestBody RedScenicSpot scenicSpot) {
-        return scenicSpotService.save(scenicSpot);
+        System.out.println("接收到的数据: " + scenicSpot.toString());
+        return scenicSpotService.create(scenicSpot);
     }
 
     // 更新圣地信息

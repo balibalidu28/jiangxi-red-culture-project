@@ -36,6 +36,6 @@ public class HeroController {
     @ResponseBody
     public RedHero apiDetail(@PathVariable Integer id) {
         // 返回英雄的 JSON 数据详情
-        return null;
+        return null;//
     }
 }

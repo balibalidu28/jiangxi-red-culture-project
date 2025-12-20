@@ -95,9 +95,12 @@
         </table>
 
         <!-- 新增/编辑圣地表单 -->
-        <div id="scenicFormContainer" class="form-container" style="display: none;"> <!-- 默认隐藏 -->
+        <div id="scenicFormContainer" class="form-container" style="display: none;">
             <h2 id="scenicFormTitle">新增圣地</h2>
             <form id="scenicForm">
+                <!-- 添加这行：隐藏的ID字段 -->
+                <input type="hidden" id="scenicId">
+
                 <label for="scenic-name">名称：</label>
                 <input type="text" id="scenic-name" placeholder="请输入圣地名称" required>
 
@@ -111,7 +114,7 @@
                 <input type="file" id="scenic-image" accept="image/*">
 
                 <button type="button" onclick="saveScenic()">保存</button>
-                <button type="button" onclick="hideScenicForm()">取消</button> <!-- 点击取消隐藏表单 -->
+                <button type="button" onclick="hideScenicForm()">取消</button>
             </form>
         </div>
     </section>
