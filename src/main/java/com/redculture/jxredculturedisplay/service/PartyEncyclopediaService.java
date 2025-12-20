@@ -1,70 +1,113 @@
 package com.redculture.jxredculturedisplay.service;
 
 import com.redculture.jxredculturedisplay.model.PartyEncyclopedia;
+import com.redculture.jxredculturedisplay.repository.PartyEncyclopediaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest; // 分页工具
+import org.springframework.data.domain.Sort; // 排序工具
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Service // 标记这是业务逻辑层组件
 public class PartyEncyclopediaService {
-    // TODO: 注入 PartyEncyclopediaRepository
 
+    // 1. 注入 Repository (仓库)
+    @Autowired
+    private PartyEncyclopediaRepository repository;
+
+    /**
+     * 统计总数（后台管理可能需要显示“当前共有xx个词条”）
+     */
     public long count() {
-        /* 1) repo.count() 2) return */
-        throw new UnsupportedOperationException("TODO");
+        return repository.count();
     }
 
+    /**
+     * 获取最新的 N 条数据（给首页 D同学 用的）
+     * 逻辑：按 ID 倒序排列（最新的ID最大），取前 n 条
+     */
     public List<PartyEncyclopedia> listTop(int n) {
-        /*
-         * 1) PageRequest.of(0,n)
-         * 2) repo.findAll(pageable).getContent()
-         * 3) return
-         */
-        throw new UnsupportedOperationException("TODO");
+        // PageRequest.of(页码0, 每页数量n, 排序方式)
+        // Sort.Direction.DESC 表示倒序（从大到小）
+        return repository.findAll(
+                PageRequest.of(0, n, Sort.by(Sort.Direction.DESC, "id"))
+        ).getContent();
     }
 
+    /**
+     * 获取所有数据
+     */
     public List<PartyEncyclopedia> listAll() {
-        /* 1) repo.findAll() 2) return */
-        throw new UnsupportedOperationException("TODO");
+        return repository.findAll();
     }
 
+    /**
+     * 搜索功能
+     * 逻辑：如果 kw 为空，查全部；如果不为空，搜标题或内容
+     */
     public List<PartyEncyclopedia> search(String kw) {
-        /*
-         * 1) kw为空 -> listAll()
-         * 2) kw不为空 -> repo模糊查询(title/content)
-         *    findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(kw, kw)
-         * 3) return
-         */
-        throw new UnsupportedOperationException("TODO");
+        if (kw == null || kw.trim().isEmpty()) {
+            return listAll();
+        }
+        // 调用 Repository 里那个很长的方法
+        // 两个参数都传 kw，表示标题包含 kw 或者 内容包含 kw 都可以
+        return repository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(kw, kw);
     }
 
-    public PartyEncyclopedia getOrThrow(Integer id) {
-        /* 1) repo.findById 2) 不存在抛异常 3) return */
-        throw new UnsupportedOperationException("TODO");
+    /**
+     * 根据ID获取详情，找不到就报错
+     * 用于 编辑页面 和 详情页面
+     */
+    public PartyEncyclopedia getOrThrow(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("找不到该词条，ID: " + id));
     }
 
+    /**
+     * 新增词条（后台管理用）
+     */
     public PartyEncyclopedia create(PartyEncyclopedia item) {
-        /*
-         * 1) 校验title/content必填
-         * 2) item.id=null
-         * 3) repo.save(item)
-         * 4) return
-         */
-        throw new UnsupportedOperationException("TODO");
+        // 1. 简单校验
+        if (item.getTitle() == null || item.getTitle().isEmpty()) {
+            throw new RuntimeException("标题不能为空");
+        }
+        if (item.getContent() == null || item.getContent().isEmpty()) {
+            throw new RuntimeException("内容不能为空");
+        }
+
+        // 2. 强制 ID 为 null，确保是“新增”而不是“修改”
+        item.setId(null);
+
+        // 3. 保存
+        return repository.save(item);
     }
 
-    public PartyEncyclopedia update(Integer id, PartyEncyclopedia item) {
-        /*
-         * 1) db=getOrThrow(id)
-         * 2) 更新字段：title/content/imageUrl
-         * 3) repo.save(db)
-         * 4) return
-         */
-        throw new UnsupportedOperationException("TODO");
+    /**
+     * 修改词条（后台管理用）
+     */
+    public PartyEncyclopedia update(Long id, PartyEncyclopedia item) {
+        // 1. 先查数据库里有没有这条
+        PartyEncyclopedia dbItem = getOrThrow(id);
+
+        // 2. 更新字段（只更新允许修改的）
+        dbItem.setTitle(item.getTitle());
+        dbItem.setContent(item.getContent());
+        if (item.getImageUrl() != null) {
+            dbItem.setImageUrl(item.getImageUrl());
+        }
+
+        // 3. 保存（JPA会自动判断是更新）
+        return repository.save(dbItem);
     }
 
-    public void delete(Integer id) {
-        /* 1) repo.deleteById(id)（可选先getOrThrow） */
-        throw new UnsupportedOperationException("TODO");
+    /**
+     * 删除词条（后台管理用）
+     */
+    public void delete(Long id) {
+        // 1. 先确保它存在，不存在会报错
+        getOrThrow(id);
+        // 2. 删除
+        repository.deleteById(id);
     }
 }
