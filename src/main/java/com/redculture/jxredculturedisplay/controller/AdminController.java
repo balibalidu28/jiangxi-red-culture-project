@@ -159,6 +159,6 @@ public class AdminController {
     // 删除百科条目
     @DeleteMapping("/encyclopedias/{id}")
     public void deleteEncyclopedia(@PathVariable Integer id) {
-        encyclopediaService.deleteById(id);
+        encyclopediaService.deleteById(Long.valueOf(id));
     }
 }

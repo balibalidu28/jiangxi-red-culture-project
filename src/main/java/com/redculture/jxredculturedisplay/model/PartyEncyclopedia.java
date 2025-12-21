@@ -25,7 +25,7 @@ public class PartyEncyclopedia {
     @Column(name = "image_url", length = 255)//配图
     private String imageUrl;
 
-    public Integer getId() { return id; }// ID 的 Getter (取值)
+    public Long getId() { return Long.valueOf(id); }// ID 的 Getter (取值)
     public void setId(Integer id) { this.id = id; }// ID 的 Setter (赋值)
 
     public String getTitle() { return title; }

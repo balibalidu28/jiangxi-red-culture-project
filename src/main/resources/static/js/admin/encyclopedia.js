@@ -122,27 +122,20 @@ async function saveEncyclopedia() {
 
     const id = document.getElementById("encyclopediaId").value;
     const title = document.getElementById("encyclopedia-name").value;
-    const content = document.getElementById("encyclopedia-location").value; // 注意：这里是内容，不是location
-    const imageInput = document.getElementById("encyclopedia-image");
+    const content = document.getElementById("encyclopedia-location").value;
 
-    // 验证必填项
-    if (!title) {
-        alert("词条标题为必填项！");
+    if (!title || !content) {
+        alert("标题和内容为必填项！");
         return;
     }
 
-    if (!content) {
-        alert("内容为必填项！");
-        return;
-    }
-
-    const encyclopediaData = {
+    const itemData = {
         title: title,
         content: content
-        // 注意：文件上传需要单独处理，这里先不处理图片上传
+        // 注意：图片上传需要特殊处理
     };
 
-    console.log("要发送的数据:", encyclopediaData);
+    console.log("要发送的数据:", itemData);
 
     try {
         // 判断是新增还是编辑
@@ -156,7 +149,7 @@ async function saveEncyclopedia() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(encyclopediaData)
+            body: JSON.stringify(itemData)
         });
 
         console.log("响应状态:", response.status);
@@ -166,7 +159,7 @@ async function saveEncyclopedia() {
             console.log("保存成功:", result);
             alert(id ? "修改百科成功！" : "新增百科成功！");
             hideEncyclopediaForm();
-            loadEncyclopedias();
+            loadEncyclopedias(); // 刷新列表
         } else {
             const errorText = await response.text();
             console.error("保存失败:", errorText);
@@ -177,15 +170,13 @@ async function saveEncyclopedia() {
         alert("网络错误，请重试");
     }
 }
-
 // 编辑百科功能
 async function editEncyclopedia(id) {
     console.log("开始编辑百科，ID:", id);
 
     try {
         // 获取百科详情
-        const response = await fetch(`http://localhost:8080/api/admin/encyclopedias/${id}`);
-        if (!response.ok) {
+        const response = await fetch(`http://localhost:8080/encyclopedias/${id}`);        if (!response.ok) {
             throw new Error(`获取百科详情失败: ${response.status}`);
         }
 

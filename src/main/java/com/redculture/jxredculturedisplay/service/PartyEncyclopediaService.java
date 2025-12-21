@@ -112,10 +112,26 @@ public class PartyEncyclopediaService {
     }
 
     public PartyEncyclopedia save(PartyEncyclopedia encyclopedia) {
-        throw new UnsupportedOperationException("TODO");
+        // 调用 create 方法或直接保存
+        // 或者如果已经有 ID 就更新：
+         if (encyclopedia.getId() != null) {
+             return update(encyclopedia.getId(), encyclopedia);
+         } else {
+             return create(encyclopedia);
+         }
     }
 
-    public void deleteById(Integer id) {
-        throw new UnsupportedOperationException("TODO");
+    public void deleteById(Long id) {
+        if (id == null) {
+            throw new RuntimeException("ID不能为空");
+        }
+
+        // 检查是否存在
+        if (!repository.existsById(id)) {
+            throw new RuntimeException("找不到ID为 " + id + " 的词条");
+        }
+
+        // 删除
+        repository.deleteById(id);
     }
 }

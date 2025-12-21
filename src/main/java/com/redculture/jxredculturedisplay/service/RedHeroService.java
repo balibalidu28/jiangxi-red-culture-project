@@ -116,4 +116,8 @@ public class RedHeroService {
         return redHeroRepository.save(hero);
     }
 
+
+    public void deleteById(Integer id) {
+        redHeroRepository.deleteById(id);
+    }
 }
