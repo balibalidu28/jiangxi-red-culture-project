@@ -1,54 +1,119 @@
 package com.redculture.jxredculturedisplay.service;
 
 import com.redculture.jxredculturedisplay.model.RedHero;
+import com.redculture.jxredculturedisplay.repository.RedHeroRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RedHeroService {
-    // TODO: 注入 RedHeroRepository
 
+    @Autowired
+    private RedHeroRepository redHeroRepository;
+
+    /**
+     * 获取红色英雄的总数
+     * @return 红色英雄的总数
+     */
     public long count() {
-        /* 1) repo.count() 2) return */
-        throw new UnsupportedOperationException("TODO");
+        return redHeroRepository.count();
     }
 
+    /**
+     * 获取前 n 个红色英雄
+     * @param n 要获取的红色英雄数量
+     * @return 前 n 个红色英雄列表
+     */
     public List<RedHero> listTop(int n) {
-        /* 1) PageRequest.of(0,n) 2) repo.findAll(pageable).getContent() 3) return */
-        throw new UnsupportedOperationException("TODO");
+        return redHeroRepository.findAll(PageRequest.of(0, n)).getContent();
     }
 
+    /**
+     * 获取所有红色英雄
+     * @return 所有红色英雄列表
+     */
     public List<RedHero> listAll() {
-        /* 1) repo.findAll() 2) return */
-        throw new UnsupportedOperationException("TODO");
+        return redHeroRepository.findAll();
     }
 
+    /**
+     * 根据 ID 获取红色英雄，如果不存在则抛出异常
+     * @param id 红色英雄的 ID
+     * @return 红色英雄实体
+     */
     public RedHero getOrThrow(Integer id) {
-        /* 1) repo.findById 2) 不存在抛异常 3) return */
-        throw new UnsupportedOperationException("TODO");
+        Optional<RedHero> optionalHero = redHeroRepository.findById(id);
+        if (optionalHero.isPresent()) {
+            return optionalHero.get();
+        } else {
+            throw new RuntimeException("RedHero with id " + id + " not found");
+        }
     }
 
+    /**
+     * 创建一个新的红色英雄
+     * @param hero 红色英雄实体
+     * @return 创建后的红色英雄实体
+     */
     public RedHero create(RedHero hero) {
-        /* 1) 校验name必填 2) id置空 3) repo.save 4) return */
-        throw new UnsupportedOperationException("TODO");
+        if (hero.getName() == null || hero.getName().isEmpty()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+        hero.setId(null); // 确保创建时 ID 为空
+        return redHeroRepository.save(hero);
     }
 
+    /**
+     * 更新一个红色英雄的信息
+     * @param id 红色英雄的 ID
+     * @param hero 红色英雄实体
+     * @return 更新后的红色英雄实体
+     */
     public RedHero update(Integer id, RedHero hero) {
-        /* 1) db=getOrThrow 2) 更新字段 3) repo.save 4) return */
-        throw new UnsupportedOperationException("TODO");
+        RedHero dbHero = getOrThrow(id);
+        dbHero.setName(hero.getName());
+        dbHero.setDescription(hero.getDescription());
+        dbHero.setImageUrl(hero.getImageUrl());
+        return redHeroRepository.save(dbHero);
     }
 
+    /**
+     * 删除一个红色英雄
+     * @param id 红色英雄的 ID
+     */
     public void delete(Integer id) {
-        /* 1) repo.deleteById(id)（可选先getOrThrow） */
-        throw new UnsupportedOperationException("TODO");
+        redHeroRepository.deleteById(id);
     }
 
-    public void deleteById(Integer id) {
-
-    }
-
+    /**
+     * 保存一个红色英雄
+     * @param hero 红色英雄实体
+     * @return 保存后的红色英雄实体
+     */
     public RedHero save(RedHero hero) {
-        throw new UnsupportedOperationException("TODO");
-    }//
+        return redHeroRepository.save(hero);
+    }
+
+    @Autowired
+    private RedHeroRepository RedHeroRepository;
+
+    // 1. 使用继承的方法
+    public RedHero getHeroById(Integer id) {
+        return redHeroRepository.findById(id).orElse(null);
+    }
+
+    // 2. 使用自定义的方法
+    public List<RedHero> searchHeroesByName(String keyword) {
+        return redHeroRepository.findByNameContainingIgnoreCase(keyword);
+    }
+
+    // 3. 使用保存方法
+    public RedHero createHero(RedHero hero) {
+        return redHeroRepository.save(hero);
+    }
+
 }
