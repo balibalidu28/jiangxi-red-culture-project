@@ -22,7 +22,7 @@
     <!-- 英雄管理模块 -->
     <section id="heroes" class="module-section active">
         <h2>英雄管理</h2>
-        <button onclick="createHero()">新增英雄</button>
+        <button onclick="showHeroForm()">新增英雄</button>
         <table>
             <thead>
             <tr>
@@ -33,23 +33,38 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>1</td>
-                <td>毛泽东</td>
-                <td>中国革命的伟大领袖</td>
-                <td>
-                    <button onclick="editHero(1)">编辑</button>
-                    <button onclick="deleteHero(1)">删除</button>
-                </td>
-            </tr>
+            <!-- 动态填充 -->
             </tbody>
         </table>
+        <!-- 新增/编辑英雄表单 -->
+        <div id="heroFormContainer" class="form-container" style="display: none;">
+            <h2 id="heroFormTitle">新增英雄</h2>
+            <form id="heroForm">
+                <!-- 添加这行：隐藏的ID字段 -->
+                <input type="hidden" id="heroId">
+
+                <label for="hero-name">名称：</label>
+                <input type="text" id="hero-name" placeholder="请输入英雄名称" required>
+
+                <label for="hero-location">地点：</label>
+                <input type="text" id="hero-location" placeholder="请输入英雄地点" required>
+
+                <label for="hero-description">简介：</label>
+                <textarea id="hero-description" placeholder="请输入英雄简介"></textarea>
+
+                <label for="hero-image">上传图片：</label>
+                <input type="file" id="hero-image" accept="image/*">
+
+                <button type="button" onclick="saveHero()">保存</button>
+                <button type="button" onclick="hideHeroForm()">取消</button>
+            </form>
+        </div>
     </section>
 
     <!-- 故事管理模块 -->
     <section id="stories" class="module-section">
         <h2>故事管理</h2>
-        <button onclick="createStory()">新增故事</button>
+        <button onclick="showStoryForm()">新增故事</button>
         <table>
             <thead>
             <tr>
@@ -60,17 +75,31 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>101</td>
-                <td>井冈山革命的故事</td>
-                <td>江西日报</td>
-                <td>
-                    <button onclick="editStory(101)">编辑</button>
-                    <button onclick="deleteStory(101)">删除</button>
-                </td>
-            </tr>
+            <!-- 动态填充 -->
             </tbody>
         </table>
+        <div id="storyFormContainer" class="form-container" style="display: none;">
+            <h2 id="storyFormTitle">新增故事</h2>
+            <form id="storyForm">
+                <!-- 添加这行：隐藏的ID字段 -->
+                <input type="hidden" id="storyId">
+
+                <label for="story-name">标题：</label>
+                <input type="text" id="story-name" placeholder="请输入故事名称" required>
+
+                <label for="story-location">内容：</label>
+                <input type="text" id="story-location" placeholder="请输入故事地点" required>
+
+                <label for="story-description">来源：</label>
+                <textarea id="story-description" placeholder="请输入故事简介"></textarea>
+
+                <label for="story-date">日期：</label>
+                <input type="date" id="story-date" required>
+
+                <button type="button" onclick="saveStory()">保存</button>
+                <button type="button" onclick="hideStoryForm()">取消</button>
+            </form>
+        </div>
     </section>
 
     <!-- 圣地管理模块 -->
@@ -122,7 +151,7 @@
     <!-- 活动管理模块 -->
     <section id="explore" class="module-section">
         <h2>活动管理</h2>
-        <button onclick="createExplore()">新增活动</button>
+        <button onclick="showExploreForm()">新增活动</button>
         <table>
             <thead>
             <tr>
@@ -134,49 +163,78 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>301</td>
-                <td>红色之旅</td>
-                <td>2025-12-01</td>
-                <td>井冈山</td>
-                <td>
-                    <button onclick="editExplore(301)">编辑</button>
-                    <button onclick="deleteExplore(301)">删除</button>
-                </td>
-            </tr>
+            <!-- 动态填充 -->
             </tbody>
         </table>
+        <!-- 新增/编辑活动表单 -->
+        <div id="exploreFormContainer" class="form-container" style="display: none;">
+            <h2 id="exploreFormTitle">新增活动</h2>
+            <form id="exploreForm">
+                <!-- 添加这行：隐藏的ID字段 -->
+                <input type="hidden" id="exploreId">
+
+                <label for="explore-name">活动名称：</label>
+                <input type="text" id="explore-name" placeholder="请输入活动名称" required>
+
+                <label for="explore-location">地点：</label>
+                <input type="text" id="explore-location" placeholder="请输入活动地点" required>
+
+                <label for="explore-date">日期：</label>
+                <textarea id="explore-date" placeholder="请输入活动日期"></textarea>
+
+                <button type="button" onclick="saveExplore()">保存</button>
+                <button type="button" onclick="hideExploreForm()">取消</button>
+            </form>
+        </div>
     </section>
 
     <!-- 百科管理模块 -->
     <section id="encyclopedias" class="module-section">
         <h2>百科管理</h2>
-        <button onclick="createEncyclopedia()">新增百科</button>
+        <button onclick="showEncyclopediaForm()">新增百科</button>
         <table>
             <thead>
             <tr>
                 <th>ID</th>
                 <th>词条标题</th>
-                <th>操作</th>
+                <th>内容</th>
+                <th>图片</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>401</td>
-                <td>井冈山革命</td>
-                <td>
-                    <button onclick="editEncyclopedia(401)">编辑</button>
-                    <button onclick="deleteEncyclopedia(401)">删除</button>
-                </td>
-            </tr>
+            <!-- 动态填充 -->
             </tbody>
         </table>
+        <!-- 新增/编辑百科表单 -->
+        <div id="encyclopediaFormContainer" class="form-container" style="display: none;">
+            <h2 id="encyclopediaFormTitle">新增百科</h2>
+            <form id="encyclopediasForm">
+                <!-- 添加这行：隐藏的ID字段 -->
+                <input type="hidden" id="encyclopediaId">
+
+                <label for="encyclopedia-name">词条标题：</label>
+                <input type="text" id="encyclopedia-name" placeholder="请输入词条标题" required>
+
+                <label for="encyclopedia-location">内容：</label>
+                <input type="text" id="encyclopedia-location" placeholder="请输入百科介绍" required>
+
+                <label for="encyclopedia-image">上传图片：</label>
+                <input type="file" id="encyclopedia-image" accept="image/*">
+
+                <button type="button" onclick="saveEncyclopedia()">保存</button>
+                <button type="button" onclick="hideEncyclopediaForm()">取消</button>
+            </form>
+        </div>
     </section>
 </div>
 
 <script src="/static/js/admin/admin.js"></script>
 <script src="/static/js/admin/hero.js"></script>
 <script src="/static/js/admin/scenic-spot.js"></script>
+<script src="/static/js/admin/encyclopedia.js"></script>
+<script src="/static/js/admin/explore.js"></script>
+<script src="/static/js/admin/story.js"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         loadScenicSpots();
