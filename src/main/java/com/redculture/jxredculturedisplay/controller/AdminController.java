@@ -144,10 +144,16 @@ public class AdminController {
         return encyclopediaService.listAll();
     }
 
+    // 获取单个百科条目
+    @GetMapping("/encyclopedias/{id}")
+    public PartyEncyclopedia getEncyclopedia(@PathVariable Integer id) {
+        return encyclopediaService.getOrThrow(Long.valueOf(id));
+    }
+
     // 创建百科条目
     @PostMapping("/encyclopedias")
     public PartyEncyclopedia createEncyclopedia(@RequestBody PartyEncyclopedia encyclopedia) {
-        return encyclopediaService.save(encyclopedia);
+        return encyclopediaService.create(encyclopedia);
     }
 
     // 更新百科条目
@@ -159,6 +165,6 @@ public class AdminController {
     // 删除百科条目
     @DeleteMapping("/encyclopedias/{id}")
     public void deleteEncyclopedia(@PathVariable Integer id) {
-        encyclopediaService.deleteById(id);
+        encyclopediaService.delete(Long.valueOf(id));
     }
 }
