@@ -2,9 +2,56 @@ CREATE DATABASE IF NOT EXISTS red_culture
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
 USE red_culture;
-INSERT INTO red_scenic_spot (name, location, description, image_url)
-SELECT '井冈山', '江西省', '这是一个革命圣地', NULL
-    WHERE NOT EXISTS (
-    SELECT 1 FROM red_scenic_spot
-    WHERE name = '井冈山' AND location = '江西省'
-);
+-- 1. 先清空现有数据
+TRUNCATE TABLE users;
+TRUNCATE TABLE red_hero;
+TRUNCATE TABLE party_encyclopedia;
+TRUNCATE TABLE red_scenic_spot;
+TRUNCATE TABLE red_story;
+TRUNCATE TABLE red_explore;
+
+-- 2. 初始化用户数据（管理员和普通用户）
+INSERT INTO users (username, password, role) VALUES
+                                                 ('admin', '123456', 'ADMIN'),
+                                                 ('user1', '123123', 'USER');
+
+
+-- 3. 初始化红色英雄数据
+INSERT INTO red_hero (name, description, image_url) VALUES
+                                                        ('毛泽东', '伟大的马克思主义者，无产阶级革命家、战略家和理论家，中国共产党、中国人民解放军和中华人民共和国的主要创立者。', '/images/hero/maozedong.jpg'),
+                                                        ('周恩来', '伟大的无产阶级革命家、政治家、军事家、外交家，党和国家主要领导人之一，中国人民解放军主要创建人之一。', '/images/hero/zhouenlai.jpg'),
+                                                        ('邓小平', '中国社会主义改革开放和现代化建设的总设计师，中国特色社会主义道路的开创者。', '/images/hero/dengxiaoping.jpg'),
+                                                        ('朱德', '伟大的无产阶级革命家、政治家、军事家，中国人民解放军的主要缔造者之一，中华人民共和国的开国元勋。', '/images/hero/zhude.jpg'),
+                                                        ('彭德怀', '中华人民共和国开国元帅，无产阶级革命家、军事家，中国人民解放军的创建人和领导人之一。', '/images/hero/pengdehuai.jpg');
+
+-- 4. 初始化党史百科数据
+INSERT INTO party_encyclopedia (title, content, image_url) VALUES
+                                                               ('五四运动', '1919年5月4日发生在北京的一场以青年学生为主，广大群众、市民、工商人士等阶层共同参与的爱国运动，是中国人民彻底的反对帝国主义、封建主义的爱国运动。', '/images/encyclopedia/may4th.jpg'),
+                                                               ('中国共产党成立', '1921年7月23日，中国共产党第一次全国代表大会在上海召开，宣告了中国共产党的正式成立，这是中国历史上开天辟地的大事变。', '/images/encyclopedia/founding.jpg'),
+                                                               ('南昌起义', '1927年8月1日，中国共产党领导部分国民革命军在江西省南昌市举行的武装起义，打响了武装反抗国民党反动派的第一枪。', '/images/encyclopedia/nanchang.jpg'),
+                                                               ('长征', '1934年10月至1936年10月，中国工农红军主力从长江以南各革命根据地向陕甘革命根据地进行的战略转移。', '/images/encyclopedia/longmarch.jpg'),
+                                                               ('开国大典', '1949年10月1日，在北京天安门广场举行的中华人民共和国中央人民政府成立典礼，毛泽东主席向全世界庄严宣告中华人民共和国成立。', '/images/encyclopedia/founding_ceremony.jpg');
+
+-- 5. 初始化红色圣地数据
+INSERT INTO red_scenic_spot (name, description, location, image_url) VALUES
+                                                                         ('延安革命纪念馆', '位于陕西省延安市，全面展示了中共中央在延安十三年的革命历史，是重要的爱国主义教育基地。', '陕西省延安市', '/images/scenic/yanan.jpg'),
+                                                                         ('井冈山革命根据地', '中国第一个农村革命根据地，被誉为"中国革命的摇篮"，是中国工农红军创建的地方。', '江西省井冈山市', '/images/scenic/jinggangshan.jpg'),
+                                                                         ('西柏坡纪念馆', '位于河北省平山县，是解放战争时期中共中央所在地，新中国从这里走来。', '河北省平山县', '/images/scenic/xibaipo.jpg'),
+                                                                         ('遵义会议会址', '1935年1月中共中央政治局在贵州遵义召开的扩大会议会址，这次会议在极端危急的历史关头挽救了党和红军。', '贵州省遵义市', '/images/scenic/zunyi.jpg'),
+                                                                         ('中国人民抗日战争纪念馆', '位于北京卢沟桥畔，全面展示了中国人民抗日战争的伟大历史。', '北京市丰台区', '/images/scenic/war_museum.jpg');
+
+-- 6. 初始化红色故事数据
+INSERT INTO red_story (title, content, source, created_at) VALUES
+                                                               ('半条被子的故事', '长征途中，3名女红军借宿湖南汝城县沙洲村徐解秀老人家中，临走时，把自己仅有的一床被子剪下一半给老人留下了。老人说，什么是共产党？共产党就是自己有一条被子，也要剪下半条给老百姓的人。', '《人民日报》', '2023-10-01 09:00:00'),
+                                                               ('金色的鱼钩', '长征过草地途中，一位炊事班长为了照顾三个生病的小战士，用缝衣针做成鱼钩钓鱼给他们补充营养，自己却因饥饿和劳累牺牲在草地边缘。', '小学语文课文', '2023-10-02 10:30:00'),
+                                                               ('董存瑞炸碉堡', '1948年5月25日，在解放隆化的战斗中，董存瑞手托炸药包，炸毁敌人碉堡，英勇牺牲，年仅19岁。', '《解放军报》', '2023-10-03 14:15:00'),
+                                                               ('狼牙山五壮士', '1941年9月25日，八路军晋察冀军区五位战士为掩护主力部队和群众转移，将日伪军引向狼牙山绝境，最后宁死不屈，跳下悬崖。', '历史资料', '2023-10-04 16:45:00'),
+                                                               ('小英雄雨来', '抗日战争时期，晋察冀边区北部的一个小村庄，少年雨来为了掩护交通员李大叔，机智勇敢地与日本鬼子周旋的故事。', '小说《小英雄雨来》', '2023-10-05 11:20:00');
+
+-- 7. 初始化红色探索数据
+INSERT INTO red_explore (title, content, date, location) VALUES
+                                                             ('重走长征路——湘江战役遗址探访', '走访广西兴安、全州等地，探寻湘江战役的历史遗迹，缅怀革命先烈的英勇事迹。', '2023-09-15', '广西壮族自治区'),
+                                                             ('探访大别山革命老区', '深入大别山革命老区，了解刘邓大军千里跃进大别山的历史，感受老区人民的新生活。', '2023-09-20', '湖北、河南、安徽交界'),
+                                                             ('追寻红色记忆——上海一大会址参观', '参观中共一大会址纪念馆，了解中国共产党诞生的伟大历程。', '2023-09-25', '上海市黄浦区'),
+                                                             ('延安精神学习之旅', '在延安参观革命旧址，学习延安精神，感受艰苦奋斗的革命传统。', '2023-10-05', '陕西省延安市'),
+                                                             ('抗美援朝纪念馆参观', '参观丹东抗美援朝纪念馆，了解中国人民志愿军的英勇事迹和伟大抗美援朝精神。', '2023-10-10', '辽宁省丹东市');
