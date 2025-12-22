@@ -2,6 +2,7 @@ package com.redculture.jxredculturedisplay.controller;
 
 import com.redculture.jxredculturedisplay.model.*;
 import com.redculture.jxredculturedisplay.service.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -159,6 +160,15 @@ public class AdminController {
     // 删除百科条目
     @DeleteMapping("/encyclopedias/{id}")
     public void deleteEncyclopedia(@PathVariable Integer id) {
-        encyclopediaService.deleteById(id);
+        encyclopediaService.deleteById((id));
+    }
+    public ResponseEntity<PartyEncyclopedia> getEncyclopediaById(@PathVariable Integer id) {
+        PartyEncyclopedia encyclopedia = encyclopediaService.findById(Long.valueOf(id));
+
+        if (encyclopedia == null) {
+            return ResponseEntity.notFound().build(); // 返回 404
+        }
+
+        return ResponseEntity.ok(encyclopedia); // 返回 200 和百科数据
     }
 }

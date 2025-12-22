@@ -19,13 +19,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // 切换图标
         const icon = this.querySelector('i');
         if (type === 'text') {
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-            this.setAttribute('title', '隐藏密码');
-        } else {
             icon.classList.remove('fa-eye-slash');
             icon.classList.add('fa-eye');
             this.setAttribute('title', '显示密码');
+        } else {
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+            this.setAttribute('title', '隐藏密码');
         }
     });
 
@@ -168,84 +168,58 @@ document.addEventListener('DOMContentLoaded', function() {
         // 显示加载状态
         const submitBtn = loginForm.querySelector('.btn-submit');
         const originalText = submitBtn.innerHTML;
-        const originalBg = submitBtn.style.background;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 登录中...';
         submitBtn.disabled = true;
 
-        // 模拟API请求延迟
-        setTimeout(() => {
-            // 这里应该是实际的登录API调用
-            // 模拟登录逻辑（实际应用中应从服务器验证）
-            let loginSuccess = false;
+        // 准备请求数据
+        const requestData = {
+            username: username,
+            password: password,
+            rememberMe: rememberMeCheckbox.checked
+        };
 
-            // 简单模拟验证（实际应用中应在服务器端完成）
-            if (username && password.length >= 8) {
-                // 模拟几种有效的测试账户
-                const testAccounts = [
-                    { username: 'admin', password: 'admin123' },
-                    { username: 'user', password: 'password123' },
-                    { username: 'test', password: 'test12345' },
-                    { username: '13800138000', password: 'RedCulture2023' }
-                ];
+        // 发送POST请求到后端API
+        fetch('http://localhost:8080/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 登录成功
+                    submitBtn.innerHTML = '<i class="fas fa-check"></i> 登录成功';
+                    submitBtn.style.background = 'linear-gradient(to right, #27ae60, #219653)';
 
-                loginSuccess = testAccounts.some(account =>
-                    account.username === username && account.password === password
-                );
+                    // 保存token到本地存储
+                    localStorage.setItem('authToken', data.data.token);
+                    localStorage.setItem('userInfo', JSON.stringify(data.data.user));
 
-                // 如果测试账户不匹配，检查是否为常见格式
-                if (!loginSuccess) {
-                    // 模拟其他验证逻辑
-                    loginSuccess = Math.random() > 0.3; // 70%的成功率用于演示
-                }
-            }
+                    // 显示成功消息
+                    showSuccessMessage(`欢迎回来，${data.data.user.username}！`);
 
-            if (loginSuccess) {
-                // 登录成功
-                submitBtn.innerHTML = '<i class="fas fa-check"></i> 登录成功';
-                submitBtn.style.background = 'linear-gradient(to right, #27ae60, #219653)';
-
-                // 显示成功消息
-                showSuccessMessage(`欢迎回来，${username}！`);
-
-                // 模拟跳转延迟
-                setTimeout(() => {
-                    // 在实际应用中，这里应该跳转到首页或用户仪表板
-                    // window.location.href = 'dashboard.html';
-
-                    // 演示：重置表单并显示成功提示
+                    // 2秒后跳转到首页
+                    setTimeout(() => {
+                        window.location.href = '../index.html';
+                    }, 2000);
+                } else {
+                    // 登录失败
                     submitBtn.innerHTML = originalText;
-                    submitBtn.style.background = originalBg;
                     submitBtn.disabled = false;
 
-                    // 在实际登录成功后，可以在这里设置用户会话
-                    sessionStorage.setItem('loggedInUser', username);
-                    sessionStorage.setItem('loginTime', new Date().toISOString());
-
-                    // 跳转到首页（模拟）
-                    alert(`登录成功！欢迎访问江西红色文化信息网。\n用户名: ${username}`);
-                    loginForm.reset();
-                    loadSavedCredentials(); // 重新加载保存的凭据
-
-                }, 1500);
-            } else {
-                // 登录失败
+                    // 显示错误信息
+                    showError(passwordInput, data.message);
+                }
+            })
+            .catch(error => {
+                // 网络错误
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
-                showError(passwordInput, '用户名或密码错误，请重试');
-
-                // 增加错误计数（在实际应用中可能用于防止暴力破解）
-                const errorCount = parseInt(localStorage.getItem('loginErrorCount') || '0') + 1;
-                localStorage.setItem('loginErrorCount', errorCount.toString());
-
-                if (errorCount >= 3) {
-                    showError(passwordInput, '密码错误次数过多，请稍后再试或找回密码');
-                    submitBtn.disabled = true;
-                    setTimeout(() => {
-                        submitBtn.disabled = false;
-                    }, 30000); // 30秒后重新启用
-                }
-            }
-        }, 1500);
+                showError(passwordInput, '网络错误，请检查网络连接');
+                console.error('登录错误:', error);
+            });
     }
 
     // 显示成功消息
