@@ -39,7 +39,7 @@ async function loadScenicSpots() {
                 <td>${spot.name}</td>
                 <td>${spot.location}</td>
                 <td>${spot.description || "暂无简介"}</td>
-                <td><img src="${spot.imageUrl || '#'}" alt="圣地图片" width="50"></td>
+                <td><img src="${spot.imageUrl || '#'}" alt="圣地图片" width="50" onclick="previewImage('${spot.imageUrl || '#'}', '${spot.name}')"></td>
                 <td>
                     <button onclick="editScenic(${spot.id})">编辑</button>
                     <button onclick="deleteScenic(${spot.id})">删除</button>
@@ -252,3 +252,58 @@ window.saveScenic = saveScenic;
 window.editScenic = editScenic;
 window.deleteScenic = deleteScenic;
 window.searchScenic = searchScenic;
+
+// ============== 图片预览功能 ==============
+function previewImage(imageUrl, imageName) {
+    // 如果图片URL无效，不显示预览
+    if (!imageUrl || imageUrl === '#') {
+        alert('暂无图片');
+        return;
+    }
+
+    // 创建模态框元素（如果还不存在）
+    let modal = document.getElementById('imagePreviewModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'imagePreviewModal';
+        modal.className = 'image-preview-modal';
+        modal.innerHTML = `
+            <div class="image-preview-content">
+                <button class="image-preview-close" onclick="closeImagePreview()">&times;</button>
+                <img id="previewImage" src="" alt="预览图片">
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        // 点击模态框背景关闭预览
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeImagePreview();
+            }
+        });
+
+        // ESC键关闭预览
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeImagePreview();
+            }
+        });
+    }
+
+    // 设置图片源并显示模态框
+    const previewImg = document.getElementById('previewImage');
+    previewImg.src = imageUrl;
+    previewImg.alt = imageName || '圣地图片';
+    modal.classList.add('active');
+}
+
+function closeImagePreview() {
+    const modal = document.getElementById('imagePreviewModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+// 导出图片预览函数
+window.previewImage = previewImage;
+window.closeImagePreview = closeImagePreview;
