@@ -1,7 +1,9 @@
 package com.redculture.jxredculturedisplay.controller;
 
+import com.redculture.jxredculturedisplay.model.PartyEncyclopedia;
 import com.redculture.jxredculturedisplay.service.PartyEncyclopediaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -46,5 +48,15 @@ public class EncyclopediaController {
 
         // 【关键】返回新的文件名 entry.html
         return "encyclopedia/entry";
+    }
+    // 添加这个 GET 方法！！！
+    @GetMapping("/encyclopedias/{id}")
+    public ResponseEntity<PartyEncyclopedia> getEncyclopediaById(@PathVariable Integer id) {
+        try {
+            PartyEncyclopedia encyclopedia = service.getOrThrow(Long.valueOf(id));
+            return ResponseEntity.ok(encyclopedia);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build(); // 返回 404
+        }
     }
 }

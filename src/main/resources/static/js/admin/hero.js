@@ -84,11 +84,12 @@ async function saveHero() {
 
     const id = document.getElementById("heroId").value;
     const name = document.getElementById("hero-name").value;
-    const location = document.getElementById("hero-location").value;
+    // const location = document.getElementById("hero-location").value;
     const description = document.getElementById("hero-description").value;
     const imageFile = document.getElementById("hero-image").files[0];
 
-    if (!name || !location) {
+    // if (!name || !location) {
+    if (!name){
         alert("名称和地点为必填项！");
         return;
     }
@@ -96,7 +97,7 @@ async function saveHero() {
     // 创建英雄数据对象
     const heroData = {
         name: name,
-        location: location,
+        // location: location,
         description: description || "",
         // 注意：图片上传需要特殊处理，这里先处理文本数据
         // 如果需要图片上传，需要另外实现文件上传接口
@@ -194,7 +195,7 @@ async function editHero(id) {
         // 填充表单
         document.getElementById("heroId").value = hero.id;
         document.getElementById("hero-name").value = hero.name || "";
-        document.getElementById("hero-location").value = hero.location || "";
+        // document.getElementById("hero-location").value = hero.location || "";
         document.getElementById("hero-description").value = hero.description || "";
 
         // 注意：图片字段需要特殊处理，这里只是文本字段
