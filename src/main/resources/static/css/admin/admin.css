@@ -134,25 +134,26 @@ button:hover {
 
 .image-preview-close {
     position: absolute;
-    top: -40px;
-    right: 0;
+    top: 10px;
+    right: 10px;
     color: white;
     font-size: 36px;
     font-weight: bold;
     cursor: pointer;
-    background: none;
+    background: rgba(0, 0, 0, 0.5);
     border: none;
     padding: 0;
     width: 40px;
     height: 40px;
     line-height: 40px;
     text-align: center;
-    transition: color 0.3s;
+    transition: all 0.3s;
+    border-radius: 50%;
 }
 
 .image-preview-close:hover {
     color: #ff4444;
-    background: none;
+    background: rgba(0, 0, 0, 0.8);
 }
 
 /* 图片缩略图样式 */

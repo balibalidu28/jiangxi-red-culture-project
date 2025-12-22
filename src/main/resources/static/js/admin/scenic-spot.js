@@ -263,9 +263,12 @@ window.deleteScenic = deleteScenic;
 window.searchScenic = searchScenic;
 
 // ============== 图片预览功能 ==============
+// Constants
+const NO_IMAGE_PLACEHOLDER = '#';
+
 function previewImage(imageUrl, imageName) {
     // 如果图片URL无效，不显示预览
-    if (!imageUrl || imageUrl === '#') {
+    if (!imageUrl || imageUrl === NO_IMAGE_PLACEHOLDER) {
         alert('暂无图片');
         return;
     }
@@ -301,6 +304,11 @@ function previewImage(imageUrl, imageName) {
 
     // 设置图片源并显示模态框
     const previewImg = document.getElementById('previewImage');
+    
+    // Clear previous error handler
+    previewImg.onerror = null;
+    
+    // Set new image source
     previewImg.src = imageUrl;
     previewImg.alt = imageName || '圣地图片';
     
