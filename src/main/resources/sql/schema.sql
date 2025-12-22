@@ -46,11 +46,11 @@ CREATE TABLE IF NOT EXISTS red_explore (
     location VARCHAR(120)
     );
 
--- 6. 用户表
-DROP TABLE IF EXISTS users;
-CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(60) NOT NULL UNIQUE,
-    password VARCHAR(120) NOT NULL,
-    role VARCHAR(20) NOT NULL
-    );
+# -- 6. 用户表
+# DROP TABLE IF EXISTS users;
+# CREATE TABLE IF NOT EXISTS users (
+#     id INT AUTO_INCREMENT PRIMARY KEY,
+#     username VARCHAR(60) NOT NULL UNIQUE,
+#     password VARCHAR(120) NOT NULL,
+#     role VARCHAR(20) NOT NULL
+#     );
