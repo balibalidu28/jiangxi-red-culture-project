@@ -14,8 +14,13 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // 匹配所有路径
-                        .allowedOrigins("http://localhost:63342") // 允许的前端来源
-                        .allowedMethods("GET", "POST", "PUT", "DELETE") // 允许的请求方法
+                        .allowedOrigins("http://localhost:63342",
+                                "http://localhost:3000",   // React/Vitehyr
+                                "http://localhost:8080",   // 后端自身或另一个服务hyr
+                                "http://localhost:5173",   // Vitehyr
+                                "http://localhost:4200"    // Angularhyr
+                        )// 允许的前端来源
+                        .allowedMethods("GET", "POST", "PUT", "DELETE","OPTIONS") // 允许的请求方法hyr
                         .allowedHeaders("*") // 允许的请求头
                         .allowCredentials(true) // 是否允许携带 Cookie 认证信息
                         .maxAge(3600); // 预检请求的缓存时间（单位：秒）

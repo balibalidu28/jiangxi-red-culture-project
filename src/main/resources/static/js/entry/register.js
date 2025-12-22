@@ -106,13 +106,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // 切换图标
         const icon = toggleButton.querySelector('i');
         if (type === 'text') {
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-            toggleButton.setAttribute('title', '隐藏密码');
-        } else {
             icon.classList.remove('fa-eye-slash');
             icon.classList.add('fa-eye');
             toggleButton.setAttribute('title', '显示密码');
+        } else {
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+            toggleButton.setAttribute('title', '隐藏密码');
         }
     }
 
@@ -316,94 +316,64 @@ document.addEventListener('DOMContentLoaded', function() {
         // 显示加载状态
         const submitBtn = registerForm.querySelector('.btn-submit');
         const originalText = submitBtn.innerHTML;
-        const originalBg = submitBtn.style.background;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 注册中...';
         submitBtn.disabled = true;
 
-        // 模拟API请求延迟
-        setTimeout(() => {
-            // 这里应该是实际的注册API调用
-            // 模拟检查用户名和手机号是否已存在
-            const existingUsers = JSON.parse(localStorage.getItem('redCultureUsers') || '[]');
+        // 准备请求数据
+        const requestData = {
+            phone: phone,
+            username: username,
+            password: password,
+            confirmPassword: document.getElementById('confirmPassword').value.trim(),
+            agreeTerms: true
+        };
 
-            let registrationSuccess = true;
-            let errorMessage = '';
+        // 发送POST请求到后端API
+        fetch('/api/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 注册成功
+                    submitBtn.innerHTML = '<i class="fas fa-check"></i> 注册成功';
+                    submitBtn.style.background = 'linear-gradient(to right, #27ae60, #219653)';
 
-            // 检查手机号是否已注册
-            if (existingUsers.some(user => user.phone === phone)) {
-                registrationSuccess = false;
-                errorMessage = '该手机号已被注册';
-                showError(phoneInput, errorMessage);
-            }
+                    // 显示成功消息
+                    showSuccessMessage(`注册成功！欢迎 ${username} 加入江西红色文化信息网。`);
 
-            // 检查用户名是否已存在
-            if (registrationSuccess && existingUsers.some(user => user.username === username)) {
-                registrationSuccess = false;
-                errorMessage = '该用户名已被使用';
-                showError(usernameInput, errorMessage);
-            }
-
-            // 模拟注册成功率（如果不是由于重复注册失败）
-            if (registrationSuccess) {
-                registrationSuccess = Math.random() > 0.2; // 80%的成功率用于演示
-                if (!registrationSuccess) {
-                    errorMessage = '注册失败，请稍后重试';
-                }
-            }
-
-            if (registrationSuccess) {
-                // 注册成功
-                submitBtn.innerHTML = '<i class="fas fa-check"></i> 注册成功';
-                submitBtn.style.background = 'linear-gradient(to right, #27ae60, #219653)';
-
-                // 模拟保存用户数据到本地存储（实际应用中应在服务器端完成）
-                const newUser = {
-                    phone: phone,
-                    username: username,
-                    password: password, // 注意：实际应用中密码应该在服务器端哈希加密
-                    registerTime: new Date().toISOString()
-                };
-
-                existingUsers.push(newUser);
-                localStorage.setItem('redCultureUsers', JSON.stringify(existingUsers));
-
-                // 显示成功消息
-                showSuccessMessage(`注册成功！欢迎 ${username} 加入江西红色文化信息网。`);
-
-                // 模拟跳转延迟
-                setTimeout(() => {
-                    // 在实际应用中，这里可能自动登录或跳转到登录页面
-                    alert(`注册成功！\n用户名: ${username}\n手机号: ${phone}\n\n即将跳转到登录页面...`);
-
-                    // 重置表单
-                    registerForm.reset();
-                    resetPasswordStrength();
-
-                    // 恢复按钮状态
+                    // 2秒后跳转到登录页面
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    // 注册失败
                     submitBtn.innerHTML = originalText;
-                    submitBtn.style.background = originalBg;
                     submitBtn.disabled = false;
 
-                    // 跳转到登录页面（模拟）
-                    // window.location.href = 'login.html';
-
-                }, 2000);
-            } else {
-                // 注册失败
+                    // 显示错误信息
+                    if (data.message.includes('手机号')) {
+                        showError(phoneInput, data.message);
+                    } else if (data.message.includes('用户名')) {
+                        showError(usernameInput, data.message);
+                    } else if (data.message.includes('密码')) {
+                        showError(passwordInput, data.message);
+                    } else {
+                        showError(passwordInput, data.message);
+                    }
+                }
+            })
+            .catch(error => {
+                // 网络错误
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
-
-                if (errorMessage) {
-                    // 如果已经有特定错误信息显示，不再显示通用错误
-                    if (!phoneInput.parentNode.querySelector('.error-message') &&
-                        !usernameInput.parentNode.querySelector('.error-message')) {
-                        showError(passwordInput, errorMessage);
-                    }
-                } else {
-                    showError(passwordInput, '注册失败，请稍后重试');
-                }
-            }
-        }, 2000);
+                showError(passwordInput, '网络错误，请检查网络连接');
+                console.error('注册错误:', error);
+            });
     }
 
     // 显示成功消息
