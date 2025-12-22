@@ -39,12 +39,21 @@ async function loadScenicSpots() {
                 <td>${spot.name}</td>
                 <td>${spot.location}</td>
                 <td>${spot.description || "暂无简介"}</td>
-                <td><img src="${spot.imageUrl || '#'}" alt="圣地图片" width="50" onclick="previewImage('${spot.imageUrl || '#'}', '${spot.name}')"></td>
+                <td><img src="${spot.imageUrl || '#'}" alt="圣地图片" width="50" class="scenic-thumbnail"></td>
                 <td>
                     <button onclick="editScenic(${spot.id})">编辑</button>
                     <button onclick="deleteScenic(${spot.id})">删除</button>
                 </td>
             `;
+            
+            // Add click event listener for image preview (safer than inline onclick)
+            const img = row.querySelector('.scenic-thumbnail');
+            if (img) {
+                img.addEventListener('click', function() {
+                    previewImage(spot.imageUrl || '#', spot.name);
+                });
+            }
+            
             scenicTableBody.appendChild(row);
         });
 
@@ -269,11 +278,15 @@ function previewImage(imageUrl, imageName) {
         modal.className = 'image-preview-modal';
         modal.innerHTML = `
             <div class="image-preview-content">
-                <button class="image-preview-close" onclick="closeImagePreview()">&times;</button>
+                <button class="image-preview-close">&times;</button>
                 <img id="previewImage" src="" alt="预览图片">
             </div>
         `;
         document.body.appendChild(modal);
+
+        // Bind close button click event
+        const closeBtn = modal.querySelector('.image-preview-close');
+        closeBtn.addEventListener('click', closeImagePreview);
 
         // 点击模态框背景关闭预览
         modal.addEventListener('click', function(e) {
@@ -282,18 +295,21 @@ function previewImage(imageUrl, imageName) {
             }
         });
 
-        // ESC键关闭预览
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeImagePreview();
-            }
-        });
+        // ESC键关闭预览 (only add once when modal is created)
+        document.addEventListener('keydown', handleEscapeKey);
     }
 
     // 设置图片源并显示模态框
     const previewImg = document.getElementById('previewImage');
     previewImg.src = imageUrl;
     previewImg.alt = imageName || '圣地图片';
+    
+    // Add error handling for image loading
+    previewImg.onerror = function() {
+        closeImagePreview();
+        alert('图片加载失败，请检查图片链接是否有效');
+    };
+    
     modal.classList.add('active');
 }
 
@@ -301,6 +317,13 @@ function closeImagePreview() {
     const modal = document.getElementById('imagePreviewModal');
     if (modal) {
         modal.classList.remove('active');
+    }
+}
+
+// Handle ESC key press
+function handleEscapeKey(e) {
+    if (e.key === 'Escape') {
+        closeImagePreview();
     }
 }
 

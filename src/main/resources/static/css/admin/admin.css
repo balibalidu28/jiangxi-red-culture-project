@@ -156,13 +156,13 @@ button:hover {
 }
 
 /* 图片缩略图样式 */
-table td img {
+#scenicTable td img.scenic-thumbnail {
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
     border-radius: 4px;
 }
 
-table td img:hover {
+#scenicTable td img.scenic-thumbnail:hover {
     transform: scale(1.1);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
