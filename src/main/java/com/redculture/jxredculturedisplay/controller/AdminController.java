@@ -160,7 +160,7 @@ public class AdminController {
     // 删除百科条目
     @DeleteMapping("/encyclopedias/{id}")
     public void deleteEncyclopedia(@PathVariable Integer id) {
-        encyclopediaService.deleteById(Long.valueOf(id));
+        encyclopediaService.deleteById((id));
     }
     public ResponseEntity<PartyEncyclopedia> getEncyclopediaById(@PathVariable Integer id) {
         PartyEncyclopedia encyclopedia = encyclopediaService.findById(Long.valueOf(id));

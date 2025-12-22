@@ -37,4 +37,10 @@ public class PartyEncyclopediaService {
     public PartyEncyclopedia save(PartyEncyclopedia e) { return repository.save(e); }
     public PartyEncyclopedia update(Long id, PartyEncyclopedia e) { return repository.save(e); } // 简化写
     public void deleteById(Integer id) { repository.deleteById(id); }
+
+    public PartyEncyclopedia findById(Long id) {
+        // 使用 JPA 的 findById 方法
+        return repository.findById(Math.toIntExact(Long.valueOf(id)))
+                .orElseThrow(() -> new RuntimeException("百科条目不存在，ID: " + id));
+    }
 }
