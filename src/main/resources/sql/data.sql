@@ -10,10 +10,10 @@ TRUNCATE TABLE red_scenic_spot;
 TRUNCATE TABLE red_story;
 TRUNCATE TABLE red_explore;
 
--- 2. 初始化用户数据（管理员和普通用户）
-INSERT INTO users (username, password, role) VALUES
-                                                 ('admin', '123456', 'ADMIN'),
-                                                 ('user1', '123123', 'USER');
+# -- 2. 初始化用户数据（管理员和普通用户）
+# INSERT INTO users (username, password, role) VALUES
+#                                                  ('admin', '123456', 'ADMIN'),
+#                                                  ('user1', '123123', 'USER');
 
 
 -- 3. 初始化红色英雄数据

@@ -15,6 +15,7 @@
         <li data-target="scenicspots">圣地管理</li>
         <li data-target="explore">活动管理</li>
         <li data-target="encyclopedias">百科管理</li>
+        <li data-target="user">用户管理</li>
     </ul>
 </div>
 
@@ -23,6 +24,29 @@
     <section id="heroes" class="module-section active">
         <h2>英雄管理</h2>
         <button onclick="showHeroForm()">新增英雄</button>
+        <!-- 新增/编辑英雄表单 -->
+        <div id="heroFormContainer" class="form-container" style="display: none;">
+            <h2 id="heroFormTitle">新增英雄</h2>
+            <form id="heroForm">
+                <!-- 添加这行：隐藏的ID字段 -->
+                <input type="hidden" id="heroId">
+
+                <label for="hero-name">名称：</label>
+                <input type="text" id="hero-name" placeholder="请输入英雄名称" required>
+
+                <!--                <label for="hero-location">地点：</label>-->
+                <!--                <input type="text" id="hero-location" placeholder="请输入英雄地点" required>-->
+
+                <label for="hero-description">简介：</label>
+                <textarea id="hero-description" placeholder="请输入英雄简介"></textarea>
+
+                <label for="hero-image">上传图片：</label>
+                <input type="file" id="hero-image" accept="image/*">
+
+                <button type="button" onclick="saveHero()">保存</button>
+                <button type="button" onclick="hideHeroForm()">取消</button>
+            </form>
+        </div>
         <table>
             <thead>
             <tr>
@@ -36,29 +60,7 @@
             <!-- 动态填充 -->
             </tbody>
         </table>
-        <!-- 新增/编辑英雄表单 -->
-        <div id="heroFormContainer" class="form-container" style="display: none;">
-            <h2 id="heroFormTitle">新增英雄</h2>
-            <form id="heroForm">
-                <!-- 添加这行：隐藏的ID字段 -->
-                <input type="hidden" id="heroId">
 
-                <label for="hero-name">名称：</label>
-                <input type="text" id="hero-name" placeholder="请输入英雄名称" required>
-
-                <label for="hero-location">地点：</label>
-                <input type="text" id="hero-location" placeholder="请输入英雄地点" required>
-
-                <label for="hero-description">简介：</label>
-                <textarea id="hero-description" placeholder="请输入英雄简介"></textarea>
-
-                <label for="hero-image">上传图片：</label>
-                <input type="file" id="hero-image" accept="image/*">
-
-                <button type="button" onclick="saveHero()">保存</button>
-                <button type="button" onclick="hideHeroForm()">取消</button>
-            </form>
-        </div>
     </section>
 
     <!-- 故事管理模块 -->
@@ -106,23 +108,6 @@
     <section id="scenicspots" class="module-section">
         <h2>圣地管理</h2>
         <button onclick="showScenicForm()">新增圣地</button> <!-- 点击按钮显示表单 -->
-
-        <table id="scenicTable">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>名称</th>
-                <th>地点</th>
-                <th>简介</th>
-                <th>图片</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            <!-- 动态填充 -->
-            </tbody>
-        </table>
-
         <!-- 新增/编辑圣地表单 -->
         <div id="scenicFormContainer" class="form-container" style="display: none;">
             <h2 id="scenicFormTitle">新增圣地</h2>
@@ -146,19 +131,14 @@
                 <button type="button" onclick="hideScenicForm()">取消</button>
             </form>
         </div>
-    </section>
-
-    <!-- 活动管理模块 -->
-    <section id="explore" class="module-section">
-        <h2>活动管理</h2>
-        <button onclick="showExploreForm()">新增活动</button>
-        <table>
+        <table id="scenicTable">
             <thead>
             <tr>
                 <th>ID</th>
-                <th>活动名称</th>
-                <th>日期</th>
+                <th>名称</th>
                 <th>地点</th>
+                <th>简介</th>
+                <th>图片</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -166,6 +146,12 @@
             <!-- 动态填充 -->
             </tbody>
         </table>
+    </section>
+
+    <!-- 活动管理模块 -->
+    <section id="explore" class="module-section">
+        <h2>活动管理</h2>
+        <button onclick="showExploreForm()">新增活动</button>
         <!-- 新增/编辑活动表单 -->
         <div id="exploreFormContainer" class="form-container" style="display: none;">
             <h2 id="exploreFormTitle">新增活动</h2>
@@ -186,19 +172,13 @@
                 <button type="button" onclick="hideExploreForm()">取消</button>
             </form>
         </div>
-    </section>
-
-    <!-- 百科管理模块 -->
-    <section id="encyclopedias" class="module-section">
-        <h2>百科管理</h2>
-        <button onclick="showEncyclopediaForm()">新增百科</button>
         <table>
             <thead>
             <tr>
                 <th>ID</th>
-                <th>词条标题</th>
-                <th>内容</th>
-                <th>图片</th>
+                <th>活动名称</th>
+                <th>日期</th>
+                <th>地点</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -206,6 +186,13 @@
             <!-- 动态填充 -->
             </tbody>
         </table>
+
+    </section>
+
+    <!-- 百科管理模块 -->
+    <section id="encyclopedias" class="module-section">
+        <h2>百科管理</h2>
+        <button onclick="showEncyclopediaForm()">新增百科</button>
         <!-- 新增/编辑百科表单 -->
         <div id="encyclopediaFormContainer" class="form-container" style="display: none;">
             <h2 id="encyclopediaFormTitle">新增百科</h2>
@@ -226,6 +213,62 @@
                 <button type="button" onclick="hideEncyclopediaForm()">取消</button>
             </form>
         </div>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>词条标题</th>
+                <th>内容</th>
+                <th>图片</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 动态填充 -->
+            </tbody>
+        </table>
+
+    </section>
+    <!-- 用户管理模块 -->
+    <section id="user" class="module-section">
+        <h2>用户管理</h2>
+        <button onclick="showUserForm()">新增用户</button>
+        <!-- 新增/编辑用户表单 -->
+        <div id="userFormContainer" class="form-container" style="display: none;">
+            <h2 id="userFormTitle">新增用户</h2>
+            <form id="userForm">
+                <!-- 添加这行：隐藏的ID字段 -->
+                <input type="hidden" id="userId">
+
+                <label for="user-name">用户名称：</label>
+                <input type="text" id="user-name" placeholder="请输入用户名称" required>
+
+                <label for="user-location">地点：</label>
+                <input type="text" id="user-location" placeholder="请输入用户地点" required>
+
+                <label for="user-date">日期：</label>
+                <textarea id="user-date" placeholder="请输入用户日期"></textarea>
+
+                <button type="button" onclick="saveUser()">保存</button>
+                <button type="button" onclick="hideUserForm()">取消</button>
+            </form>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>用户名称</th>
+                <th>手机号</th>
+                <th>加密后的密码</th>
+                <th>用户角色</th>
+                <th>创建时间</th>
+                <th>更新时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 动态填充 -->
+            </tbody>
+        </table>
     </section>
 </div>
 
@@ -234,8 +277,6 @@
 <script src="/static/js/admin/scenic-spot.js"></script>
 <script src="/static/js/admin/encyclopedia.js"></script>
 <script src="/static/js/admin/explore.js"></script>
-<script src="/static/js/admin/story.js"></script>
-
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         loadScenicSpots();

@@ -134,4 +134,10 @@ public class PartyEncyclopediaService {
         // 删除
         repository.deleteById(id);
     }
+
+    public PartyEncyclopedia findById(Long id) {
+        // 使用 JPA 的 findById 方法
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("百科条目不存在，ID: " + id));
+    }
 }
