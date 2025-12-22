@@ -39,12 +39,21 @@ async function loadScenicSpots() {
                 <td>${spot.name}</td>
                 <td>${spot.location}</td>
                 <td>${spot.description || "暂无简介"}</td>
-                <td><img src="${spot.imageUrl || '#'}" alt="圣地图片" width="50"></td>
+                <td><img src="${spot.imageUrl || '#'}" alt="圣地图片" width="50" class="scenic-thumbnail"></td>
                 <td>
                     <button onclick="editScenic(${spot.id})">编辑</button>
                     <button onclick="deleteScenic(${spot.id})">删除</button>
                 </td>
             `;
+            
+            // Add click event listener for image preview (safer than inline onclick)
+            const img = row.querySelector('.scenic-thumbnail');
+            if (img) {
+                img.addEventListener('click', function() {
+                    previewImage(spot.imageUrl || '#', spot.name);
+                });
+            }
+            
             scenicTableBody.appendChild(row);
         });
 
@@ -252,3 +261,80 @@ window.saveScenic = saveScenic;
 window.editScenic = editScenic;
 window.deleteScenic = deleteScenic;
 window.searchScenic = searchScenic;
+
+// ============== 图片预览功能 ==============
+// Constants
+const NO_IMAGE_PLACEHOLDER = '#';
+
+function previewImage(imageUrl, imageName) {
+    // 如果图片URL无效，不显示预览
+    if (!imageUrl || imageUrl === NO_IMAGE_PLACEHOLDER) {
+        alert('暂无图片');
+        return;
+    }
+
+    // 创建模态框元素（如果还不存在）
+    let modal = document.getElementById('imagePreviewModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'imagePreviewModal';
+        modal.className = 'image-preview-modal';
+        modal.innerHTML = `
+            <div class="image-preview-content">
+                <button class="image-preview-close">&times;</button>
+                <img id="previewImage" src="" alt="预览图片">
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        // Bind close button click event
+        const closeBtn = modal.querySelector('.image-preview-close');
+        closeBtn.addEventListener('click', closeImagePreview);
+
+        // 点击模态框背景关闭预览
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeImagePreview();
+            }
+        });
+
+        // ESC键关闭预览 (only add once when modal is created)
+        document.addEventListener('keydown', handleEscapeKey);
+    }
+
+    // 设置图片源并显示模态框
+    const previewImg = document.getElementById('previewImage');
+    
+    // Clear previous error handler
+    previewImg.onerror = null;
+    
+    // Set new image source
+    previewImg.src = imageUrl;
+    previewImg.alt = imageName || '圣地图片';
+    
+    // Add error handling for image loading
+    previewImg.onerror = function() {
+        closeImagePreview();
+        alert('图片加载失败，请检查图片链接是否有效');
+    };
+    
+    modal.classList.add('active');
+}
+
+function closeImagePreview() {
+    const modal = document.getElementById('imagePreviewModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+// Handle ESC key press
+function handleEscapeKey(e) {
+    if (e.key === 'Escape') {
+        closeImagePreview();
+    }
+}
+
+// 导出图片预览函数
+window.previewImage = previewImage;
+window.closeImagePreview = closeImagePreview;
