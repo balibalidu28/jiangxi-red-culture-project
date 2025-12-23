@@ -5,28 +5,23 @@ import com.redculture.jxredculturedisplay.model.dto.LoginRequest;
 import com.redculture.jxredculturedisplay.model.dto.RegisterRequest;
 import com.redculture.jxredculturedisplay.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder; // 让Spring注入
 
     /**
      * 用户注册
-     * @param request 注册请求
-     * @return 注册成功的用户
-     * @throws IllegalArgumentException 如果验证失败
      */
-    @Transactional
     public User register(RegisterRequest request) {
         // 1. 验证两次密码是否一致
         if (!request.getPassword().equals(request.getConfirmPassword())) {
@@ -47,11 +42,12 @@ public class UserService {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPhone(request.getPhone());
-        user.setPassword(passwordEncoder.encode(request.getPassword())); // 密码加密
-        user.setRole("USER"); // 设置为普通用户权限
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole("USER");
         user.setIsActive(true);
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
+
+        // 不要在这里手动设置时间，让 @PrePersist 处理
+        // 或者使用构造方法
 
         // 5. 保存到数据库
         return userRepository.save(user);
@@ -59,9 +55,6 @@ public class UserService {
 
     /**
      * 用户登录验证
-     * @param request 登录请求
-     * @return 验证成功的用户
-     * @throws IllegalArgumentException 如果验证失败
      */
     public User login(LoginRequest request) {
         // 1. 通过用户名或手机号查找用户
@@ -74,7 +67,7 @@ public class UserService {
         User user = userOptional.get();
 
         // 2. 检查用户是否被禁用
-        if (!user.getIsActive()) {
+        if (!Boolean.TRUE.equals(user.getIsActive())) {
             throw new IllegalArgumentException("该账号已被禁用，请联系管理员");
         }
 
@@ -84,16 +77,12 @@ public class UserService {
         }
 
         // 4. 登录成功，更新最后登录时间
-        user.setUpdatedAt(LocalDateTime.now());
-        userRepository.save(user);
-
-        return user;
+        user.setUpdatedAt(LocalDateTime.now()); // 或者用 @PreUpdate
+        return userRepository.save(user);
     }
 
     /**
      * 检查用户名是否存在
-     * @param username 用户名
-     * @return 是否存在
      */
     public boolean checkUsernameExists(String username) {
         return userRepository.existsByUsername(username);
@@ -101,31 +90,21 @@ public class UserService {
 
     /**
      * 检查手机号是否存在
-     * @param phone 手机号
-     * @return 是否存在
      */
     public boolean checkPhoneExists(String phone) {
         return userRepository.existsByPhone(phone);
     }
 
     /**
-     * 根据用户ID查找用户
-     * @param id 用户ID
-     * @return 用户对象（Optional）
-     */
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
-    }
-
-    /**
-     * 生成JWT令牌（如果使用JWT认证）
-     * 这里简化处理，实际项目应使用专业的JWT库
+     * 生成简单的认证令牌
      */
     public String generateToken(User user) {
         // 这里可以集成JWT生成逻辑
-        // 实际项目中建议使用Spring Security + JWT
         return "token_" + user.getId() + "_" + System.currentTimeMillis();
     }
+
+    // 其他方法保持不变...
+
 
     /**
      * 验证用户密码

@@ -311,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 执行注册
+    // 执行注册2025/12/23
     function performRegistration(phone, username, password) {
         // 显示加载状态
         const submitBtn = registerForm.querySelector('.btn-submit');
@@ -328,16 +328,41 @@ document.addEventListener('DOMContentLoaded', function() {
             agreeTerms: true
         };
 
-        // 发送POST请求到后端API
-        fetch('/api/auth/register', {
+        // 关键修改：使用正确的后端地址和请求头
+        fetch('http://localhost:8080/api/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                // 添加必要的请求头
+                'Accept': 'application/json',
             },
             body: JSON.stringify(requestData)
         })
-            .then(response => response.json())
+            .then(response => {
+                console.log('响应状态码:', response.status);
+                console.log('响应头:', response.headers);
+
+                // 先检查响应状态
+                if (!response.ok) {
+                    // 尝试获取错误信息
+                    return response.text().then(text => {
+                        console.error('错误响应内容:', text);
+                        let errorMsg = `请求失败 (${response.status})`;
+                        try {
+                            const errorData = JSON.parse(text);
+                            if (errorData.message) errorMsg = errorData.message;
+                        } catch (e) {
+                            // 如果不是JSON，使用原始文本
+                            if (text) errorMsg = text;
+                        }
+                        throw new Error(errorMsg);
+                    });
+                }
+                return response.json();
+            })
             .then(data => {
+                console.log('注册成功，响应数据:', data);
+
                 if (data.success) {
                     // 注册成功
                     submitBtn.innerHTML = '<i class="fas fa-check"></i> 注册成功';
@@ -356,23 +381,43 @@ document.addEventListener('DOMContentLoaded', function() {
                     submitBtn.disabled = false;
 
                     // 显示错误信息
-                    if (data.message.includes('手机号')) {
-                        showError(phoneInput, data.message);
-                    } else if (data.message.includes('用户名')) {
-                        showError(usernameInput, data.message);
-                    } else if (data.message.includes('密码')) {
-                        showError(passwordInput, data.message);
-                    } else {
-                        showError(passwordInput, data.message);
+                    let errorField = passwordInput;
+                    let errorMsg = data.message || '注册失败';
+
+                    // 根据错误信息选择显示位置
+                    if (errorMsg.includes('手机') || errorMsg.includes('电话')) {
+                        errorField = phoneInput;
+                    } else if (errorMsg.includes('用户')) {
+                        errorField = usernameInput;
+                    } else if (errorMsg.includes('密码')) {
+                        errorField = passwordInput;
                     }
+
+                    showError(errorField, errorMsg);
                 }
             })
             .catch(error => {
-                // 网络错误
+                console.error('注册请求错误:', error);
+
+                // 恢复按钮状态
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
-                showError(passwordInput, '网络错误，请检查网络连接');
-                console.error('注册错误:', error);
+
+                // 更友好的错误提示
+                let errorMessage = '注册失败：';
+                if (error.message.includes('Failed to fetch') ||
+                    error.message.includes('NetworkError')) {
+                    errorMessage += '网络连接失败，请检查：\n';
+                    errorMessage += '1. 后端服务是否已启动 (http://localhost:8080)\n';
+                    errorMessage += '2. 查看浏览器控制台 Network 标签页\n';
+                    errorMessage += '3. 检查后端控制台是否有错误日志';
+                } else {
+                    errorMessage += error.message;
+                }
+
+                // 显示错误
+                alert(errorMessage); // 使用alert显示完整错误
+                showError(passwordInput, '注册失败，请查看错误提示');
             });
     }
 

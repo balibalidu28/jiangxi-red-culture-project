@@ -6,6 +6,7 @@ import com.redculture.jxredculturedisplay.model.dto.LoginRequest;
 import com.redculture.jxredculturedisplay.model.dto.RegisterRequest;
 import com.redculture.jxredculturedisplay.service.UserService;
 import jakarta.validation.Valid;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,7 +18,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "${cors.allowed-origins:*}", maxAge = 3600)
 public class UserController {
 
     private final UserService userService;
@@ -28,45 +28,20 @@ public class UserController {
      */
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<Map<String, Object>>> register(
-            @Valid @RequestBody RegisterRequest request,
-            BindingResult bindingResult) {
+            @Valid @RequestBody RegisterRequest request) {
 
-        // 1. 验证请求参数
-        if (bindingResult.hasErrors()) {
-            StringBuilder errorMessage = new StringBuilder();
-            for (ObjectError error : bindingResult.getAllErrors()) {
-                errorMessage.append(error.getDefaultMessage()).append("; ");
-            }
-            return ResponseEntity.badRequest()
-                    .body(ApiResponse.error(errorMessage.toString()));
-        }
+        User user = userService.register(request);
 
-        try {
-            // 2. 调用服务层进行注册
-            User user = userService.register(request);
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("userId", user.getId());
+        responseData.put("username", user.getUsername());
+        responseData.put("phone", user.getPhone());
+        responseData.put("role", user.getRole());
 
-            // 3. 构造响应数据
-            Map<String, Object> responseData = new HashMap<>();
-            responseData.put("userId", user.getId());
-            responseData.put("username", user.getUsername());
-            responseData.put("phone", user.getPhone());
-            responseData.put("role", user.getRole());
-
-            // 4. 返回成功响应
-            return ResponseEntity.ok(ApiResponse.success(
-                    "注册成功！欢迎加入江西红色文化信息网",
-                    responseData
-            ));
-
-        } catch (IllegalArgumentException e) {
-            // 5. 处理业务逻辑异常
-            return ResponseEntity.badRequest()
-                    .body(ApiResponse.error(e.getMessage()));
-        } catch (Exception e) {
-            // 6. 处理系统异常
-            return ResponseEntity.internalServerError()
-                    .body(ApiResponse.error("注册失败，请稍后重试"));
-        }
+        return ResponseEntity.ok(ApiResponse.success(
+                "注册成功！欢迎加入江西红色文化信息网",
+                responseData
+        ));
     }
 
     /**
