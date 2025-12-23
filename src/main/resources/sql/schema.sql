@@ -1,12 +1,23 @@
 -- 1. 红色英雄表
 DROP TABLE IF EXISTS red_hero;
-CREATE TABLE IF NOT EXISTS red_hero (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE,
-    description TEXT,
-    image_url VARCHAR(255)
-    );
-
+CREATE TABLE `red_hero` (
+                            `id` INT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+                            `name` VARCHAR(100) NOT NULL COMMENT '英雄姓名',
+                            `description` TEXT COMMENT '英雄描述',
+                            `image_url` VARCHAR(255) DEFAULT NULL COMMENT '英雄图片URL',
+                            `alias` VARCHAR(100) DEFAULT NULL COMMENT '别名',
+                            `title` VARCHAR(100) DEFAULT NULL COMMENT '称号/职务',
+                            `category` VARCHAR(50) DEFAULT NULL COMMENT '类别',
+                            `content` LONGTEXT COMMENT '详细事迹内容',
+                            `gender` VARCHAR(10) DEFAULT NULL COMMENT '性别',
+                            `ethnicity` VARCHAR(20) DEFAULT NULL COMMENT '民族',
+                            `birth_date` DATE DEFAULT NULL COMMENT '出生日期',
+                            `death_date` DATE DEFAULT NULL COMMENT '逝世日期',
+                            `birthplace` VARCHAR(100) DEFAULT NULL COMMENT '籍贯',
+                            `political_status` VARCHAR(50) DEFAULT NULL COMMENT '政治面貌',
+                            PRIMARY KEY (`id`),
+                            UNIQUE KEY `uk_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='红色英雄表';
 -- 2. 党史大百科表
 DROP TABLE IF EXISTS party_encyclopedia;
 CREATE TABLE IF NOT EXISTS party_encyclopedia (
@@ -26,15 +37,23 @@ CREATE TABLE IF NOT EXISTS red_scenic_spot (
     image_url VARCHAR(255)
     );
 
--- 4. 红色故事表
-DROP TABLE IF EXISTS red_story;
-CREATE TABLE IF NOT EXISTS red_story (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(200) NOT NULL,
-    content TEXT NOT NULL,
-    source VARCHAR(255),
-    created_at DATETIME
-    );
+-- 2. 红色故事表
+DROP TABLE IF EXISTS `red_story`;
+CREATE TABLE `red_story` (
+                             `id` INT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+                             `title` VARCHAR(200) NOT NULL COMMENT '标题',
+                             `content` TEXT NOT NULL COMMENT '内容',
+                             `source` VARCHAR(255) DEFAULT NULL COMMENT '来源',
+                             `image_url` VARCHAR(500) DEFAULT NULL COMMENT '图片URL',
+                             `summary` VARCHAR(500) DEFAULT NULL COMMENT '摘要',
+                             `story_time` VARCHAR(50) DEFAULT NULL COMMENT '故事时间',
+                             `location` VARCHAR(100) DEFAULT NULL COMMENT '地点',
+                             `hero_name` VARCHAR(100) DEFAULT NULL COMMENT '英雄名称',
+                             `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                             `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                             PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='红色故事表';
+
 
 -- 5. 红色寻访表
 DROP TABLE IF EXISTS red_explore ;
