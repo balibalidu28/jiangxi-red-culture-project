@@ -1,11 +1,12 @@
 package com.redculture.jxredculturedisplay.controller;
 
+import com.redculture.jxredculturedisplay.model.PartyEncyclopedia;
 import com.redculture.jxredculturedisplay.service.PartyEncyclopediaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class EncyclopediaController {
@@ -13,39 +14,44 @@ public class EncyclopediaController {
     @Autowired
     private PartyEncyclopediaService service;
 
-    /**
-     * 【改动1】搜索/检索页
-     * 旧逻辑：展示列表
-     * 新逻辑：这就是一个搜索结果页
-     * URL: /encyclopedia/search?kw=xxx
-     */
-    @GetMapping("/encyclopedia/search") // URL变了
-    public String searchPage(
+    @GetMapping("/encyclopedia/list")
+    public String listPage(
             @RequestParam(value = "kw", required = false) String keyword,
+            @RequestParam(value = "id", required = false) Long id,
             Model model
     ) {
-        // 业务逻辑不变：还是去搜
+        // 1. 查询数据
         var list = service.search(keyword);
 
-        model.addAttribute("entries", list);
+        // 【调试打印】请在IDEA控制台看这一行！！！
+        System.out.println("========== 正在查询 ==========");
+        System.out.println("搜索词: " + keyword);
+        System.out.println("查到条数: " + list.size());
+
+        model.addAttribute("entryList", list);
         model.addAttribute("currentKw", keyword);
 
-        // 【关键】返回新的文件名 search.html
-        return "search/search";
+        // 2. 判断模式
+        if (id != null) {
+            var item = service.getOrThrow(id);
+            model.addAttribute("item", item);
+            model.addAttribute("mode", "detail");
+        } else if (keyword != null && !keyword.isEmpty()) {
+            model.addAttribute("mode", "search_result");
+        } else {
+            model.addAttribute("mode", "home");
+        }
+
+        return "encyclopedia/list";
     }
-
-    /**
-     * 【改动2】百科词条页
-     * URL: /encyclopedia/entry?id=1
-     */
-    @GetMapping("/encyclopedia/entry") // URL变了
-    public String entryPage(@RequestParam("id") Long id, Model model) {
-        // 业务逻辑不变：查单个
-        var item = service.getOrThrow(id);
-
-        model.addAttribute("item", item);
-
-        // 【关键】返回新的文件名 entry.html
-        return "encyclopedia/entry";
+    // 添加这个 GET 方法！！！
+    @GetMapping("/encyclopedias/{id}")
+    public ResponseEntity<PartyEncyclopedia> getEncyclopediaById(@PathVariable Integer id) {
+        try {
+            PartyEncyclopedia encyclopedia = service.getOrThrow(Long.valueOf(id));
+            return ResponseEntity.ok(encyclopedia);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build(); // 返回 404
+        }
     }
 }

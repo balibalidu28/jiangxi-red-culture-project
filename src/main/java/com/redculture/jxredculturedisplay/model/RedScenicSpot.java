@@ -1,9 +1,11 @@
 package com.redculture.jxredculturedisplay.model;
 
 import jakarta.persistence.*;
-
+import lombok.Data;
+import lombok.ToString;
 @Entity
 @Table(name = "red_scenic_spot")
+@Data
 public class RedScenicSpot {
     /**
      * 【实体】RedScenicSpot（红色圣地）

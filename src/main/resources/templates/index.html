@@ -35,10 +35,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/encyclopedias/entry.html">
+                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/encyclopedia/list.html">
                         <i class="fas fa-book me-1"></i> 党史大百科
                     </a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/RedScenicSpot/list.html">
                         <i class="fas fa-map-marked-alt me-1"></i> 红色圣地
@@ -628,7 +629,8 @@
         </div>
     </section>
 
-    <!-- 党史百科入口 -->
+    <!-- 首页党史百科搜索框 -->
+    <!-- zzm修改了 -->
     <section class="mb-5">
         <div class="card card-red">
             <div class="card-body">
@@ -638,10 +640,16 @@
                         <p class="card-text">收录丰富的党史知识，从南昌起义到改革开放，全面了解中国共产党在江西的革命历史。</p>
 
                         <div class="search-box mt-4">
-                            <form th:action="@{/encyclopedias}" method="get" class="input-group input-group-lg">
+                            <!--
+                                1. action="/encyclopedia/list" : 明确告诉浏览器要去哪里
+                                2. method="get" : 告诉浏览器把参数放在 URL 后面 (?kw=xxx)
+                            -->
+                            <form action="/encyclopedia/list" method="get" class="input-group input-group-lg">
+
+                                <!-- name="kw" : 这个名字决不能错，后端 Controller 里的 @RequestParam("kw") 等着它呢 -->
                                 <input type="text" class="form-control" name="kw"
-                                       th:value="${currentKw}"
-                                       placeholder="输入关键词...">
+                                       placeholder="输入党史关键词（如：南昌起义）..." required>
+
                                 <button class="btn btn-danger" type="submit">
                                     <i class="fas fa-search"></i> 搜索
                                 </button>
