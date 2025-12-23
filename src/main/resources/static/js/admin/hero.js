@@ -1,3 +1,5 @@
+// ========================== 英雄管理功能 ==========================
+
 // 显示新增英雄表单
 function showHeroForm() {
     const formContainer = document.getElementById("heroFormContainer");
@@ -53,7 +55,10 @@ async function loadHeroes() {
             row.innerHTML = `
                 <td>${hero.id}</td>
                 <td>${hero.name || "未命名"}</td>
-                <td>${hero.description ? (hero.description.length > 50 ? hero.description.substring(0, 50) + "..." : hero.description) : "暂无简介"}</td>
+                <td>${hero.alias || "-"}</td>
+                <td>${hero.category || "-"}</td>
+                <td>${hero.gender || "-"}</td>
+                <td>${hero.description ? (hero.description.length > 30 ? hero.description.substring(0, 30) + "..." : hero.description) : "暂无简介"}</td>
                 <td>
                     <button onclick="editHero(${hero.id})">编辑</button>
                     <button onclick="deleteHero(${hero.id})">删除</button>
@@ -84,29 +89,51 @@ async function saveHero() {
 
     const id = document.getElementById("heroId").value;
     const name = document.getElementById("hero-name").value;
-    // const location = document.getElementById("hero-location").value;
     const description = document.getElementById("hero-description").value;
+    const alias = document.getElementById("hero-alias").value;
+    const title = document.getElementById("hero-title").value;
+    const category = document.getElementById("hero-category").value;
+    const content = document.getElementById("hero-content").value;
+    const gender = document.getElementById("hero-gender").value;
+    const ethnicity = document.getElementById("hero-ethnicity").value;
+    const birthDate = document.getElementById("hero-birthDate").value;
+    const deathDate = document.getElementById("hero-deathDate").value;
+    const birthplace = document.getElementById("hero-birthplace").value;
+    const politicalStatus = document.getElementById("hero-politicalStatus").value;
     const imageFile = document.getElementById("hero-image").files[0];
 
-    // if (!name || !location) {
-    if (!name){
-        alert("名称和地点为必填项！");
+    if (!name) {
+        alert("英雄姓名为必填项！");
         return;
     }
 
     // 创建英雄数据对象
     const heroData = {
         name: name,
-        // location: location,
         description: description || "",
-        // 注意：图片上传需要特殊处理，这里先处理文本数据
-        // 如果需要图片上传，需要另外实现文件上传接口
+        alias: alias || "",
+        title: title || "",
+        category: category || "",
+        content: content || "",
+        gender: gender || "",
+        ethnicity: ethnicity || "",
+        birthplace: birthplace || "",
+        politicalStatus: politicalStatus || "",
+        imageUrl: ""
     };
+
+    // 处理日期字段 - 空字符串转为null
+    if (birthDate) {
+        heroData.birthDate = birthDate;
+    }
+
+    if (deathDate) {
+        heroData.deathDate = deathDate;
+    }
 
     console.log("要发送的数据:", heroData);
 
     try {
-        // 判断是新增还是编辑
         const method = id ? "PUT" : "POST";
         const url = id ?
             `http://localhost:8080/api/admin/heroes/${id}` :
@@ -122,26 +149,51 @@ async function saveHero() {
 
         console.log("响应状态:", response.status);
 
+        // 检查响应内容类型
+        const contentType = response.headers.get("content-type");
+
         if (response.ok) {
-            const result = await response.json();
-            console.log("保存成功:", result);
+            let result;
+
+            if (contentType && contentType.includes("application/json")) {
+                result = await response.json();
+                console.log("保存成功:", result);
+            } else {
+                // 非JSON响应，可能是空响应
+                console.log("保存成功（空响应）");
+            }
+
             alert(id ? "修改英雄成功！" : "新增英雄成功！");
 
-            // 如果有图片文件，需要单独上传
-            if (imageFile) {
+            // 图片上传
+            if (imageFile && result && result.id) {
                 await uploadHeroImage(result.id, imageFile);
             }
 
             hideHeroForm();
             loadHeroes();
+
         } else {
-            const errorText = await response.text();
-            console.error("保存失败:", errorText);
-            alert("保存失败: " + errorText);
+            // 处理错误
+            let errorMessage = `保存失败，状态码: ${response.status}`;
+
+            try {
+                if (contentType && contentType.includes("application/json")) {
+                    const errorData = await response.json();
+                    errorMessage += "\n" + (errorData.message || JSON.stringify(errorData));
+                } else {
+                    const errorText = await response.text();
+                    if (errorText) errorMessage += "\n" + errorText;
+                }
+            } catch (e) {
+                console.error("解析错误响应失败:", e);
+            }
+
+            alert(errorMessage);
         }
     } catch (error) {
         console.error("请求错误:", error);
-        alert("网络错误，请重试");
+        alert("网络错误: " + error.message);
     }
 }
 
@@ -152,7 +204,6 @@ async function uploadHeroImage(heroId, imageFile) {
     try {
         const formData = new FormData();
         formData.append("image", imageFile);
-        formData.append("heroId", heroId);
 
         // 这里需要您的后端提供一个图片上传接口
         const response = await fetch(`http://localhost:8080/api/admin/heroes/${heroId}/image`, {
@@ -176,7 +227,7 @@ async function editHero(id) {
     console.log("开始编辑英雄，ID:", id);
 
     try {
-        // 获取英雄详情
+        // 获取英雄列表并查找对应ID的英雄
         const response = await fetch(`http://localhost:8080/api/admin/heroes`);
         if (!response.ok) {
             throw new Error(`获取英雄列表失败: ${response.status}`);
@@ -192,24 +243,25 @@ async function editHero(id) {
 
         console.log("找到要编辑的英雄:", hero);
 
-        // 填充表单
+        // 填充表单 - 所有字段
         document.getElementById("heroId").value = hero.id;
         document.getElementById("hero-name").value = hero.name || "";
-        // document.getElementById("hero-location").value = hero.location || "";
+        document.getElementById("hero-alias").value = hero.alias || "";
+        document.getElementById("hero-title").value = hero.title || "";
+        document.getElementById("hero-category").value = hero.category || "";
+        document.getElementById("hero-content").value = hero.content || "";
+        document.getElementById("hero-gender").value = hero.gender || "";
+        document.getElementById("hero-ethnicity").value = hero.ethnicity || "";
+        document.getElementById("hero-birthDate").value = hero.birthDate || "";
+        document.getElementById("hero-deathDate").value = hero.deathDate || "";
+        document.getElementById("hero-birthplace").value = hero.birthplace || "";
+        document.getElementById("hero-politicalStatus").value = hero.politicalStatus || "";
         document.getElementById("hero-description").value = hero.description || "";
-
-        // 注意：图片字段需要特殊处理，这里只是文本字段
 
         // 显示表单并修改标题
         const formContainer = document.getElementById("heroFormContainer");
         formContainer.style.display = "block";
         document.getElementById("heroFormTitle").textContent = "编辑英雄";
-
-        // 修改提交按钮文本
-        const submitBtn = document.querySelector("#heroForm button[type='button'][onclick='saveHero()']");
-        if (submitBtn) {
-            submitBtn.textContent = "更新";
-        }
 
         console.log("表单已填充，准备编辑");
     } catch (error) {
@@ -253,9 +305,12 @@ function searchHero() {
 
     rows.forEach(row => {
         const name = row.cells[1].textContent.toLowerCase();
-        const description = row.cells[2].textContent.toLowerCase();
+        const alias = row.cells[2].textContent.toLowerCase();
+        const category = row.cells[3].textContent.toLowerCase();
+        const description = row.cells[5].textContent.toLowerCase();
 
-        if (name.includes(searchTerm) || description.includes(searchTerm)) {
+        if (name.includes(searchTerm) || alias.includes(searchTerm) ||
+            category.includes(searchTerm) || description.includes(searchTerm)) {
             row.style.display = "";
         } else {
             row.style.display = "none";
@@ -303,6 +358,14 @@ document.addEventListener("DOMContentLoaded", function() {
     if (cancelBtn) {
         cancelBtn.addEventListener("click", hideHeroForm);
     }
+
+    // 绑定日期输入框的占位符
+    const dateInputs = document.querySelectorAll('input[type="date"]');
+    dateInputs.forEach(input => {
+        if (!input.value) {
+            input.placeholder = "请选择日期";
+        }
+    });
 });
 
 // 导出函数供HTML调用

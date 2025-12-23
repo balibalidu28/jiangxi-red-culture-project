@@ -24,34 +24,108 @@
     <section id="heroes" class="module-section active">
         <h2>英雄管理</h2>
         <button onclick="showHeroForm()">新增英雄</button>
+
         <!-- 新增/编辑英雄表单 -->
         <div id="heroFormContainer" class="form-container" style="display: none;">
             <h2 id="heroFormTitle">新增英雄</h2>
             <form id="heroForm">
-                <!-- 添加这行：隐藏的ID字段 -->
+                <!-- 隐藏的ID字段 -->
                 <input type="hidden" id="heroId">
 
-                <label for="hero-name">名称：</label>
-                <input type="text" id="hero-name" placeholder="请输入英雄名称" required>
+                <div class="form-grid">
+                    <div>
+                        <label for="hero-name">姓名：</label>
+                        <input type="text" id="hero-name" placeholder="请输入英雄姓名" required>
+                    </div>
 
-                <!--                <label for="hero-location">地点：</label>-->
-                <!--                <input type="text" id="hero-location" placeholder="请输入英雄地点" required>-->
+                    <div>
+                        <label for="hero-alias">别名：</label>
+                        <input type="text" id="hero-alias" placeholder="请输入别名">
+                    </div>
 
-                <label for="hero-description">简介：</label>
-                <textarea id="hero-description" placeholder="请输入英雄简介"></textarea>
+                    <div>
+                        <label for="hero-title">称号/职务：</label>
+                        <input type="text" id="hero-title" placeholder="请输入称号或职务">
+                    </div>
 
-                <label for="hero-image">上传图片：</label>
-                <input type="file" id="hero-image" accept="image/*">
+                    <div>
+                        <label for="hero-category">类别：</label>
+                        <select id="hero-category" style="width: 100%; padding: 5px;">
+                            <option value="">请选择类别</option>
+                            <option value="革命家">革命家</option>
+                            <option value="军事家">军事家</option>
+                            <option value="烈士">烈士</option>
+                            <option value="领导人">领导人</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
 
-                <button type="button" onclick="saveHero()">保存</button>
-                <button type="button" onclick="hideHeroForm()">取消</button>
+                    <div>
+                        <label for="hero-gender">性别：</label>
+                        <select id="hero-gender" style="width: 100%; padding: 5px;">
+                            <option value="">请选择性别</option>
+                            <option value="男">男</option>
+                            <option value="女">女</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="hero-ethnicity">民族：</label>
+                        <input type="text" id="hero-ethnicity" placeholder="请输入民族">
+                    </div>
+
+                    <div>
+                        <label for="hero-birthDate">出生日期：</label>
+                        <input type="date" id="hero-birthDate" style="width: 100%; padding: 5px;">
+                    </div>
+
+                    <div>
+                        <label for="hero-deathDate">逝世日期：</label>
+                        <input type="date" id="hero-deathDate" style="width: 100%; padding: 5px;">
+                    </div>
+                </div>
+
+                <div style="margin-top: 10px;">
+                    <label for="hero-birthplace">籍贯：</label>
+                    <input type="text" id="hero-birthplace" placeholder="请输入籍贯" style="width: 100%; padding: 5px;">
+                </div>
+
+                <div style="margin-top: 10px;">
+                    <label for="hero-politicalStatus">政治面貌：</label>
+                    <input type="text" id="hero-politicalStatus" placeholder="请输入政治面貌" style="width: 100%; padding: 5px;">
+                </div>
+
+                <div style="margin-top: 10px;">
+                    <label for="hero-description">简介：</label>
+                    <textarea id="hero-description" placeholder="请输入英雄简介" style="width: 100%; padding: 5px;"></textarea>
+                </div>
+
+                <div style="margin-top: 10px;">
+                    <label for="hero-content">详细事迹：</label>
+                    <textarea id="hero-content" placeholder="请输入详细事迹内容" style="width: 100%; padding: 5px;" rows="4"></textarea>
+                </div>
+
+                <div style="margin-top: 10px;">
+                    <label for="hero-image">上传图片：</label>
+                    <input type="file" id="hero-image" accept="image/*">
+                    <div id="hero-image-preview" style="margin-top: 10px;"></div>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <button type="button" onclick="saveHero()">保存</button>
+                    <button type="button" onclick="hideHeroForm()">取消</button>
+                </div>
             </form>
         </div>
+
         <table>
             <thead>
             <tr>
                 <th>ID</th>
                 <th>姓名</th>
+                <th>别名</th>
+                <th>类别</th>
+                <th>性别</th>
                 <th>简介</th>
                 <th>操作</th>
             </tr>
@@ -60,19 +134,55 @@
             <!-- 动态填充 -->
             </tbody>
         </table>
-
     </section>
 
     <!-- 故事管理模块 -->
     <section id="stories" class="module-section">
         <h2>故事管理</h2>
         <button onclick="showStoryForm()">新增故事</button>
-        <table>
+        <!-- 新增/编辑故事表单 -->
+        <div id="storyFormContainer" class="form-container" style="display:none;">
+            <h2 id="storyFormTitle">新增故事</h2>
+            <form id="storyForm">
+                <input type="hidden" id="storyId">
+
+                <label for="story-title">标题：</label>
+                <input type="text" id="story-title" placeholder="请输入故事标题" required>
+
+                <label for="story-content">内容：</label>
+                <textarea id="story-content" placeholder="请输入故事正文" rows="4" required></textarea>
+
+                <label for="story-source">来源：</label>
+                <input type="text" id="story-source" placeholder="请输入来源">
+
+                <label for="story-summary">摘要：</label>
+                <input type="text" id="story-summary" placeholder="请输入故事摘要">
+
+                <label for="story-storyTime">故事时间：</label>
+                <input type="text" id="story-storyTime" placeholder="如 1935年/夏等">
+
+                <label for="story-location">地点：</label>
+                <input type="text" id="story-location" placeholder="请输入故事地点">
+
+                <label for="story-heroName">英雄名称：</label>
+                <input type="text" id="story-heroName" placeholder="请填写相关英雄姓名或留空">
+
+                <label for="story-image">上传图片：</label>
+                <input type="file" id="story-image" accept="image/*">
+                <!-- 你可以加图片预览div -->
+
+                <button type="button" onclick="saveStory()">保存</button>
+                <button type="button" onclick="hideStoryForm()">取消</button>
+            </form>
+        </div>
+        <table id="storyTable">
             <thead>
             <tr>
                 <th>ID</th>
                 <th>标题</th>
-                <th>来源</th>
+                <th>摘要</th>
+                <th>地点</th>
+                <th>时间</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -80,28 +190,6 @@
             <!-- 动态填充 -->
             </tbody>
         </table>
-        <div id="storyFormContainer" class="form-container" style="display: none;">
-            <h2 id="storyFormTitle">新增故事</h2>
-            <form id="storyForm">
-                <!-- 添加这行：隐藏的ID字段 -->
-                <input type="hidden" id="storyId">
-
-                <label for="story-name">标题：</label>
-                <input type="text" id="story-name" placeholder="请输入故事名称" required>
-
-                <label for="story-location">内容：</label>
-                <input type="text" id="story-location" placeholder="请输入故事地点" required>
-
-                <label for="story-description">来源：</label>
-                <textarea id="story-description" placeholder="请输入故事简介"></textarea>
-
-                <label for="story-date">日期：</label>
-                <input type="date" id="story-date" required>
-
-                <button type="button" onclick="saveStory()">保存</button>
-                <button type="button" onclick="hideStoryForm()">取消</button>
-            </form>
-        </div>
     </section>
 
     <!-- 圣地管理模块 -->
@@ -277,6 +365,7 @@
 <script src="/static/js/admin/scenic-spot.js"></script>
 <script src="/static/js/admin/encyclopedia.js"></script>
 <script src="/static/js/admin/explore.js"></script>
+<script src="/static/js/admin/story.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         loadScenicSpots();

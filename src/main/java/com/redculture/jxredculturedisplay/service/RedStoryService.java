@@ -1,6 +1,9 @@
 package com.redculture.jxredculturedisplay.service;
 
 import com.redculture.jxredculturedisplay.model.RedStory;
+import com.redculture.jxredculturedisplay.repository.RedStoryRepository;
+import org.antlr.v4.runtime.tree.pattern.ParseTreePattern;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +12,8 @@ import java.util.List;
 @Service
 public class RedStoryService {
     // TODO: 注入 RedStoryRepository
+    @Autowired
+    private RedStoryRepository redStoryRepository;
 
     public long count() {
         throw new UnsupportedOperationException("TODO");
@@ -49,9 +54,8 @@ public class RedStoryService {
     }//
 
     public List<RedStory> listAll() {
-        throw new UnsupportedOperationException("TODO");
+        return redStoryRepository.findAll();
     }
-
     public RedStory save(RedStory story) {
         throw new UnsupportedOperationException("TODO");
     }
