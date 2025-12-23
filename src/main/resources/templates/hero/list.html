@@ -1,347 +1,53 @@
 <!DOCTYPE html>
-<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>红色英雄 - 江西红色文化信息网</title>
-
-    <!-- Bootstrap 5 CSS (CDN) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome 图标 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- 自定义CSS -->
-    <link rel="stylesheet" href="/static/css/main.css">
+    <title>红色英雄展示</title>
     <link rel="stylesheet" href="/static/css/hero/hero.css">
-
-
 </head>
 <body>
-<!-- 导航栏 - 红色主题 -->
-<nav class="navbar navbar-expand-lg navbar-dark navbar-red sticky-top">
-    <div class="container">
-        <a class="navbar-brand" href="/">
-            <i class="fas fa-landmark me-2"></i>
-            <strong>江西红色文化</strong>
-        </a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">
-                        <i class="fas fa-user-shield me-1"></i> 红色英雄
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/encyclopedias/entry.html">
-                        <i class="fas fa-book me-1"></i> 党史大百科
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/RedScenicSpot/list.html">
-                        <i class="fas fa-map-marked-alt me-1"></i> 红色圣地
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html">
-                        <i class="fas fa-book-open me-1"></i> 红色故事
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/explore.html">
-                        <i class="fas fa-hiking me-1"></i> 红色寻访
-                    </a>
-                </li>
-            </ul>
-
-            <div class="d-flex align-items-center">
-                <div class="search-box me-3">
-                    <form action="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/search/search.html" method="get" class="input-group">
-                        <input type="text" class="form-control" name="kw" placeholder="搜索..." aria-label="搜索">
-                        <button class="btn btn-outline-light" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </form>
-                </div>
-
-                <!-- 登录图标 -->
-                <div class="login-icon-container">
-                    <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/entry/register.html" class="login-icon" title="登录">
-                        <i class="fas fa-user-circle fa-lg"></i>
-                    </a>
-                </div>
+<header>
+    <h1>红色英雄榜</h1>
+    <nav>
+        <a href="/heroes">英雄列表</a>
+        <a href="/stories">红色故事</a>
+    </nav>
+</header>
+<main>
+    <section class="hero-list">
+        <!-- 红色英雄示例1 -->
+        <div class="hero-card">
+            <img src="/static/images/liuyusheng.jpg" alt="刘玉生" class="hero-avatar"/>
+            <div class="hero-info">
+                <h2>刘玉生</h2>
+                <p><strong>生平简介：</strong>刘玉生，杰出的革命战士，积极投身于江西的土地革命运动，参加多次重要战役，为中国革命胜利立下汗马功劳。</p>
+                <p class="hero-story">在红军长征途中，他带领队伍突破敌人的三道封锁线，被誉为“长征英雄”。后在抗日战争中做出卓越贡献，成为无数人心中的榜样。</p>
             </div>
         </div>
-    </div>
-</nav>
-
-<!-- 面包屑导航 -->
-<div class="container-fluid py-3" style="background: linear-gradient(135deg, #fff8e1, #ffebee);">
-    <div class="container">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="/" style="text-decoration: none; color: var(--red-primary);">首页</a></li>
-                <li class="breadcrumb-item active" aria-current="page">红色英雄</li>
-            </ol>
-        </nav>
-    </div>
-</div>
-
-<!-- 主要内容区域 -->
-<div class="container py-5">
-    <!-- 搜索区域 -->
-    <div class="search-container">
-        <h2 class="mb-4" style="color: var(--red-primary);">
-            <i class="fas fa-user-shield me-2"></i>江西红色英雄
-        </h2>
-        <p class="mb-4" style="color: #666;">江西是一片充满红色记忆的土地，这里涌现了无数革命英雄。他们用鲜血和生命铸就了伟大的革命精神。</p>
-
-        <!-- 搜索表单 -->
-        <form th:action="@{/heroes}" method="get" class="mb-4">
-            <div class="row g-3 align-items-end">
-                <div class="col-md-8">
-                    <label for="keyword" class="form-label">搜索英雄</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control form-control-lg"
-                               id="keyword" name="kw"
-                               th:value="${keyword}"
-                               placeholder="输入英雄姓名、事迹关键词..."
-                               aria-label="搜索英雄">
-                        <button class="btn btn-danger btn-lg" type="submit">
-                            <i class="fas fa-search"></i> 搜索
-                        </button>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="d-grid">
-                        <a th:href="@{/heroes}" class="btn btn-outline-danger btn-lg">
-                            <i class="fas fa-redo"></i> 重置搜索
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-
-    <!-- 英雄列表 -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <h4 class="mb-0" style="color: var(--red-dark);">
-                    <i class="fas fa-users me-2"></i>英雄列表
-                    <span class="badge bg-danger ms-2" th:text="${totalHeroes}">0</span>
-                </h4>
-                <div class="d-flex align-items-center">
-                    <span class="me-2" style="color: #666;">排序:</span>
-                    <select class="form-select form-select-sm" style="width: auto;" onchange="location = this.value;">
-                        <option th:selected="${sortType == 'default'}" th:value="@{/heroes(kw=${keyword}, sort='default')}">默认排序</option>
-                        <option th:selected="${sortType == 'name'}" th:value="@{/heroes(kw=${keyword}, sort='name')}">按姓名排序</option>
-                        <option th:selected="${sortType == 'time'}" th:value="@{/heroes(kw=${keyword}, sort='time')}">按时间排序</option>
-                    </select>
-                </div>
-            </div>
-            <hr style="border-color: var(--red-light);">
-        </div>
-    </div>
-
-    <!-- 英雄卡片 -->
-    <div class="row g-4">
-        <!-- 遍历英雄列表 -->
-        <!-- 在英雄列表部分修改为 -->
-        <div class="col-md-6 col-lg-4" th:each="hero : ${heroes}">
-            <div class="card hero-card h-100">
-                <div class="hero-image">
-                    <img th:src="${hero.imageUrl != null} ? ${hero.imageUrl} : 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'"
-                         th:alt="${hero.name}"
-                         class="card-img-top">
-                </div>
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h5 class="card-title mb-0" style="color: var(--red-primary);" th:text="${hero.name}">英雄姓名</h5>
-                        <span class="hero-badge" th:text="${hero.category != null} ? ${hero.category} : '革命英雄'">革命家</span>
-                    </div>
-                    <p class="card-text text-muted small mb-2">
-                        <i class="fas fa-user me-1"></i>
-                        <span th:text="${hero.gender != null} ? ${hero.gender} : '男'">性别</span>
-                        <i class="fas fa-flag ms-2 me-1"></i>
-                        <span th:text="${hero.ethnicity != null} ? ${hero.ethnicity} : '汉族'">民族</span>
-                    </p>
-                    <p class="card-text" th:text="${#strings.abbreviate(hero.description, 100)}">
-                        英雄简介摘要，这里显示英雄的主要事迹和贡献...
-                    </p>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <div>
-                    <span class="badge bg-light text-dark me-1" th:if="${hero.birthplace != null}">
-                        <i class="fas fa-map-marker-alt me-1"></i><span th:text="${hero.birthplace}">籍贯</span>
-                    </span>
-                        </div>
-                        <a th:href="@{/heroes/{id}(id=${hero.id})}" class="btn btn-outline-danger btn-sm">
-                            查看详情 <i class="fas fa-arrow-right ms-1"></i>
-                        </a>
-                    </div>
-                </div>
+        <!-- 红色英雄示例2 -->
+        <div class="hero-card">
+            <img src="/static/images/dengxianru.jpg" alt="邓贤如" class="hero-avatar"/>
+            <div class="hero-info">
+                <h2>邓贤如</h2>
+                <p><strong>生平简介：</strong>邓贤如，江西吉安人，早年参加新文化运动，领导农民开展土地革命，后成为红军杰出将领。</p>
+                <p class="hero-story">她以坚强意志和聪慧策略，组织多次突围，为革命根据地的稳固做出贡献，被授予“红色巾帼”荣誉称号。</p>
             </div>
         </div>
-        <div class="col-md-6 col-lg-4" th:each="hero : ${heroes}">
-            <div class="card hero-card h-100">
-                <div class="hero-image">
-                    <img th:src="${hero.imageUrl != null} ? ${hero.imageUrl} : 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'"
-                         th:alt="${hero.name}"
-                         class="card-img-top">
-                </div>
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h5 class="card-title mb-0" style="color: var(--red-primary);" th:text="${hero.name}">英雄姓名</h5>
-                        <span class="hero-badge" th:text="${hero.category}">革命家</span>
-                    </div>
-                    <p class="card-text text-muted small mb-2">
-                        <i class="fas fa-calendar-alt me-1"></i>
-                        <span th:text="${#dates.format(hero.birthDate, 'yyyy年MM月dd日')}">1899年08月21日</span>
-                        -
-                        <span th:text="${#dates.format(hero.deathDate, 'yyyy年MM月dd日')}">1935年08月06日</span>
-                    </p>
-                    <p class="card-text" th:text="${#strings.abbreviate(hero.summary, 100)}">
-                        英雄简介摘要，这里显示英雄的主要事迹和贡献...
-                    </p>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <div>
-                            <span class="badge bg-light text-dark me-1" th:each="tag : ${#strings.arraySplit(hero.tags, ',')}">
-                                <i class="fas fa-tag me-1"></i><span th:text="${tag}">标签</span>
-                            </span>
-                        </div>
-                        <a th:href="@{/heroes/{id}(id=${hero.id})}" class="btn btn-outline-danger btn-sm">
-                            查看详情 <i class="fas fa-arrow-right ms-1"></i>
-                        </a>
-                    </div>
-                </div>
+        <!-- 红色英雄示例3 -->
+        <div class="hero-card">
+            <img src="/static/images/zhangfa.jpg" alt="张发" class="hero-avatar"/>
+            <div class="hero-info">
+                <h2>张发</h2>
+                <p><strong>生平简介：</strong>张发，江西赣州人，少年投身革命，勇敢善战，在南昌起义中身先士卒，备受敬重。</p>
+                <p class="hero-story">革命期间多次担任先锋任务，激励无数青年投身救国洪流。他的革命精神流传至今。</p>
             </div>
         </div>
-
-        <!-- 无数据时显示 -->
-        <div th:if="${#lists.isEmpty(heroes)}" class="col-12">
-            <div class="no-results">
-                <i class="fas fa-search"></i>
-                <h4 class="mt-3 mb-3" style="color: #666;">未找到相关英雄</h4>
-                <p class="text-muted mb-4">尝试使用不同的关键词搜索，或者浏览所有英雄</p>
-                <a th:href="@{/heroes}" class="btn btn-danger">
-                    <i class="fas fa-users me-2"></i> 查看所有英雄
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- 分页 -->
-    <div th:if="${totalPages > 1}" class="row mt-5">
-        <div class="col-12">
-            <nav aria-label="英雄列表分页">
-                <ul class="pagination justify-content-center pagination-red">
-                    <!-- 上一页 -->
-                    <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled' : ''">
-                        <a class="page-link"
-                           th:href="@{/heroes(page=${currentPage-1}, kw=${keyword}, sort=${sortType})}"
-                           aria-label="上一页">
-                            <i class="fas fa-chevron-left"></i>
-                        </a>
-                    </li>
-
-                    <!-- 页码 -->
-                    <li th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
-                        class="page-item"
-                        th:classappend="${pageNum == currentPage} ? 'active' : ''">
-                        <a class="page-link"
-                           th:href="@{/heroes(page=${pageNum}, kw=${keyword}, sort=${sortType})}"
-                           th:text="${pageNum}">1</a>
-                    </li>
-
-                    <!-- 下一页 -->
-                    <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled' : ''">
-                        <a class="page-link"
-                           th:href="@{/heroes(page=${currentPage+1}, kw=${keyword}, sort=${sortType})}"
-                           aria-label="下一页">
-                            <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <p class="text-center text-muted mt-2">
-                显示第 <span th:text="${(currentPage-1)*pageSize+1}">1</span> -
-                <span th:text="${currentPage*pageSize > totalHeroes ? totalHeroes : currentPage*pageSize}">10</span>
-                条，共 <span th:text="${totalHeroes}">100</span> 条记录
-            </p>
-        </div>
-    </div>
-</div>
-
-<!-- 页脚 -->
-<footer class="py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <h4 class="mb-4" style="color: white;">
-                    <i class="fas fa-landmark me-2"></i>
-                    <strong>江西红色文化信息网</strong>
-                </h4>
-                <p style="color: rgba(255,255,255,0.8);">致力于传承和弘扬江西红色文化，提供革命历史学习资源，组织红色文化实践活动。</p>
-                <div class="mt-3">
-                    <a href="#" class="text-white me-3"><i class="fab fa-weixin fa-lg"></i></a>
-                    <a href="#" class="text-white me-3"><i class="fab fa-weibo fa-lg"></i></a>
-                    <a href="#" class="text-white"><i class="fas fa-envelope fa-lg"></i></a>
-                </div>
-            </div>
-
-            <div class="col-md-4 mb-4">
-                <h5 class="mb-4" style="color: white;">快速链接</h5>
-                <div class="footer-links">
-                    <p><a href="#" style="color: white;">红色英雄</a></p>
-                    <p><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/encyclopedias/entry.html" style="color: rgba(255,255,255,0.8);">党史大百科</a></p>
-                    <p><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/RedScenicSpot/list.html" style="color: rgba(255,255,255,0.8);">红色圣地</a></p>
-                    <p><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html" style="color: rgba(255,255,255,0.8);">红色故事</a></p>
-                    <p><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/explore.html" style="color: rgba(255,255,255,0.8);">红色寻访</a></p>
-                </div>
-            </div>
-
-            <div class="col-md-4 mb-4">
-                <h5 class="mb-4" style="color: white;">联系我们</h5>
-                <p style="color: rgba(255,255,255,0.8);"><i class="fas fa-map-marker-alt me-2"></i> 江西省南昌市红谷滩区</p>
-                <p style="color: rgba(255,255,255,0.8);"><i class="fas fa-phone me-2"></i> 0791-12345678</p>
-                <p style="color: rgba(255,255,255,0.8);"><i class="fas fa-envelope me-2"></i> contact@jxredculture.com</p>
-
-                <div class="mt-4">
-                    <h6 style="color: white;">开发团队</h6>
-                    <p class="small" style="color: rgba(255,255,255,0.7);">
-                        A - 红色英雄 & 故事<br>
-                        B - 党史百科 & 圣地<br>
-                        C - 红色寻访 & 用户<br>
-                        D - 管理端 & 首页
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <hr style="background-color: rgba(255,255,255,0.2);">
-
-        <div class="row">
-            <div class="col-md-6">
-                <p class="mb-0" style="color: rgba(255,255,255,0.7);">© 2024 江西红色文化信息网. 保留所有权利.</p>
-            </div>
-            <div class="col-md-6 text-end">
-                <p class="mb-0">
-                    <a href="#" class="text-light text-decoration-none me-3">隐私政策</a>
-                    <a href="#" class="text-light text-decoration-none">使用条款</a>
-                </p>
-            </div>
-        </div>
-    </div>
+        <!-- 可继续添加更多英雄卡片 -->
+    </section>
+</main>
+<footer>
+    <p>© 2025 江西红色文化展示项目组</p>
 </footer>
-
-<!-- Bootstrap JS Bundle with Popper -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- 自定义JS -->
-
 <script src="/static/js/hero/hero-list.js"></script>
 </body>
 </html>
