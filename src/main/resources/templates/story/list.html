@@ -1,60 +1,340 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>红色故事 | 文章列表</title>
-    <link rel="stylesheet" href="/static/css/story.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>红色故事 - 江西红色文化信息网</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- 使用与首页相同的CSS -->
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/story/story.css">
+    <style>
+
+    </style>
 </head>
 <body>
-<header>
-    <h1>红色故事荟萃</h1>
-    <form class="search-bar" method="get" action="/stories">
-        <input type="text" name="q" placeholder="按标题搜索..." value="">
-        <button type="submit">搜索</button>
-    </form>
-</header>
-<main>
-    <section class="story-list">
-        <!-- 文章可通过循环动态生成 -->
-        <article class="story-article">
-            <h2>血色湘赣：长征路上的红色记忆</h2>
-            <div class="story-meta">
-                <span>作者：李红</span> |
-                <span>2024-06-01</span>
-            </div>
-            <p>
-                1934年秋，红军面临腥风血雨的第五次反“围剿”。在江西瑞金，年仅16岁的魏汉勇毅然递交参军申请。在艰苦的长征途中，他与战友们共克险阻，不畏牺牲。敌人的重兵围堵并没有让他们退步，反而更加坚定了革命信念。
-            </p>
-            <p>
-                在一次强渡乌江的战斗中，魏汉勇主动请缨，带领突击队第一个冲上江岸，成功打开了突破口。长征胜利后，他光荣牺牲在抗日战场，他的事迹激励了一代又一代中国青年。
-            </p>
-            <footer class="story-footer">
-                <a href="/stories/1" class="read-more">阅读全文</a>
-            </footer>
-        </article>
-        <!-- 示例2 -->
-        <article class="story-article">
-            <h2>星火燎原：南昌起义背后的江南英烈</h2>
-            <div class="story-meta">
-                <span>作者：王青</span> |
-                <span>2024-05-21</span>
-            </div>
-            <p>南昌起义点燃了中国大地的革命烈焰。江西的青年志士响应号召，无数英雄在战火中留下不朽的身影，塑造了共和国的基石。</p>
-            <footer class="story-footer">
-                <a href="/stories/2" class="read-more">阅读全文</a>
-            </footer>
-        </article>
-        <!-- 可通过后端分页，下一页按钮等 -->
-    </section>
-    <div class="pagination">
-        <a class="page-link" href="?page=1">1</a>
-        <a class="page-link active" href="?page=2">2</a>
-        <a class="page-link" href="?page=3">3</a>
-        <span>...</span>
+<!-- 导航栏 - 与首页保持一致 -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-red sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/index.html">
+            <i class="fas fa-landmark me-2"></i>
+            <strong>江西红色文化</strong>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">
+                        <i class="fas fa-user-shield me-1"></i> 红色英雄
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/encyclopedias/list.html.html">
+                        <i class="fas fa-book me-1"></i> 党史大百科
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/RedScenicSpot/list.html">
+                        <i class="fas fa-map-marked-alt me-1"></i> 红色圣地
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html">
+                        <i class="fas fa-book-open me-1"></i> 红色故事
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/explore/list.html">
+                        <i class="fas fa-hiking me-1"></i> 红色寻访
+                    </a>
+                </li>
+            </ul>
+
+
+        </div>
     </div>
-</main>
-<footer>
-    <p>© 2025 江西红色文化展示项目组</p>
+</nav>
+
+<div class="container-fluid py-3" style="background: linear-gradient(135deg, #fff8e1, #ffebee);">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/index.html" style="text-decoration: none; color: var(--red-primary);">首页</a></li>
+                <li class="breadcrumb-item active" aria-current="page">红色故事</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- 主内容区域 -->
+<div class="container py-5">
+    <!-- 页面标题和简介 -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h1 class="mb-3" style="color: var(--red-primary);">
+                <i class="fas fa-book-open me-3"></i>红色故事
+            </h1>
+            <p class="lead" style="color: #666;">
+                聆听革命岁月的感人故事，传承不朽的红色精神。这里汇聚了江西大地上发生的真实革命故事，让我们一起重温那段峥嵘岁月。
+            </p>
+        </div>
+    </div>
+
+    <!-- 统计信息 -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="stats-card">
+                <div class="stats-number" th:text="${totalItems}">128</div>
+                <div class="stats-label">总故事数</div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="story-search-container">
+                <h4 class="mb-4 text-center" style="color: var(--red-primary);">
+                    <i class="fas fa-search me-2"></i>搜索红色故事
+                </h4>
+                <div class="search-controls">
+                    <!-- 搜索表单 -->
+                    <form th:action="@{/stories}" method="get" class="mb-4">
+                        <div class="input-group input-group-lg">
+                            <input type="text" class="form-control" name="kw"
+                                   th:value="${searchKeyword}"
+                                   placeholder="输入关键词，如：井冈山、方志敏、长征..."
+                                   aria-label="搜索红色故事">
+                            <button class="btn btn-danger" type="submit">
+                                <i class="fas fa-search me-2"></i>搜索
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- 快速筛选标签 -->
+                    <div class="filter-tags">
+                        <span class="filter-tag" onclick="searchByTag('井冈山')">井冈山</span>
+                        <span class="filter-tag" onclick="searchByTag('瑞金')">瑞金</span>
+                        <span class="filter-tag" onclick="searchByTag('长征')">长征</span>
+                        <span class="filter-tag" onclick="searchByTag('方志敏')">方志敏</span>
+                        <span class="filter-tag" onclick="searchByTag('南昌起义')">南昌起义</span>
+                        <span class="filter-tag" onclick="searchByTag('革命')">革命故事</span>
+                        <span class="filter-tag" onclick="searchByTag('英雄')">英雄事迹</span>
+                        <span class="filter-tag" onclick="clearSearch()">全部</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 推荐故事 -->
+    <div th:if="${not #lists.isEmpty(featuredStories)}" class="featured-section">
+        <h3 class="featured-title">精选推荐</h3>
+        <div class="featured-stories">
+            <div th:each="story : ${featuredStories}" class="featured-story">
+                <div class="featured-story-image">
+                    <img th:src="${story.imageUrl} ?: 'https://placehold.co/400x300/8B0000/FFFFFF?text=红色故事'"
+                         th:alt="${story.title}">
+                </div>
+                <div class="featured-story-content">
+                    <h5 class="featured-story-title" th:text="${story.title}"></h5>
+                    <div class="featured-story-meta">
+                            <span th:if="${story.heroName}">
+                                <i class="fas fa-user-shield me-1"></i>
+                                <span th:text="${story.heroName}"></span>
+                            </span>
+                        <span th:if="${story.location}" class="ms-3">
+                                <i class="fas fa-map-marker-alt me-1"></i>
+                                <span th:text="${story.location}"></span>
+                            </span>
+                    </div>
+                    <p class="mb-0" th:text="${#strings.abbreviate(story.summary, 80)}"></p>
+                    <a th:href="@{/stories/{id}(id=${story.id})}" class="btn btn-sm btn-danger mt-2">
+                        阅读全文 <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 故事列表 -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 style="color: var(--red-primary);">
+                    <i class="fas fa-list me-2"></i>
+                    红色故事列表
+                    <small class="text-muted ms-2" th:if="${searchKeyword}">
+                        搜索结果：<span th:text="${searchKeyword}"></span>
+                    </small>
+                </h3>
+                <div class="d-flex align-items-center">
+                    <span class="me-3 text-muted" th:text="'共 ' + ${totalItems} + ' 篇故事'"></span>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-danger btn-sm active">最新</button>
+                        <button type="button" class="btn btn-outline-danger btn-sm">最热</button>
+                        <button type="button" class="btn btn-outline-danger btn-sm">推荐</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 故事网格 -->
+    <div th:if="${not #lists.isEmpty(stories)}" class="story-grid">
+        <div th:each="story : ${stories}" class="story-card">
+            <div class="story-image">
+                <img th:src="${story.imageUrl} ?: 'https://placehold.co/600x400/8B0000/FFFFFF?text=红色故事'"
+                     th:alt="${story.title}">
+                <span th:if="${story.isFeatured}" class="featured-badge">
+                        <i class="fas fa-star me-1"></i>推荐
+                    </span>
+            </div>
+            <div class="story-info">
+                <div class="story-meta">
+                        <span class="story-hero" th:if="${story.heroName}">
+                            <i class="fas fa-user-tie me-1"></i>
+                            <span th:text="${story.heroName}"></span>
+                        </span>
+                    <span class="story-date" th:text="${#dates.format(story.createdAt, 'yyyy-MM-dd')}"></span>
+                </div>
+                <h4 class="story-title" th:text="${story.title}"></h4>
+                <p class="story-summary" th:text="${story.summary ?: #strings.abbreviate(story.content, 150)}"></p>
+                <div class="story-footer">
+                    <div class="story-location" th:if="${story.location}">
+                        <i class="fas fa-map-marker-alt me-1"></i>
+                        <span th:text="${story.location}"></span>
+                    </div>
+                    <div class="story-views" th:if="${story.viewCount}">
+                        <i class="fas fa-eye"></i>
+                        <span th:text="${story.viewCount}"></span>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <a th:href="@{/stories/{id}(id=${story.id})}" class="read-more-btn">
+                        阅读详情 <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 空状态 -->
+    <div th:if="${#lists.isEmpty(stories)}" class="empty-state">
+        <i class="fas fa-book-open"></i>
+        <h4>暂无相关故事</h4>
+        <p th:if="${searchKeyword}">
+            没有找到与 "<span th:text="${searchKeyword}"></span>" 相关的故事，请尝试其他关键词。
+        </p>
+        <p th:unless="${searchKeyword}">
+            管理员正在整理红色故事，敬请期待...
+        </p>
+        <a href="/stories" class="btn btn-danger mt-3">
+            <i class="fas fa-redo me-2"></i>查看全部故事
+        </a>
+    </div>
+
+    <!-- 分页 -->
+    <div th:if="${totalPages > 1}" class="pagination-container">
+        <nav aria-label="故事分页">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{/stories(page=${currentPage}, size=${pageSize}, kw=${searchKeyword})}">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{/stories(page=${currentPage-1 < 0 ? 0 : currentPage-1}, size=${pageSize}, kw=${searchKeyword})}">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                </li>
+
+                <li th:each="i : ${#numbers.sequence(0, totalPages-1)}"
+                    th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link"
+                       th:href="@{/stories(page=${i}, size=${pageSize}, kw=${searchKeyword})}"
+                       th:text="${i+1}"></a>
+                </li>
+
+                <li class="page-item" th:classappend="${currentPage == totalPages-1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/stories(page=${currentPage+1 >= totalPages ? totalPages-1 : currentPage+1}, size=${pageSize}, kw=${searchKeyword})}">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages-1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/stories(page=${totalPages-1}, size=${pageSize}, kw=${searchKeyword})}">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- 页脚 -->
+<footer class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h4 class="mb-4" style="color: white;">
+                    <i class="fas fa-landmark me-2"></i>
+                    <strong>江西红色文化信息网</strong>
+                </h4>
+                <p style="color: rgba(255,255,255,0.8);">聆听革命故事，传承红色基因，弘扬革命精神。</p>
+                <div class="mt-3">
+                    <a href="#" class="text-white me-3"><i class="fab fa-weixin fa-lg"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-weibo fa-lg"></i></a>
+                    <a href="#" class="text-white"><i class="fas fa-envelope fa-lg"></i></a>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="mb-4" style="color: white;">快速链接</h5>
+                <div class="footer-links">
+                    <p><a href="/heroes">红色英雄</a></p>
+                    <p><a href="/encyclopedias">党史大百科</a></p>
+                    <p><a href="/scenicspots">红色圣地</a></p>
+                    <p><a href="/stories">红色故事</a></p>
+                    <p><a href="/explore">红色寻访</a></p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="mb-4" style="color: white;">联系我们</h5>
+                <p style="color: rgba(255,255,255,0.8);"><i class="fas fa-map-marker-alt me-2"></i> 江西省南昌市红谷滩区</p>
+                <p style="color: rgba(255,255,255,0.8);"><i class="fas fa-phone me-2"></i> 0791-12345678</p>
+                <p style="color: rgba(255,255,255,0.8);"><i class="fas fa-envelope me-2"></i> contact@jxredculture.com</p>
+            </div>
+        </div>
+
+        <hr style="background-color: rgba(255,255,255,0.2);">
+
+        <div class="row">
+            <div class="col-md-6">
+                <p class="mb-0" style="color: rgba(255,255,255,0.7);">© 2024 江西红色文化信息网. 保留所有权利.</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <p class="mb-0">
+                    <a href="#" class="text-light text-decoration-none me-3">隐私政策</a>
+                    <a href="#" class="text-light text-decoration-none">使用条款</a>
+                </p>
+            </div>
+        </div>
+    </div>
 </footer>
+
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- 自定义JS -->
+<script src="/static/js/story/story-list.js"></script>
+
+<script>
+
+</script>
 </body>
 </html>
