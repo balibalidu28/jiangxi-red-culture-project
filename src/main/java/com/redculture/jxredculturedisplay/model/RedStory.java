@@ -8,7 +8,12 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "red_story")
 public class RedStory {
-
+    /**
+     * 【实体】RedStory（红色故事/文章）
+     * 【负责人】A
+     * 字段：id, title(必填), content(TEXT必填), source, createdAt
+     * 注意：createdAt用于首页“最新故事”日期显示
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
