@@ -1,15 +1,5 @@
-// ============== 静态资源与 API 基址（避免走 63342） ==============
-const STATIC_ORIGIN = (location.port === '8080' || location.origin.includes('localhost:8080'))
-    ? location.origin
-    : 'http://localhost:8080';
-const API_SCENIC = `${STATIC_ORIGIN}/api/admin/scenicspots`;
-
-function assetUrl(path) {
-    if (!path) return '';
-    if (/^https?:\/\//i.test(path)) return path; // 已是绝对地址
-    const p = path.startsWith('/') ? path : `/${path}`;
-    return `${STATIC_ORIGIN}${p}`;
-}
+// API基址（注意和你的Controller一致！）
+const API_SCENIC = window.STATIC_ORIGIN + "/scenicspots/api";
 
 // ============== 加载圣地列表 ==============
 async function loadScenicSpots() {
@@ -37,8 +27,8 @@ async function loadScenicSpots() {
         scenicTableBody.innerHTML = "";
 
         spots.forEach(spot => {
-            const rawImg = spot.imageUrl ?? spot.image_url ?? ''; // 兼容两种字段
-            const imgSrc = rawImg ? assetUrl(rawImg) : '#';
+            const rawImg = spot.imageUrl ?? spot.image_url ?? '';
+            const imgSrc = rawImg ? window.assetUrl(rawImg) : '#';
 
             const row = document.createElement("tr");
             row.innerHTML = `
@@ -56,15 +46,13 @@ async function loadScenicSpots() {
           <button type="button" onclick="deleteScenic(${spot.id})">删除</button>
         </td>
       `;
-
             // 点击缩略图 -> 弹窗预览（不跳转）
             const img = row.querySelector('.scenic-thumbnail');
             if (img && rawImg) {
                 img.addEventListener('click', () => {
-                    previewImage(rawImg, spot.name);
+                    window.previewImage(rawImg, spot.name);
                 });
             }
-
             scenicTableBody.appendChild(row);
         });
 
@@ -197,8 +185,8 @@ async function editScenic(id) {
         const link = document.getElementById("scenic-current-image-link");
 
         if (rawImg) {
-            if (img) img.src = assetUrl(rawImg);
-            if (link) link.href = assetUrl(rawImg);
+            if (img) img.src = window.assetUrl(rawImg);
+            if (link) link.href = window.assetUrl(rawImg);
             if (box) box.style.display = 'block';
         } else {
             if (img) img.removeAttribute('src');
@@ -259,34 +247,6 @@ function searchScenic() {
     });
 }
 
-// ============== 图片预览弹窗（不跳转，带关闭按钮/遮罩/ESC） ==============
-function previewImage(imageUrl, imageName) {
-    if (!imageUrl) return;
-    const modal = document.getElementById('imagePreviewModal');
-    const img = document.getElementById('previewImage');
-    const title = document.getElementById('previewTitle');
-    img.onerror = null;
-    img.src = assetUrl(imageUrl);
-    img.alt = imageName || '图片预览';
-    title.textContent = imageName || '图片预览';
-    modal.classList.add('active');
-
-    img.onerror = function() {
-        closeImagePreview();
-        alert('图片加载失败，请检查图片链接是否有效');
-    };
-}
-
-function closeImagePreview() {
-    const modal = document.getElementById('imagePreviewModal');
-    if (modal) modal.classList.remove('active');
-}
-
-// 键盘 ESC 关闭
-document.addEventListener('keydown', function handleEscapeKey(e) {
-    if (e.key === 'Escape') closeImagePreview();
-});
-
 // ============== 页面加载初始化 ==============
 document.addEventListener("DOMContentLoaded", function() {
     loadScenicSpots();
@@ -303,12 +263,11 @@ document.addEventListener("DOMContentLoaded", function() {
     if (cancelBtn) cancelBtn.addEventListener("click", hideScenicForm);
 });
 
-// 导出函数供HTML调用
+// 导出供HTML调用
 window.showScenicForm = showScenicForm;
 window.hideScenicForm = hideScenicForm;
 window.saveScenic = saveScenic;
 window.editScenic = editScenic;
 window.deleteScenic = deleteScenic;
 window.searchScenic = searchScenic;
-window.previewImage = previewImage;
-window.closeImagePreview = closeImagePreview;
+// 图片预览弹窗、关闭已在 common.js 全局暴露，无需再挂
