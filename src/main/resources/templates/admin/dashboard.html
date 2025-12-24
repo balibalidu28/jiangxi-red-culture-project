@@ -321,36 +321,56 @@
     <section id="user" class="module-section">
         <h2>用户管理</h2>
         <button onclick="showUserForm()">新增用户</button>
+
         <!-- 新增/编辑用户表单 -->
         <div id="userFormContainer" class="form-container" style="display: none;">
             <h2 id="userFormTitle">新增用户</h2>
-            <form id="userForm">
-                <!-- 添加这行：隐藏的ID字段 -->
+            <form id="userForm" onsubmit="event.preventDefault(); saveUser();">
+                <!-- 隐藏的ID字段（用于编辑模式） -->
                 <input type="hidden" id="userId">
 
-                <label for="user-name">用户名称：</label>
-                <input type="text" id="user-name" placeholder="请输入用户名称" required>
+                <label for="username">用户名：</label>
+                <input type="text" id="username" placeholder="请输入用户名" required>
 
-                <label for="user-location">地点：</label>
-                <input type="text" id="user-location" placeholder="请输入用户地点" required>
+                <label for="phone">手机号：</label>
+                <input type="tel" id="phone" placeholder="请输入手机号" maxlength="11" required>
 
-                <label for="user-date">日期：</label>
-                <textarea id="user-date" placeholder="请输入用户日期"></textarea>
+                <label for="password">密码：</label>
+                <input type="password" id="password" placeholder="请输入密码" required>
 
-                <button type="button" onclick="saveUser()">保存</button>
-                <button type="button" onclick="hideUserForm()">取消</button>
+                <label for="confirmPassword">确认密码：</label>
+                <input type="password" id="confirmPassword" placeholder="请再次输入密码" required>
+
+                <label for="role">角色：</label>
+                <select id="role">
+                    <option value="USER">USER</option>
+                    <option value="ADMIN">ADMIN</option>
+                </select>
+
+                <label for="isActive">是否启用：</label>
+                <select id="isActive">
+                    <option value="true" selected>启用</option>
+                    <option value="false">禁用</option>
+                </select>
+
+                <div class="form-actions">
+                    <button type="submit">保存</button>
+                    <button type="button" onclick="hideUserForm()">取消</button>
+                </div>
             </form>
         </div>
-        <table>
+
+        <table id="userTable">
             <thead>
             <tr>
                 <th>ID</th>
-                <th>用户名称</th>
+                <th>用户名</th>
                 <th>手机号</th>
-                <th>加密后的密码</th>
-                <th>用户角色</th>
+                <th>角色</th>
+                <th>启用</th>
                 <th>创建时间</th>
                 <th>更新时间</th>
+                <th>操作</th>
             </tr>
             </thead>
             <tbody>
@@ -366,6 +386,7 @@
 <script src="/static/js/admin/encyclopedia.js"></script>
 <script src="/static/js/admin/explore.js"></script>
 <script src="/static/js/admin/story.js"></script>
+<script src="/static/js/admin/user.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         loadScenicSpots();

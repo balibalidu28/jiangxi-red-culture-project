@@ -15,6 +15,7 @@ public class AdminController {
     private final RedScenicSpotService scenicSpotService;
     private final RedExploreService exploreService;
     private final PartyEncyclopediaService encyclopediaService;
+    private final UserService userService;
 
     // 通过构造函数注入所有相关服务
     public AdminController(
@@ -22,13 +23,15 @@ public class AdminController {
             RedStoryService storyService,
             RedScenicSpotService scenicSpotService,
             RedExploreService exploreService,
-            PartyEncyclopediaService encyclopediaService
+            PartyEncyclopediaService encyclopediaService,
+            UserService userService
     ) {
         this.heroService = heroService;
         this.storyService = storyService;
         this.scenicSpotService = scenicSpotService;
         this.exploreService = exploreService;
         this.encyclopediaService = encyclopediaService;
+        this.userService = userService;
     }
 
     // ========================== 英雄管理功能 ==========================
@@ -170,4 +173,57 @@ public class AdminController {
 
         return ResponseEntity.ok(encyclopedia); // 返回 200 和百科数据
     }
+    // ========================== 用户管理功能（新增） ==========================
+
+    // 获取所有用户
+    @GetMapping("/users")
+    public List<User> getAllUsers() {
+        return userService.listAll();
+    }
+
+    // 按ID获取用户
+    @GetMapping("/users/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Integer id) {
+        User user = userService.findById(id);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(user);
+    }
+
+    // 创建用户
+    @PostMapping("/users")
+    public User createUser(@RequestBody User user) {
+        return userService.save(user);
+    }
+
+    // 更新用户
+    @PutMapping("/users/{id}")
+    public User updateUser(@PathVariable Integer id, @RequestBody User userDetails) {
+        return userService.update(id, userDetails);
+    }
+
+    // 删除用户
+    @DeleteMapping("/users/{id}")
+    public void deleteUser(@PathVariable Integer id) {
+        userService.deleteById(id);
+    }
+
+    // 可选：锁定/解锁用户（需要在 service 层实现）
+    // @PatchMapping("/users/{id}/status")
+    // public User changeUserStatus(@PathVariable Integer id, @RequestParam("enabled") boolean enabled) {
+    //     return userService.changeStatus(id, enabled);
+    // }
+
+    // 可选：重置密码（需要在 service 层实现）
+    // @PostMapping("/users/{id}/reset-password")
+    // public void resetPassword(@PathVariable Integer id, @RequestBody ResetPasswordRequest req) {
+    //     userService.resetPassword(id, req.getNewPassword());
+    // }
+
+    // 可选：更新用户角色（需要在 service 层实现）
+    // @PutMapping("/users/{id}/roles")
+    // public User updateUserRoles(@PathVariable Integer id, @RequestBody List<String> roles) {
+    //     return userService.updateRoles(id, roles);
+    // }
 }

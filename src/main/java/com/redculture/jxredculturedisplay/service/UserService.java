@@ -9,15 +9,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder; // 让Spring注入
+
+    public UserService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     /**
      * 用户注册
@@ -183,6 +189,62 @@ public class UserService {
         user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
         return true;
+    }
+
+    public List<User> listAll() {
+        return userRepository.findAll();
+    }
+
+
+    public User save(User user) {
+        // 如需在此拦截设置默认值或编码密码，可在这里处理
+        return userRepository.save(user);
+    }
+
+    // 按 Integer id 查询（找不到返回 null，兼容 Controller 的 404 逻辑）
+    public User findById(Integer id) {
+        if (id == null) return null;
+        return userRepository.findById(id.longValue()).orElse(null);
+    }
+
+    // 按 Integer id 更新，支持按需更新字段；若需更严格的唯一性校验可在此补充
+    public User update(Integer id, User userDetails) {
+        if (id == null) {
+            throw new IllegalArgumentException("用户ID不能为空");
+        }
+        User user = userRepository.findById(id.longValue())
+                .orElseThrow(() -> new IllegalArgumentException("用户不存在"));
+
+        // 按需覆盖可更新字段
+        if (userDetails.getUsername() != null) {
+            user.setUsername(userDetails.getUsername());
+        }
+        if (userDetails.getPhone() != null) {
+            user.setPhone(userDetails.getPhone());
+        }
+        if (userDetails.getRole() != null) {
+            user.setRole(userDetails.getRole());
+        }
+        if (userDetails.getIsActive() != null) {
+            user.setIsActive(userDetails.getIsActive());
+        }
+        // 若前端传来新密码则进行加密后更新
+        if (userDetails.getPassword() != null && !userDetails.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+        }
+
+        user.setUpdatedAt(LocalDateTime.now());
+        return userRepository.save(user);
+    }
+
+    // 按 Integer id 删除（不存在则静默返回，也可改为抛异常）
+    public void deleteById(Integer id) {
+        if (id == null) return;
+        Long lid = id.longValue();
+        if (!userRepository.existsById(lid)) {
+            return; // 或者：throw new IllegalArgumentException("用户不存在");
+        }
+        userRepository.deleteById(lid);
     }
 }
 
