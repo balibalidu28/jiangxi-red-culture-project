@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>红色寻访 - 江西红色文化信息网</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <link rel="stylesheet" href="/static/css/explore/list.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="red-theme">
+<!-- 导航栏 - 红色主题（使用首页样式） -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-red sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="">
+            <i class="fas fa-landmark me-2"></i>
+            <strong>江西红色文化</strong>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/hero/list.html">
+                        <i class="fas fa-user-shield me-1"></i> 红色英雄
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/encyclopedia/list.html">
+                        <i class="fas fa-book me-1"></i> 党史大百科
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/RedScenicSpot/list.html">
+                        <i class="fas fa-map-marked-alt me-1"></i> 红色圣地
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html">
+                        <i class="fas fa-book-open me-1"></i> 红色故事
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/explore.html">
+                        <i class="fas fa-hiking me-1"></i> 红色寻访
+                    </a>
+                </li>
+            </ul>
+
+            <!-- 登录图标 -->
+            <div class="login-icon-container">
+                <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/entry/register.html" class="login-icon" title="登录">
+                    <i class="fas fa-user-circle fa-lg"></i>
+                    <!--                        <span class="login-text">登录</span>-->
+                </a>
+            </div>
+            <li class="nav-item">
+                <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/index.html">
+                    首页
+                </a>
+            </li>
+        </div>
+    </div>
+</nav>
+
+<!-- 红色寻访主内容区 -->
+<div class="explore-container">
+    <!-- 页面标题和简介 -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-map-marked-alt"></i> 红色寻访活动
+        </h1>
+        <p class="page-subtitle">追寻红色足迹，传承革命精神，体验江西红色文化之旅</p>
+    </div>
+
+    <!-- 筛选面板 -->
+    <div class="filter-panel">
+        <div class="filter-section">
+            <h3 class="filter-title"><i class="fas fa-filter"></i> 活动筛选</h3>
+
+            <!-- 搜索框 -->
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="搜索活动名称..." class="search-input">
+                <button id="searchBtn" class="search-btn">
+                    <i class="fas fa-search"></i> 搜索
+                </button>
+            </div>
+
+            <!-- 筛选条件 - 修改布局 -->
+            <div class="filter-grid">
+                <!-- 地区筛选 -->
+                <div class="filter-group">
+                    <label class="filter-label"><i class="fas fa-map-marker-alt"></i> 活动地区</label>
+                    <select id="cityFilter" class="filter-select">
+                        <option value="">全部地区</option>
+                        <option value="南昌市">南昌市</option>
+                        <option value="赣州市">赣州市</option>
+                        <option value="吉安市">吉安市</option>
+                        <option value="上饶市">上饶市</option>
+                        <option value="九江市">九江市</option>
+                        <option value="萍乡市">萍乡市</option>
+                        <option value="景德镇市">景德镇市</option>
+                        <option value="新余市">新余市</option>
+                        <option value="鹰潭市">鹰潭市</option>
+                        <option value="宜春市">宜春市</option>
+                        <option value="抚州市">抚州市</option>
+                    </select>
+                </div>
+
+                <!-- 人数筛选 -->
+                <div class="filter-group">
+                    <label class="filter-label"><i class="fas fa-users"></i> 参与人数</label>
+                    <select id="participantsFilter" class="filter-select">
+                        <option value="">全部</option>
+                        <option value="10">10人以下</option>
+                        <option value="30">10-30人</option>
+                        <option value="50">30-50人</option>
+                        <option value="51">50人以上</option>
+                    </select>
+                </div>
+
+                <!-- 时间筛选 -->
+                <div class="filter-group">
+                    <label class="filter-label"><i class="fas fa-calendar-alt"></i> 活动时间</label>
+                    <div class="date-filters">
+                        <input type="date" id="startDate" class="date-input">
+                        <span class="date-separator">至</span>
+                        <input type="date" id="endDate" class="date-input">
+                    </div>
+                </div>
+
+                <!-- 状态筛选 -->
+                <div class="filter-group">
+                    <label class="filter-label"><i class="fas fa-clock"></i> 活动状态</label>
+                    <div class="status-buttons">
+                        <button class="status-btn active" data-status="">全部</button>
+                        <button class="status-btn" data-status="1">未开始</button>
+                        <button class="status-btn" data-status="2">进行中</button>
+                        <button class="status-btn" data-status="3">已结束</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="filter-actions">
+                <button id="resetFilters" class="btn-reset">
+                    <i class="fas fa-redo"></i> 重置筛选
+                </button>
+                <button id="applyFilters" class="btn-apply">
+                    <i class="fas fa-check"></i> 应用筛选
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 活动列表区域 -->
+    <div class="activities-section">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-list"></i> 近期活动
+                <span id="activityCount" class="count-badge">0个活动</span>
+            </h2>
+            <div class="view-options">
+                <button class="view-btn active" data-view="grid">
+                    <i class="fas fa-th-large"></i>
+                </button>
+                <button class="view-btn" data-view="list">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 活动列表 -->
+        <div id="activitiesContainer" class="activities-grid">
+            <!-- 活动卡片将通过JavaScript动态加载 -->
+        </div>
+
+        <!-- 加载更多 -->
+        <div class="load-more">
+            <button id="loadMoreBtn" class="btn-load-more">
+                <i class="fas fa-spinner"></i> 加载更多活动
+            </button>
+        </div>
+
+        <!-- 空状态提示 -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <i class="fas fa-search-empty"></i>
+            <h3>未找到相关活动</h3>
+            <p>请尝试调整筛选条件或搜索关键词</p>
+            <button id="resetEmpty" class="btn-reset-empty">重置所有筛选</button>
+        </div>
+    </div>
+</div>
+
+<!-- 底部信息 -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>江西红色文化信息网</h4>
+                <p>传承红色基因，弘扬革命精神</p>
+            </div>
+            <div class="footer-section">
+                <h4>快速链接</h4>
+                <ul>
+                    <li><a href="/">网站首页</a></li>
+                    <li><a href="/hero">红色英雄</a></li>
+                    <li><a href="/explore">红色寻访</a></li>
+                    <li><a href="/story">红色故事</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>联系我们</h4>
+                <p>联系电话：0791-XXXXXXX</p>
+                <p>电子邮箱：jxredculture@example.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 江西红色文化信息网 版权所有</p>
+        </div>
+    </div>
+</footer>
+
+<!-- JavaScript -->
+<script src="/static/js/explore/list.js"></script>
+</body>
+</html>
