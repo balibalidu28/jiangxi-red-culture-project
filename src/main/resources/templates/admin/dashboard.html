@@ -108,7 +108,17 @@
                 <div style="margin-top: 10px;">
                     <label for="hero-image">上传图片：</label>
                     <input type="file" id="hero-image" accept="image/*">
-                    <div id="hero-image-preview" style="margin-top: 10px;"></div>
+                    <!-- 当前图片回显+点击大图弹窗 -->
+                    <div id="hero-current-image-box" style="display:none; margin-top:10px;">
+                        <span style="margin-right:8px;">当前图片：</span>
+                        <img
+                                id="hero-current-image"
+                                alt="当前英雄图片"
+                                style="max-width:120px; vertical-align:middle; cursor:pointer; border-radius:4px; border:1px solid #ececec;"
+                                onclick="if(this.src) previewImage(this.src, document.getElementById('hero-name').value||'英雄图片');"
+                        >
+                    </div>
+                    <input type="hidden" id="heroImageUrlHidden">
                 </div>
 
                 <div style="margin-top: 15px;">
@@ -127,6 +137,7 @@
                 <th>类别</th>
                 <th>性别</th>
                 <th>简介</th>
+                <th>图片</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -169,7 +180,17 @@
 
                 <label for="story-image">上传图片：</label>
                 <input type="file" id="story-image" accept="image/*">
-                <!-- 你可以加图片预览div -->
+                <!-- 当前图片预览（仅编辑时显示） -->
+                <div id="story-current-image-box" style="display:none; margin-top:10px;">
+                    <span style="margin-right:8px;">当前图片：</span>
+                    <img
+                            id="story-current-image"
+                            alt="当前故事图片"
+                            style="max-width:120px; vertical-align:middle; cursor:pointer; border-radius:4px; border:1px solid #ececec;"
+                            onclick="if(this.src) previewImage(this.src, document.getElementById('story-title').value||'故事图片');"
+                    >
+                </div>
+                <input type="hidden" id="storyImageUrlHidden">
 
                 <button type="button" onclick="saveStory()">保存</button>
                 <button type="button" onclick="hideStoryForm()">取消</button>
@@ -183,6 +204,7 @@
                 <th>摘要</th>
                 <th>地点</th>
                 <th>时间</th>
+                <th>图片</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -250,19 +272,6 @@
             </tbody>
         </table>
     </section>
-
-    <!-- 图片预览弹窗（不跳转，带关闭按钮） -->
-    <div id="imagePreviewModal" class="image-preview-modal" onclick="if(event.target===this) closeImagePreview()">
-        <div class="image-preview-content">
-            <div class="image-preview-header">
-                <span id="previewTitle">图片预览</span>
-                <button class="image-preview-close" type="button" onclick="closeImagePreview()">&times;</button>
-            </div>
-            <div class="image-preview-body">
-                <img id="previewImage" src="" alt="预览图片">
-            </div>
-        </div>
-    </div>
 
     <!-- 活动管理模块 -->
     <section id="explore" class="module-section">
@@ -406,6 +415,18 @@
             </tbody>
         </table>
     </section>
+    <!-- 图片预览弹窗（不跳转，带关闭按钮） -->
+    <div id="imagePreviewModal" class="image-preview-modal" onclick="if(event.target===this) closeImagePreview()">
+        <div class="image-preview-content">
+            <div class="image-preview-header">
+                <span id="previewTitle">图片预览</span>
+                <button class="image-preview-close" type="button" onclick="closeImagePreview()">&times;</button>
+            </div>
+            <div class="image-preview-body">
+                <img id="previewImage" src="" alt="预览图片">
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="/static/js/admin/admin.js"></script>

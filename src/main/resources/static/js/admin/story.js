@@ -29,18 +29,25 @@ function populateStoryTable(stories) {
     }
 
     stories.forEach(story => {
+        const imgUrl = story.imageUrl ?? story.image_url ?? "";
+        const imgHtml = imgUrl
+            ? `<img src="${imgUrl.startsWith('http')?imgUrl:'http://localhost:8080'+(imgUrl.startsWith('/')?imgUrl:'/'+imgUrl)}"
+                style="width:40px;cursor:pointer;border-radius:3px;"
+                onclick="previewImage('${imgUrl}','${escapeHTML(story.title)}')">`
+            : '<span style="color:#aaa;">无</span>';
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${story.id || ''}</td>
-            <td>${escapeHTML(story.title)}</td>
-            <td>${escapeHTML(story.summary || '')}</td>
-            <td>${escapeHTML(story.location || '')}</td>
-            <td>${escapeHTML(story.storyTime || '')}</td>
-            <td>
-                <button onclick="editStory(${story.id})">编辑</button>
-                <button onclick="deleteStory(${story.id})">删除</button>
-            </td>
-        `;
+        <td>${story.id || ''}</td>
+        <td>${escapeHTML(story.title)}</td>
+        <td>${escapeHTML(story.summary || '')}</td>
+        <td>${escapeHTML(story.location || '')}</td>
+        <td>${escapeHTML(story.storyTime || '')}</td>
+        <td>${imgHtml}</td>
+        <td>
+            <button onclick="editStory(${story.id})">编辑</button>
+            <button onclick="deleteStory(${story.id})">删除</button>
+        </td>
+    `;
         tbody.appendChild(tr);
     });
 }
@@ -61,6 +68,18 @@ function showStoryForm(isEdit = false, story = null) {
     document.getElementById("story-location").value = story ? story.location : "";
     document.getElementById("story-heroName").value = story ? (story.heroName || '') : "";
     // 若需回显图片可扩展
+    const imgUrl = story?.imageUrl ?? story?.image_url ?? "";
+    document.getElementById("storyImageUrlHidden").value = imgUrl;
+    const imgBox = document.getElementById("story-current-image-box");
+    const imgEl = document.getElementById("story-current-image");
+    if (imgUrl) {
+        imgEl.src = imgUrl.startsWith('http') ? imgUrl : 'http://localhost:8080' + (imgUrl.startsWith('/') ? imgUrl : '/' + imgUrl);
+        imgBox.style.display = 'block';
+        imgEl.onclick = () => previewImage(imgUrl, story.title || "故事图片");
+    } else {
+        imgEl.src = '';
+        imgBox.style.display = 'none';
+    }
 }
 
 // 隐藏表单
@@ -176,6 +195,7 @@ function escapeHTML(str) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#39;");
 }
+
 
 // 页面加载完成自动加载故事
 document.addEventListener("DOMContentLoaded", loadStories);
