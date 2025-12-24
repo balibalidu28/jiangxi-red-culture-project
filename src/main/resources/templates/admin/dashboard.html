@@ -195,13 +195,16 @@
     <!-- 圣地管理模块 -->
     <section id="scenicspots" class="module-section">
         <h2>圣地管理</h2>
-        <button onclick="showScenicForm()">新增圣地</button> <!-- 点击按钮显示表单 -->
+        <button onclick="showScenicForm()">新增圣地</button>
+
         <!-- 新增/编辑圣地表单 -->
         <div id="scenicFormContainer" class="form-container" style="display: none;">
             <h2 id="scenicFormTitle">新增圣地</h2>
             <form id="scenicForm">
-                <!-- 添加这行：隐藏的ID字段 -->
+                <!-- 隐藏的ID字段 -->
                 <input type="hidden" id="scenicId">
+                <!-- 隐藏：原图片地址（编辑时用于保留旧图） -->
+                <input type="hidden" id="scenicImageUrlHidden">
 
                 <label for="scenic-name">名称：</label>
                 <input type="text" id="scenic-name" placeholder="请输入圣地名称" required>
@@ -212,13 +215,25 @@
                 <label for="scenic-description">简介：</label>
                 <textarea id="scenic-description" placeholder="请输入圣地简介"></textarea>
 
+                <!-- 文件上传（可选；当前未实现上传逻辑，仅保留控件） -->
                 <label for="scenic-image">上传图片：</label>
                 <input type="file" id="scenic-image" accept="image/*">
 
-                <button type="button" onclick="saveScenic()">保存</button>
-                <button type="button" onclick="hideScenicForm()">取消</button>
+                <!-- 当前图片（仅编辑时显示；点击表格缩略图用弹窗预览） -->
+                <div id="scenic-current-image-box" style="display:none; margin-top:8px;">
+                    <span style="display:inline-block; margin-right:8px;">当前图片：</span>
+                    <a id="scenic-current-image-link" href="#" target="_blank" rel="noopener noreferrer">
+                        <img id="scenic-current-image" alt="当前图片" style="max-width:160px; vertical-align:middle;">
+                    </a>
+                </div>
+
+                <div class="form-actions" style="margin-top:12px;">
+                    <button type="button" onclick="saveScenic()">保存</button>
+                    <button type="button" id="cancelScenicBtn" onclick="hideScenicForm()">取消</button>
+                </div>
             </form>
         </div>
+
         <table id="scenicTable">
             <thead>
             <tr>
@@ -235,6 +250,19 @@
             </tbody>
         </table>
     </section>
+
+    <!-- 图片预览弹窗（不跳转，带关闭按钮） -->
+    <div id="imagePreviewModal" class="image-preview-modal" onclick="if(event.target===this) closeImagePreview()">
+        <div class="image-preview-content">
+            <div class="image-preview-header">
+                <span id="previewTitle">图片预览</span>
+                <button class="image-preview-close" type="button" onclick="closeImagePreview()">&times;</button>
+            </div>
+            <div class="image-preview-body">
+                <img id="previewImage" src="" alt="预览图片">
+            </div>
+        </div>
+    </div>
 
     <!-- 活动管理模块 -->
     <section id="explore" class="module-section">

@@ -1,8 +1,9 @@
-/* 通用样式 */
+
+    /* 通用样式 */
 body {
     margin: 0;
     font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     background-color: #f9f5f5; /* 柔和的浅红色背景 */
     color: #333;
@@ -13,10 +14,10 @@ a {
     color: inherit;
 }
 
-/* 左侧导航栏 - 改为纯深红色 */
+/* 左侧导航栏 */
 .sidebar {
     width: 250px;
-    background-color: #c21807; /* 鲜艳的正红色 */
+    background-color: #c21807;
     color: white;
     display: flex;
     flex-direction: column;
@@ -26,7 +27,7 @@ a {
 
 .sidebar-header {
     padding: 1.5rem;
-    background-color: #a81000; /* 稍深的红色 */
+    background-color: #a81000;
     text-align: center;
     font-size: 1.4rem;
     font-weight: 600;
@@ -51,7 +52,7 @@ a {
 
 .sidebar-nav li:hover {
     background-color: rgba(255, 255, 255, 0.1);
-    border-left-color: #ff6b35; /* 橙色边框作为点缀 */
+    border-left-color: #ff6b35;
 }
 
 .sidebar-nav li.active {
@@ -69,7 +70,7 @@ a {
 }
 
 .content h2 {
-    color: #c21807; /* 与导航栏同色系 */
+    color: #c21807;
     padding-bottom: 0.8rem;
     border-bottom: 2px solid #f0e0e0;
     margin-bottom: 2rem;
@@ -92,7 +93,7 @@ a {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* 表格样式 - 简约设计 */
+/* 表格样式 */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -120,14 +121,14 @@ table td {
 }
 
 table tr:hover td {
-    background-color: #fff8f8; /* 浅红色背景 */
+    background-color: #fff8f8;
 }
 
 table tr:last-child td {
     border-bottom: none;
 }
 
-/* 按钮样式 - 红色系 */
+/* 按钮样式 */
 button {
     padding: 0.7rem 1.5rem;
     background-color: #c21807;
@@ -153,7 +154,7 @@ button:active {
 
 /* 操作按钮变体 */
 button.edit-btn {
-    background-color: #ff6b35; /* 橙色 */
+    background-color: #ff6b35;
 }
 
 button.edit-btn:hover {
@@ -161,7 +162,7 @@ button.edit-btn:hover {
 }
 
 button.delete-btn {
-    background-color: #d32f2f; /* 深红色 */
+    background-color: #d32f2f;
 }
 
 button.delete-btn:hover {
@@ -243,57 +244,58 @@ button.delete-btn:hover {
     display: none;
     position: fixed;
     z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
-    justify-content: center;
-    align-items: center;
+    left: 0; top: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.6);
 }
-
 .image-preview-modal.active {
-    display: flex;
+    display: block;
 }
-
 .image-preview-content {
-    position: relative;
-    max-width: 90%;
-    max-height: 90%;
-}
-
-.image-preview-content img {
-    max-width: 100%;
-    max-height: 90vh;
-    object-fit: contain;
-    border-radius: 4px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-.image-preview-close {
     position: absolute;
-    top: -45px;
-    right: 0;
-    color: white;
-    font-size: 36px;
-    font-weight: 300;
-    cursor: pointer;
-    background: none;
-    border: none;
-    padding: 5px;
-    width: 40px;
-    height: 40px;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.image-preview-header {
     display: flex;
     align-items: center;
-    justify-content: center;
-    transition: opacity 0.2s;
-    opacity: 0.8;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: #f5f5f5;
+    border-bottom: 1px solid #eee;
+    min-width: 280px;
 }
-
+.image-preview-close {
+    background: transparent;
+    border: 0;
+    font-size: 32px;
+    line-height: 1;
+    cursor: pointer;
+    color: #a81000;
+    width: 38px; height: 38px; text-align: center;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0.8;
+    transition: opacity .18s;
+}
 .image-preview-close:hover {
     opacity: 1;
+    color: #e00;
 }
-
+.image-preview-body {
+    padding: 8px;
+    text-align: center;
+    background: #fff;
+}
+.image-preview-body img {
+    max-width: 86vw;
+    max-height: 80vh;
+    object-fit: contain;
+}
 /* 图片缩略图 */
 #scenicTable td img.scenic-thumbnail {
     cursor: pointer;
@@ -421,15 +423,13 @@ button.delete-btn:hover {
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 24px 48px; /* 行24px，列48px间距 */
+    gap: 24px 48px;
 }
-
 .form-grid > div {
     display: flex;
     flex-direction: column;
-    min-width: 0;  /* 防止内容超出 */
+    min-width: 0;
 }
-
 @media (max-width: 900px) {
     .form-grid {
         grid-template-columns: 1fr;

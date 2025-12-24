@@ -1,25 +1,30 @@
+// ============== 静态资源与 API 基址（避免走 63342） ==============
+const STATIC_ORIGIN = (location.port === '8080' || location.origin.includes('localhost:8080'))
+    ? location.origin
+    : 'http://localhost:8080';
+const API_SCENIC = `${STATIC_ORIGIN}/api/admin/scenicspots`;
+
+function assetUrl(path) {
+    if (!path) return '';
+    if (/^https?:\/\//i.test(path)) return path; // 已是绝对地址
+    const p = path.startsWith('/') ? path : `/${path}`;
+    return `${STATIC_ORIGIN}${p}`;
+}
+
+// ============== 加载圣地列表 ==============
 async function loadScenicSpots() {
     console.log("开始加载圣地列表...");
-
-    const url = "http://localhost:8080/api/admin/scenicspots";
-    console.log("请求URL:", url);
+    console.log("请求URL:", API_SCENIC);
 
     try {
-        // 添加超时设置
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-        const response = await fetch(url, {
-            signal: controller.signal
-        });
-
+        const response = await fetch(API_SCENIC, { signal: controller.signal });
         clearTimeout(timeoutId);
 
         console.log("响应状态:", response.status, response.statusText);
-
-        if (!response.ok) {
-            throw new Error(`HTTP错误! 状态: ${response.status} ${response.statusText}`);
-        }
+        if (!response.ok) throw new Error(`HTTP错误! 状态: ${response.status} ${response.statusText}`);
 
         const spots = await response.json();
         console.log("获取到的圣地数据:", spots);
@@ -29,40 +34,43 @@ async function loadScenicSpots() {
             console.error("找不到表格tbody元素");
             return;
         }
-
-        scenicTableBody.innerHTML = ""; // 清空旧表格内容
+        scenicTableBody.innerHTML = "";
 
         spots.forEach(spot => {
+            const rawImg = spot.imageUrl ?? spot.image_url ?? ''; // 兼容两种字段
+            const imgSrc = rawImg ? assetUrl(rawImg) : '#';
+
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td>${spot.id}</td>
-                <td>${spot.name}</td>
-                <td>${spot.location}</td>
-                <td>${spot.description || "暂无简介"}</td>
-                <td><img src="${spot.imageUrl || '#'}" alt="圣地图片" width="50" class="scenic-thumbnail"></td>
-                <td>
-                    <button onclick="editScenic(${spot.id})">编辑</button>
-                    <button onclick="deleteScenic(${spot.id})">删除</button>
-                </td>
-            `;
-            
-            // Add click event listener for image preview (safer than inline onclick)
+        <td>${spot.id}</td>
+        <td>${spot.name ?? ''}</td>
+        <td>${spot.location ?? ''}</td>
+        <td>${spot.description || "暂无简介"}</td>
+        <td>
+          ${rawImg
+                ? `<img src="${imgSrc}" alt="圣地图片" width="50" class="scenic-thumbnail" style="cursor:pointer">`
+                : `<span style="color:#999">无</span>`}
+        </td>
+        <td>
+          <button type="button" onclick="editScenic(${spot.id})">编辑</button>
+          <button type="button" onclick="deleteScenic(${spot.id})">删除</button>
+        </td>
+      `;
+
+            // 点击缩略图 -> 弹窗预览（不跳转）
             const img = row.querySelector('.scenic-thumbnail');
-            if (img) {
-                img.addEventListener('click', function() {
-                    previewImage(spot.imageUrl || '#', spot.name);
+            if (img && rawImg) {
+                img.addEventListener('click', () => {
+                    previewImage(rawImg, spot.name);
                 });
             }
-            
+
             scenicTableBody.appendChild(row);
         });
 
         console.log("圣地列表加载完成，共" + spots.length + "条记录");
     } catch (error) {
         console.error("加载圣地列表失败:", error);
-        console.error("错误名称:", error.name);
-        console.error("错误消息:", error.message);
-
         if (error.name === 'AbortError') {
             alert("请求超时！请检查后端服务是否正常运行。");
         } else if (error.message.includes('Failed to fetch')) {
@@ -79,7 +87,20 @@ function showScenicForm() {
     formContainer.style.display = "block";
     document.getElementById("scenicFormTitle").textContent = "新增圣地";
     document.getElementById("scenicForm").reset();
-    document.getElementById("scenicId").value = ""; // 清空隐藏的ID
+    document.getElementById("scenicId").value = "";
+
+    // 清空当前图片展示与隐藏域
+    document.getElementById("scenicImageUrlHidden").value = "";
+    const box = document.getElementById("scenic-current-image-box");
+    const img = document.getElementById("scenic-current-image");
+    const link = document.getElementById("scenic-current-image-link");
+    if (img) img.removeAttribute('src');
+    if (link) link.removeAttribute('href');
+    if (box) box.style.display = 'none';
+
+    // 清空文件选择
+    const fileInput = document.getElementById('scenic-image');
+    if (fileInput) fileInput.value = "";
 }
 
 // 隐藏新增圣地表单
@@ -89,39 +110,43 @@ function hideScenicForm() {
 }
 
 // 保存圣地信息（新增或编辑）
+// 说明：未实现上传逻辑；若不选择新图片，继续保留旧图
 async function saveScenic() {
     console.log("saveScenic() 开始执行");
 
-    const id = document.getElementById("scenicId").value;
-    const name = document.getElementById("scenic-name").value;
-    const location = document.getElementById("scenic-location").value;
-    const description = document.getElementById("scenic-description").value;
+    const id = (document.getElementById("scenicId").value || '').trim();
+    const name = (document.getElementById("scenic-name").value || '').trim();
+    const location = (document.getElementById("scenic-location").value || '').trim();
+    const description = (document.getElementById("scenic-description").value || '').trim();
+    const oldImageUrl = (document.getElementById("scenicImageUrlHidden").value || '').trim();
+    const imageFile = document.getElementById("scenic-image").files[0];
 
     if (!name || !location) {
         alert("名称和地点为必填项！");
         return;
     }
 
-    const spotData = {
-        name: name,
-        location: location,
-        description: description || ""
-    };
+    // 仅保留旧图；如果选了文件，这里不上传，只提示（如需上传，告知我接口路径我来补）
+    let finalImageUrl = oldImageUrl;
+    if (imageFile) {
+        alert("当前未实现图片上传功能，将继续保留原图片。");
+    }
 
+    const spotData = {
+        name,
+        location,
+        description: description || "",
+        imageUrl: finalImageUrl || null
+    };
     console.log("要发送的数据:", spotData);
 
     try {
-        // 判断是新增还是编辑
         const method = id ? "PUT" : "POST";
-        const url = id ?
-            `http://localhost:8080/api/admin/scenicspots/${id}` :
-            "http://localhost:8080/api/admin/scenicspots";
+        const url = id ? `${API_SCENIC}/${id}` : API_SCENIC;
 
         const response = await fetch(url, {
-            method: method,
-            headers: {
-                "Content-Type": "application/json"
-            },
+            method,
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(spotData)
         });
 
@@ -144,43 +169,51 @@ async function saveScenic() {
     }
 }
 
-// ============== 编辑功能 ==============
+// ============== 编辑功能（回填原图片并在表单中显示） ==============
 async function editScenic(id) {
     console.log("开始编辑圣地，ID:", id);
 
     try {
-        // 获取圣地详情
-        const response = await fetch(`http://localhost:8080/api/admin/scenicspots`);
-        if (!response.ok) {
-            throw new Error(`获取圣地列表失败: ${response.status}`);
-        }
+        const response = await fetch(API_SCENIC);
+        if (!response.ok) throw new Error(`获取圣地列表失败: ${response.status}`);
 
         const spots = await response.json();
-        // 从列表中查找对应ID的圣地
         const spot = spots.find(s => s.id === id);
-
-        if (!spot) {
-            throw new Error("未找到ID为 " + id + " 的圣地");
-        }
+        if (!spot) throw new Error("未找到ID为 " + id + " 的圣地");
 
         console.log("找到要编辑的圣地:", spot);
 
-        // 填充表单
         document.getElementById("scenicId").value = spot.id;
         document.getElementById("scenic-name").value = spot.name || "";
         document.getElementById("scenic-location").value = spot.location || "";
         document.getElementById("scenic-description").value = spot.description || "";
 
-        // 显示表单并修改标题
+        // 回填原图片：隐藏域 + 表单内展示
+        const rawImg = spot.imageUrl ?? spot.image_url ?? '';
+        document.getElementById("scenicImageUrlHidden").value = rawImg || "";
+
+        const box = document.getElementById("scenic-current-image-box");
+        const img = document.getElementById("scenic-current-image");
+        const link = document.getElementById("scenic-current-image-link");
+
+        if (rawImg) {
+            if (img) img.src = assetUrl(rawImg);
+            if (link) link.href = assetUrl(rawImg);
+            if (box) box.style.display = 'block';
+        } else {
+            if (img) img.removeAttribute('src');
+            if (link) link.removeAttribute('href');
+            if (box) box.style.display = 'none';
+        }
+
+        // 清空文件选择
+        const fileInput = document.getElementById('scenic-image');
+        if (fileInput) fileInput.value = "";
+
+        // 打开表单
         const formContainer = document.getElementById("scenicFormContainer");
         formContainer.style.display = "block";
         document.getElementById("scenicFormTitle").textContent = "编辑圣地";
-
-        // 修改提交按钮文本
-        const submitBtn = document.querySelector("#scenicForm button[type='submit']");
-        if (submitBtn) {
-            submitBtn.textContent = "更新";
-        }
 
         console.log("表单已填充，准备编辑");
     } catch (error) {
@@ -198,14 +231,11 @@ async function deleteScenic(id) {
     }
 
     try {
-        const response = await fetch(`http://localhost:8080/api/admin/scenicspots/${id}`, {
-            method: "DELETE"
-        });
-
+        const response = await fetch(`${API_SCENIC}/${id}`, { method: "DELETE" });
         if (response.ok) {
             console.log("删除成功");
             alert("删除圣地成功！");
-            loadScenicSpots(); // 刷新列表
+            loadScenicSpots();
         } else {
             const errorText = await response.text();
             console.error("删除失败:", response.status, errorText);
@@ -219,26 +249,48 @@ async function deleteScenic(id) {
 
 // ============== 搜索功能 ==============
 function searchScenic() {
-    const searchTerm = document.getElementById("scenicSearch").value.toLowerCase();
+    const searchTerm = (document.getElementById("scenicSearch")?.value || '').toLowerCase();
     const rows = document.querySelectorAll("#scenicTable tbody tr");
 
     rows.forEach(row => {
         const name = row.cells[1].textContent.toLowerCase();
         const location = row.cells[2].textContent.toLowerCase();
-
-        if (name.includes(searchTerm) || location.includes(searchTerm)) {
-            row.style.display = "";
-        } else {
-            row.style.display = "none";
-        }
+        row.style.display = (name.includes(searchTerm) || location.includes(searchTerm)) ? "" : "none";
     });
 }
+
+// ============== 图片预览弹窗（不跳转，带关闭按钮/遮罩/ESC） ==============
+function previewImage(imageUrl, imageName) {
+    if (!imageUrl) return;
+    const modal = document.getElementById('imagePreviewModal');
+    const img = document.getElementById('previewImage');
+    const title = document.getElementById('previewTitle');
+    img.onerror = null;
+    img.src = assetUrl(imageUrl);
+    img.alt = imageName || '图片预览';
+    title.textContent = imageName || '图片预览';
+    modal.classList.add('active');
+
+    img.onerror = function() {
+        closeImagePreview();
+        alert('图片加载失败，请检查图片链接是否有效');
+    };
+}
+
+function closeImagePreview() {
+    const modal = document.getElementById('imagePreviewModal');
+    if (modal) modal.classList.remove('active');
+}
+
+// 键盘 ESC 关闭
+document.addEventListener('keydown', function handleEscapeKey(e) {
+    if (e.key === 'Escape') closeImagePreview();
+});
 
 // ============== 页面加载初始化 ==============
 document.addEventListener("DOMContentLoaded", function() {
     loadScenicSpots();
 
-    // 绑定表单提交事件
     const scenicForm = document.getElementById("scenicForm");
     if (scenicForm) {
         scenicForm.addEventListener("submit", function(e) {
@@ -247,11 +299,8 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // 绑定取消按钮事件
     const cancelBtn = document.getElementById("cancelScenicBtn");
-    if (cancelBtn) {
-        cancelBtn.addEventListener("click", hideScenicForm);
-    }
+    if (cancelBtn) cancelBtn.addEventListener("click", hideScenicForm);
 });
 
 // 导出函数供HTML调用
@@ -261,80 +310,5 @@ window.saveScenic = saveScenic;
 window.editScenic = editScenic;
 window.deleteScenic = deleteScenic;
 window.searchScenic = searchScenic;
-
-// ============== 图片预览功能 ==============
-// Constants
-const NO_IMAGE_PLACEHOLDER = '#';
-
-function previewImage(imageUrl, imageName) {
-    // 如果图片URL无效，不显示预览
-    if (!imageUrl || imageUrl === NO_IMAGE_PLACEHOLDER) {
-        alert('暂无图片');
-        return;
-    }
-
-    // 创建模态框元素（如果还不存在）
-    let modal = document.getElementById('imagePreviewModal');
-    if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'imagePreviewModal';
-        modal.className = 'image-preview-modal';
-        modal.innerHTML = `
-            <div class="image-preview-content">
-                <button class="image-preview-close">&times;</button>
-                <img id="previewImage" src="" alt="预览图片">
-            </div>
-        `;
-        document.body.appendChild(modal);
-
-        // Bind close button click event
-        const closeBtn = modal.querySelector('.image-preview-close');
-        closeBtn.addEventListener('click', closeImagePreview);
-
-        // 点击模态框背景关闭预览
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                closeImagePreview();
-            }
-        });
-
-        // ESC键关闭预览 (only add once when modal is created)
-        document.addEventListener('keydown', handleEscapeKey);
-    }
-
-    // 设置图片源并显示模态框
-    const previewImg = document.getElementById('previewImage');
-    
-    // Clear previous error handler
-    previewImg.onerror = null;
-    
-    // Set new image source
-    previewImg.src = imageUrl;
-    previewImg.alt = imageName || '圣地图片';
-    
-    // Add error handling for image loading
-    previewImg.onerror = function() {
-        closeImagePreview();
-        alert('图片加载失败，请检查图片链接是否有效');
-    };
-    
-    modal.classList.add('active');
-}
-
-function closeImagePreview() {
-    const modal = document.getElementById('imagePreviewModal');
-    if (modal) {
-        modal.classList.remove('active');
-    }
-}
-
-// Handle ESC key press
-function handleEscapeKey(e) {
-    if (e.key === 'Escape') {
-        closeImagePreview();
-    }
-}
-
-// 导出图片预览函数
 window.previewImage = previewImage;
 window.closeImagePreview = closeImagePreview;
