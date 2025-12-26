@@ -69,7 +69,7 @@ async function loadScenicSpots() {
     }
 }
 
-// 显示新增圣地表单
+// ============== 显示新增圣地表单 ==============
 function showScenicForm() {
     const formContainer = document.getElementById("scenicFormContainer");
     formContainer.style.display = "block";
@@ -86,19 +86,21 @@ function showScenicForm() {
     if (link) link.removeAttribute('href');
     if (box) box.style.display = 'none';
 
-    // 清空文件选择
+    // 清空文件选择和显示
     const fileInput = document.getElementById('scenic-image');
     if (fileInput) fileInput.value = "";
+
+    // 清除文件选择显示
+    clearScenicFileDisplay();
 }
 
-// 隐藏新增圣地表单
+// ============== 隐藏新增圣地表单 ==============
 function hideScenicForm() {
     const formContainer = document.getElementById("scenicFormContainer");
     formContainer.style.display = "none";
 }
 
-// 保存圣地信息（新增或编辑）
-// 说明：未实现上传逻辑；若不选择新图片，继续保留旧图
+// ============== 保存圣地信息（支持图片上传） ==============
 async function saveScenic() {
     console.log("saveScenic() 开始执行");
 
@@ -114,47 +116,74 @@ async function saveScenic() {
         return;
     }
 
-    // 仅保留旧图；如果选了文件，这里不上传，只提示（如需上传，告知我接口路径我来补）
-    let finalImageUrl = oldImageUrl;
-    if (imageFile) {
-        alert("当前未实现图片上传功能，将继续保留原图片。");
-    }
-
-    const spotData = {
-        name,
-        location,
-        description: description || "",
-        imageUrl: finalImageUrl || null
-    };
-    console.log("要发送的数据:", spotData);
+    const isEdit = !!id;
+    let scenicId = id;
 
     try {
-        const method = id ? "PUT" : "POST";
-        const url = id ? `${API_SCENIC}/${id}` : API_SCENIC;
+        // 1. 先保存/更新圣地基本信息
+        const spotData = {
+            name,
+            location,
+            description: description || "",
+            // 编辑时如果没有选择新图片，保留旧图
+            imageUrl: (isEdit && !imageFile && oldImageUrl) ? oldImageUrl : null
+        };
 
-        const response = await fetch(url, {
-            method,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(spotData)
-        });
+        if (isEdit) {
+            const response = await fetch(`${API_SCENIC}/${scenicId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(spotData)
+            });
 
-        console.log("响应状态:", response.status);
-
-        if (response.ok) {
-            const result = await response.json();
-            console.log("保存成功:", result);
-            alert(id ? "修改圣地成功！" : "新增圣地成功！");
-            hideScenicForm();
-            loadScenicSpots();
+            if (!response.ok) throw new Error("更新失败");
         } else {
-            const errorText = await response.text();
-            console.error("保存失败:", errorText);
-            alert("保存失败: " + errorText);
+            const response = await fetch(API_SCENIC, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(spotData)
+            });
+
+            if (!response.ok) throw new Error("创建失败");
+
+            const result = await response.json();
+            scenicId = result.id;
+            if (!scenicId) throw new Error("无法获取圣地ID");
         }
+
+        // 2. 如果有图片文件，上传图片
+        if (imageFile && scenicId) {
+            await uploadScenicImage(scenicId, imageFile);
+        }
+
+        alert(isEdit ? "圣地更新成功！" : "圣地创建成功！");
+        hideScenicForm();
+        loadScenicSpots();
+
     } catch (error) {
-        console.error("请求错误:", error);
-        alert("网络错误，请重试");
+        alert("保存失败：" + error.message);
+        console.error("保存错误：", error);
     }
+}
+
+// ============== 上传圣地图片 ==============
+async function uploadScenicImage(scenicId, imageFile) {
+    const formData = new FormData();
+    formData.append('file', imageFile);
+
+    const response = await fetch(`${API_SCENIC}/${scenicId}/upload-image`, {
+        method: "POST",
+        body: formData
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`图片上传失败: ${errorText}`);
+    }
+
+    const result = await response.json();
+    console.log("图片保存到static/images/scenic/: ", result.url);
+    return result.url;
 }
 
 // ============== 编辑功能（回填原图片并在表单中显示） ==============
@@ -194,9 +223,10 @@ async function editScenic(id) {
             if (box) box.style.display = 'none';
         }
 
-        // 清空文件选择
+        // 清空文件选择和显示
         const fileInput = document.getElementById('scenic-image');
         if (fileInput) fileInput.value = "";
+        clearScenicFileDisplay();
 
         // 打开表单
         const formContainer = document.getElementById("scenicFormContainer");
@@ -247,6 +277,119 @@ function searchScenic() {
     });
 }
 
+// ============== 文件选择和显示功能 ==============
+// 初始化文件选择监听
+document.addEventListener("DOMContentLoaded", function() {
+    loadScenicSpots();
+
+    const fileInput = document.getElementById("scenic-image");
+    if (fileInput) {
+        fileInput.addEventListener("change", function() {
+            if (this.files.length > 0) {
+                updateScenicFileDisplay();
+                previewSelectedScenicImage(this.files[0]);
+            } else {
+                clearScenicFileDisplay();
+            }
+        });
+    }
+});
+
+// 更新文件显示
+function updateScenicFileDisplay() {
+    const fileInput = document.getElementById("scenic-image");
+    const displayDiv = document.getElementById("scenicFileDisplay") || createScenicFileDisplay();
+
+    if (!fileInput || !displayDiv) return;
+
+    if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const fileSize = (file.size / 1024).toFixed(2);
+        displayDiv.innerHTML = `
+            <div style="color: #1890ff; font-weight: bold;">
+                ✓ 已选择图片文件
+            </div>
+            <div style="margin-top: 5px;">
+                <strong>文件名：</strong>${file.name}<br>
+                <strong>文件大小：</strong>${fileSize} KB<br>
+                <strong>文件类型：</strong>${file.type || '未知'}
+            </div>
+            <button onclick="clearScenicFileSelection()" style="
+                margin-top: 8px;
+                padding: 4px 12px;
+                background: #fff;
+                border: 1px solid #ddd;
+                border-radius: 3px;
+                cursor: pointer;
+                font-size: 13px;
+            ">清除选择</button>
+        `;
+        displayDiv.style.display = "block";
+    } else {
+        displayDiv.innerHTML = '<span style="color:#888;">未选择文件</span>';
+    }
+}
+
+// 创建文件显示元素
+function createScenicFileDisplay() {
+    const fileInput = document.getElementById("scenic-image");
+    if (!fileInput) return null;
+
+    const displayDiv = document.createElement("div");
+    displayDiv.id = "scenicFileDisplay";
+    displayDiv.style.cssText = `
+        margin-top: 8px;
+        padding: 8px;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #555;
+        display: none;
+    `;
+
+    fileInput.parentNode.insertBefore(displayDiv, fileInput.nextSibling);
+    return displayDiv;
+}
+
+// 清除文件选择
+function clearScenicFileSelection() {
+    const fileInput = document.getElementById("scenic-image");
+    if (fileInput) {
+        fileInput.value = "";
+        clearScenicFileDisplay();
+    }
+}
+
+// 清除文件显示
+function clearScenicFileDisplay() {
+    const displayDiv = document.getElementById("scenicFileDisplay");
+    if (displayDiv) {
+        displayDiv.innerHTML = '<span style="color:#888;">未选择文件</span>';
+    }
+}
+
+// 预览选择的图片
+function previewSelectedScenicImage(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const previewImg = document.getElementById("scenic-current-image");
+        const previewLink = document.getElementById("scenic-current-image-link");
+
+        if (previewImg) {
+            previewImg.src = e.target.result;
+            if (previewLink) previewLink.href = e.target.result;
+        }
+
+        // 显示预览框
+        const previewBox = document.getElementById("scenic-current-image-box");
+        if (previewBox) previewBox.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+}
+
 // ============== 页面加载初始化 ==============
 document.addEventListener("DOMContentLoaded", function() {
     loadScenicSpots();
@@ -270,4 +413,4 @@ window.saveScenic = saveScenic;
 window.editScenic = editScenic;
 window.deleteScenic = deleteScenic;
 window.searchScenic = searchScenic;
-// 图片预览弹窗、关闭已在 common.js 全局暴露，无需再挂
+window.clearScenicFileSelection = clearScenicFileSelection;
