@@ -1,3 +1,4 @@
+USE red_culture;
 -- 1. 红色英雄表
 DROP TABLE IF EXISTS red_hero;
 CREATE TABLE `red_hero` (
@@ -78,4 +79,3 @@ CREATE TABLE IF NOT EXISTS users (
     INDEX idx_username (username),
     INDEX idx_phone (phone)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
-USE red_culture;

@@ -14,6 +14,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/heroes")
+@CrossOrigin(origins = "http://localhost:63342")
 public class HeroController {
 
     @Autowired
@@ -75,8 +76,8 @@ public class HeroController {
         if (file.isEmpty()) throw new IllegalArgumentException("文件为空");
 
         // 保存到 /uploads/images/hero/
-        String dirPath = System.getProperty("user.dir") + "/uploads/images/hero/";
-        Files.createDirectories(Path.of(dirPath));
+//        String dirPath = System.getProperty("user.dir") + "/uploads/images/hero/";
+        String dirPath = System.getProperty("user.dir") + "/src/main/resources/static/images/hero/";        Files.createDirectories(Path.of(dirPath));
 
         String ext = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf('.'));
         String filename = UUID.randomUUID().toString().replace("-", "") + ext;

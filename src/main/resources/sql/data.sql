@@ -3,12 +3,12 @@ CREATE DATABASE IF NOT EXISTS red_culture
     COLLATE utf8mb4_unicode_ci;
 USE red_culture;
 -- 1. 先清空现有数据
-# TRUNCATE TABLE users;
-# TRUNCATE TABLE red_hero;
-# TRUNCATE TABLE party_encyclopedia;
-# TRUNCATE TABLE red_scenic_spot;
-# TRUNCATE TABLE red_story;
-# TRUNCATE TABLE red_explore;
+TRUNCATE TABLE users;
+TRUNCATE TABLE red_hero;
+TRUNCATE TABLE party_encyclopedia;
+TRUNCATE TABLE red_scenic_spot;
+TRUNCATE TABLE red_story;
+TRUNCATE TABLE red_explore;
 
 --  初始化红色英雄数据
 INSERT INTO `red_hero` (`name`,`description`,`image_url`,`alias`,`title`,`category`,`content`,`gender`,`ethnicity`,`birth_date`,`death_date`,`birthplace`,`political_status`) VALUES
