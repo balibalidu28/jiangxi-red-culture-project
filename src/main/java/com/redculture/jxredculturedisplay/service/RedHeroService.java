@@ -75,9 +75,21 @@ public class RedHeroService {
      */
     public RedHero update(Integer id, RedHero hero) {
         RedHero dbHero = getOrThrow(id);
+        // 更新所有字段
         dbHero.setName(hero.getName());
         dbHero.setDescription(hero.getDescription());
         dbHero.setImageUrl(hero.getImageUrl());
+        dbHero.setAlias(hero.getAlias());
+        dbHero.setTitle(hero.getTitle());
+        dbHero.setCategory(hero.getCategory());
+        dbHero.setContent(hero.getContent());
+        dbHero.setGender(hero.getGender());
+        dbHero.setEthnicity(hero.getEthnicity());
+        dbHero.setBirthDate(hero.getBirthDate());
+        dbHero.setDeathDate(hero.getDeathDate());
+        dbHero.setBirthplace(hero.getBirthplace());
+        dbHero.setPoliticalStatus(hero.getPoliticalStatus());
+
         return redHeroRepository.save(dbHero);
     }
 
@@ -98,9 +110,6 @@ public class RedHeroService {
         return redHeroRepository.save(hero);
     }
 
-    @Autowired
-    private RedHeroRepository RedHeroRepository;
-
     // 1. 使用继承的方法
     public RedHero getHeroById(Integer id) {
         return redHeroRepository.findById(id).orElse(null);
@@ -116,8 +125,17 @@ public class RedHeroService {
         return redHeroRepository.save(hero);
     }
 
-
     public void deleteById(Integer id) {
         redHeroRepository.deleteById(id);
+    }
+
+    // 根据类别查询英雄
+    public List<RedHero> findByCategory(String category) {
+        return redHeroRepository.findByCategory(category);
+    }
+
+    // 根据籍贯查询英雄
+    public List<RedHero> findByBirthplace(String birthplace) {
+        return redHeroRepository.findByBirthplaceContainingIgnoreCase(birthplace);
     }
 }

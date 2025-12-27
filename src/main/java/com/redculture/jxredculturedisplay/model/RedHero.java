@@ -95,6 +95,5 @@ public class RedHero {
     public String getPoliticalStatus() { return politicalStatus; }
     public void setPoliticalStatus(String politicalStatus) { this.politicalStatus = politicalStatus; }
 
-    public String getImageURL() { return imageUrl; }
-    public void setImageURL(String imageUrl) { this.imageUrl = imageUrl; }
+//
 }
