@@ -27,16 +27,37 @@ public class PartyEncyclopediaService {
         }
     }
 
-    public PartyEncyclopedia getOrThrow(Long id) {
-        return repository.findById(id.intValue())
-                .orElseThrow(() -> new RuntimeException("未找到该词条"));
+    public PartyEncyclopedia getOrThrow(Integer id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("未找到该词条，ID: " + id));
     }
 
     // Admin用的
     public List<PartyEncyclopedia> listAll() { return repository.findAll(); }
     public PartyEncyclopedia save(PartyEncyclopedia e) { return repository.save(e); }
-    public PartyEncyclopedia update(Long id, PartyEncyclopedia e) { return repository.save(e); } // 简化写
-    public void deleteById(Integer id) { repository.deleteById(id); }
+    public PartyEncyclopedia update(Long id, PartyEncyclopedia encyclopediaDetails) {
+        System.out.println("Service更新百科，ID: " + id);
+
+        // 1. 找到现有记录
+        PartyEncyclopedia existing = findById(id);
+        if (existing == null) {
+            throw new RuntimeException("百科条目不存在，ID: " + id);
+        }
+
+        // 2. 更新字段
+        existing.setTitle(encyclopediaDetails.getTitle());
+        existing.setContent(encyclopediaDetails.getContent());
+
+        // 3. 只更新有值的图片URL（避免清空已有图片）
+        if (encyclopediaDetails.getImageUrl() != null && !encyclopediaDetails.getImageUrl().isEmpty()) {
+            existing.setImageUrl(encyclopediaDetails.getImageUrl());
+        }
+
+        System.out.println("更新后的数据: " + existing);
+
+        // 4. 保存（这会执行UPDATE而不是INSERT）
+        return repository.save(existing);
+    }    public void deleteById(Integer id) { repository.deleteById(id); }
 
     public PartyEncyclopedia findById(Long id) {
         // 使用 JPA 的 findById 方法

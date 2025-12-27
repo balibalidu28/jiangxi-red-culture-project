@@ -318,26 +318,40 @@
     <section id="encyclopedias" class="module-section">
         <h2>百科管理</h2>
         <button onclick="showEncyclopediaForm()">新增百科</button>
+
         <!-- 新增/编辑百科表单 -->
         <div id="encyclopediaFormContainer" class="form-container" style="display: none;">
             <h2 id="encyclopediaFormTitle">新增百科</h2>
             <form id="encyclopediasForm">
-                <!-- 添加这行：隐藏的ID字段 -->
+                <!-- 隐藏的ID字段 -->
                 <input type="hidden" id="encyclopediaId">
+
+                <!-- 隐藏的图片URL字段 -->
+                <input type="hidden" id="encyclopediaImageUrlHidden">
 
                 <label for="encyclopedia-name">词条标题：</label>
                 <input type="text" id="encyclopedia-name" placeholder="请输入词条标题" required>
 
-                <label for="encyclopedia-location">内容：</label>
-                <input type="text" id="encyclopedia-location" placeholder="请输入百科介绍" required>
+                <label for="encyclopedia-content">内容：</label>
+                <textarea id="encyclopedia-content" placeholder="请输入百科介绍" rows="4" required></textarea>
 
                 <label for="encyclopedia-image">上传图片：</label>
                 <input type="file" id="encyclopedia-image" accept="image/*">
 
-                <button type="button" onclick="saveEncyclopedia()">保存</button>
-                <button type="button" onclick="hideEncyclopediaForm()">取消</button>
+                <!-- 当前图片预览 -->
+                <div id="encyclopedia-current-image-box" style="display:none; margin-top:10px;">
+                    <span style="margin-right:8px;">当前图片：</span>
+                    <img id="encyclopedia-current-image" alt="当前百科图片"
+                         style="max-width:120px; cursor:pointer; border-radius:4px; border:1px solid #ececec;">
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <button type="button" onclick="saveEncyclopedia()">保存</button>
+                    <button type="button" onclick="hideEncyclopediaForm()">取消</button>
+                </div>
             </form>
         </div>
+
         <table>
             <thead>
             <tr>
@@ -352,7 +366,6 @@
             <!-- 动态填充 -->
             </tbody>
         </table>
-
     </section>
     <!-- 用户管理模块 -->
     <section id="user" class="module-section">

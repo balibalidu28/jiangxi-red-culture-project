@@ -1,32 +1,5 @@
 // ========================== 英雄管理 ==========================
 
-// 静态资源访问基址
-const STATIC_ORIGIN = (location.port === '8080' || location.origin.includes('localhost:8080'))
-    ? location.origin
-    : 'http://localhost:8080';
-
-// 预览图片弹窗（公用）
-function previewImage(url, name) {
-    const modal = document.getElementById('imagePreviewModal');
-    const img = document.getElementById('previewImage');
-    const title = document.getElementById('previewTitle');
-    if (!modal || !img || !url) return;
-    img.onerror = null;
-    img.src = /^https?:\/\//.test(url) ? url : STATIC_ORIGIN + (url.startsWith('/') ? url : '/' + url);
-    title.textContent = name || '图片预览';
-    modal.classList.add('active');
-    img.onerror = function () {
-        closeImagePreview();
-        alert('图片加载失败!');
-    };
-}
-function closeImagePreview() {
-    document.getElementById('imagePreviewModal').classList.remove('active');
-}
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeImagePreview(); });
-window.previewImage = previewImage;
-window.closeImagePreview = closeImagePreview;
-
 // 显示新增英雄表单
 function showHeroForm() {
     const formContainer = document.getElementById("heroFormContainer");

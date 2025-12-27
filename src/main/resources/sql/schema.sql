@@ -58,24 +58,44 @@ CREATE TABLE `red_story` (
 
 -- 5. 红色寻访表
 DROP TABLE IF EXISTS red_explore ;
-CREATE TABLE IF NOT EXISTS red_explore (
-                                           id INT AUTO_INCREMENT PRIMARY KEY,
-                                           title VARCHAR(150) NOT NULL,
-                                           content TEXT,
-                                           date DATE,
-                                           location VARCHAR(120)
+-- 5. 红色寻访表
+DROP TABLE IF EXISTS red_explore ;
+-- 创建红色寻访活动表
+CREATE TABLE red_explore
+(
+    id                    INT PRIMARY KEY AUTO_INCREMENT COMMENT '活动ID',
+    title                 VARCHAR(200) NOT NULL COMMENT '活动标题',
+    image                 VARCHAR(500) COMMENT '活动封面图片URL',
+    city                  VARCHAR(50) NOT NULL COMMENT '所在城市',
+    start_time            DATETIME NOT NULL COMMENT '活动开始时间',
+    end_time              DATETIME NOT NULL COMMENT '活动结束时间',
+    location              VARCHAR(200) NOT NULL COMMENT '活动地点',
+    max_participants      INT NOT NULL DEFAULT 50 COMMENT '最大参与人数',
+    status                ENUM ('upcoming', 'ongoing', 'ended') NOT NULL DEFAULT 'upcoming' COMMENT '活动状态',
+    organization          VARCHAR(100) NOT NULL COMMENT '主办单位',
+    registration_email    VARCHAR(100) NOT NULL COMMENT '报名邮箱',
+    registration_form     VARCHAR(500) COMMENT '报名表文档URL',
+    description           TEXT COMMENT '活动详细描述',
+    schedule              JSON COMMENT '活动日程安排，JSON格式存储',
+    registration_deadline DATE NOT NULL COMMENT '报名截止日期'
 );
-
-DROP TABLE IF EXISTS red_users ;
-CREATE TABLE IF NOT EXISTS users (
-                                     id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '用户ID，自增',
-                                     username VARCHAR(50) NOT NULL UNIQUE COMMENT '用户名',
-    phone VARCHAR(11) NOT NULL UNIQUE COMMENT '手机号',
-    password VARCHAR(255) NOT NULL COMMENT '加密后的密码',
-    role VARCHAR(20) DEFAULT 'USER' COMMENT '用户角色：USER, ADMIN',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    is_active BOOLEAN DEFAULT TRUE COMMENT '是否激活',
-    INDEX idx_username (username),
-    INDEX idx_phone (phone)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+-- 5. 红色寻访表
+DROP TABLE IF EXISTS red_explore ;
+CREATE TABLE red_explore
+(
+    id                    INT PRIMARY KEY AUTO_INCREMENT COMMENT '活动ID',
+    title                 VARCHAR(200) NOT NULL COMMENT '活动标题',
+    image                 VARCHAR(500) COMMENT '活动封面图片URL',
+    city                  VARCHAR(50) NOT NULL COMMENT '所在城市',
+    start_time            DATETIME NOT NULL COMMENT '活动开始时间',
+    end_time              DATETIME NOT NULL COMMENT '活动结束时间',
+    location              VARCHAR(200) NOT NULL COMMENT '活动地点',
+    max_participants      INT NOT NULL DEFAULT 50 COMMENT '最大参与人数',
+    status                ENUM ('upcoming', 'ongoing', 'ended') NOT NULL DEFAULT 'upcoming' COMMENT '活动状态',
+    organization          VARCHAR(100) NOT NULL COMMENT '主办单位',
+    registration_email    VARCHAR(100) NOT NULL COMMENT '报名邮箱',
+    registration_form     VARCHAR(500) COMMENT '报名表文档URL',
+    description           TEXT COMMENT '活动详细描述',
+    schedule              JSON COMMENT '活动日程安排，JSON格式存储',
+    registration_deadline DATE NOT NULL COMMENT '报名截止日期'
+);
