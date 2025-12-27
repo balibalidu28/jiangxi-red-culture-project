@@ -55,30 +55,6 @@ CREATE TABLE `red_story` (
                              PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='红色故事表';
 
-
--- 5. 红色寻访表
-DROP TABLE IF EXISTS red_explore ;
--- 5. 红色寻访表
-DROP TABLE IF EXISTS red_explore ;
--- 创建红色寻访活动表
-CREATE TABLE red_explore
-(
-    id                    INT PRIMARY KEY AUTO_INCREMENT COMMENT '活动ID',
-    title                 VARCHAR(200) NOT NULL COMMENT '活动标题',
-    image                 VARCHAR(500) COMMENT '活动封面图片URL',
-    city                  VARCHAR(50) NOT NULL COMMENT '所在城市',
-    start_time            DATETIME NOT NULL COMMENT '活动开始时间',
-    end_time              DATETIME NOT NULL COMMENT '活动结束时间',
-    location              VARCHAR(200) NOT NULL COMMENT '活动地点',
-    max_participants      INT NOT NULL DEFAULT 50 COMMENT '最大参与人数',
-    status                ENUM ('upcoming', 'ongoing', 'ended') NOT NULL DEFAULT 'upcoming' COMMENT '活动状态',
-    organization          VARCHAR(100) NOT NULL COMMENT '主办单位',
-    registration_email    VARCHAR(100) NOT NULL COMMENT '报名邮箱',
-    registration_form     VARCHAR(500) COMMENT '报名表文档URL',
-    description           TEXT COMMENT '活动详细描述',
-    schedule              JSON COMMENT '活动日程安排，JSON格式存储',
-    registration_deadline DATE NOT NULL COMMENT '报名截止日期'
-);
 -- 5. 红色寻访表
 DROP TABLE IF EXISTS red_explore ;
 CREATE TABLE red_explore
