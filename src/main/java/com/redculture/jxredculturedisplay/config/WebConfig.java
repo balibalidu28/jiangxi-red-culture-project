@@ -17,6 +17,18 @@ public class WebConfig implements WebMvcConfigurer {
                         "file:./src/main/resources/static/images/hero/",
                         "file:./static/images/hero/"
                 );
+        registry.addResourceHandler("/images/explore/**")
+                .addResourceLocations(
+                        "classpath:/static/images/explore/",
+                        "file:./src/main/resources/static/images/explore/",
+                        "file:./static/images/explore/"
+                );
+        registry.addResourceHandler("/files/explore/**")
+                .addResourceLocations(
+                        "classpath:/static/files/explore/",
+                        "file:./src/main/resources/static/files/explore/",
+                        "file:./static/files/explore/"
+                );
     }
 
     @Override

@@ -436,3 +436,70 @@ button.delete-btn:hover {
         gap: 16px 0;
     }
 }
+    /* 日程管理样式 */
+    #schedule-list {
+        background: white;
+        border-radius: 4px;
+        border: 1px solid #e0c7c7;
+    }
+
+    #schedule-items-container > div:nth-child(odd) {
+        background-color: #fdf9f9;
+    }
+
+    #schedule-items-container > div:nth-child(even) {
+        background-color: white;
+    }
+
+    /* 文件上传区域 */
+    input[type="file"] {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    input[type="file"]:hover {
+        border-color: #c21807;
+        background-color: #fff8f8;
+    }
+
+    /* 报名表链接 */
+    #explore-current-registration-link:hover {
+        text-decoration: underline;
+        color: #a81000;
+    }
+
+    /* 状态标签 */
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-upcoming {
+        background-color: #e6f4ff;
+        color: #0066cc;
+        border: 1px solid #b3d9ff;
+    }
+
+    .status-ongoing {
+        background-color: #fff8e6;
+        color: #b05e00;
+        border: 1px solid #ffdd99;
+    }
+
+    .status-ended {
+        background-color: #f5f5f5;
+        color: #666;
+        border: 1px solid #ddd;
+    }
+
+    /* 必填字段 */
+    .required::after {
+        content: " *";
+        color: #c21807;
+        font-weight: bold;
+    }

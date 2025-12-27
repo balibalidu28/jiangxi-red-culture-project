@@ -91,7 +91,7 @@ CREATE TABLE red_explore
     end_time              DATETIME NOT NULL COMMENT '活动结束时间',
     location              VARCHAR(200) NOT NULL COMMENT '活动地点',
     max_participants      INT NOT NULL DEFAULT 50 COMMENT '最大参与人数',
-    status                ENUM ('upcoming', 'ongoing', 'ended') NOT NULL DEFAULT 'upcoming' COMMENT '活动状态',
+    status                ENUM ('UPCOMING', 'ONGOING', 'ENDED') NOT NULL DEFAULT 'upcoming' COMMENT '活动状态',
     organization          VARCHAR(100) NOT NULL COMMENT '主办单位',
     registration_email    VARCHAR(100) NOT NULL COMMENT '报名邮箱',
     registration_form     VARCHAR(500) COMMENT '报名表文档URL',

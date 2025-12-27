@@ -40,6 +40,14 @@ function switchModule(moduleName) {
                     console.warn("loadHeroes 函数未定义");
                 }
                 break;
+            case 'explore':
+                console.log("调用 loadExplores()");
+                if (window.loadExplores) {
+                    window.loadExplores();
+                } else {
+                    console.warn("loadExplores 函数未定义");
+                }
+                break;
             case 'stories':
                 console.log("调用 loadStories()");
                 if (window.loadStories) {

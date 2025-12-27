@@ -4,7 +4,13 @@ import com.redculture.jxredculturedisplay.model.*;
 import com.redculture.jxredculturedisplay.service.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.List;
 @RestController
 @RequestMapping("/api/admin") // 后台管理路径的唯一前缀
@@ -84,6 +90,78 @@ public class AdminController {
     @DeleteMapping("/explore/{id}")
     public void deleteExplore(@PathVariable Integer id) {
         exploreService.deleteById(id);
+    }
+
+    // ========================== 活动文件上传（图片/报名表） ==========================
+
+    // POST /api/admin/explore/{id}/upload-image
+    @PostMapping("/explore/{id}/upload-image")
+    public Map<String, Object> uploadExploreImage(
+            @PathVariable Integer id,
+            @RequestParam("file") MultipartFile file
+    ) throws Exception {
+        if (file.isEmpty()) throw new IllegalArgumentException("文件为空");
+
+        // 保存到 src/main/resources/static/images/explore/
+        String dirPath = System.getProperty("user.dir") + "/src/main/resources/static/images/explore/";
+        Files.createDirectories(Path.of(dirPath));
+
+        String originalFilename = file.getOriginalFilename();
+        String ext = (originalFilename != null && originalFilename.contains("."))
+                ? originalFilename.substring(originalFilename.lastIndexOf('.'))
+                : ".jpg";
+        String filename = UUID.randomUUID().toString().replace("-", "") + ext;
+
+        Path savePath = Path.of(dirPath, filename);
+        file.transferTo(savePath.toFile());
+
+        // 前端可访问的路径
+        String url = "/images/explore/" + filename;
+
+        // 更新数据库 image 字段
+        RedExplore explore = exploreService.getOrThrow(id);
+        explore.setImage(url);
+        exploreService.save(explore);
+
+        Map<String, Object> resp = new HashMap<>();
+        resp.put("success", true);
+        resp.put("url", url);
+        return resp;
+    }
+
+    // POST /api/admin/explore/{id}/upload-registration-form
+    @PostMapping("/explore/{id}/upload-registration-form")
+    public Map<String, Object> uploadExploreRegistrationForm(
+            @PathVariable Integer id,
+            @RequestParam("file") MultipartFile file
+    ) throws Exception {
+        if (file.isEmpty()) throw new IllegalArgumentException("文件为空");
+
+        // 保存到 src/main/resources/static/files/explore/
+        String dirPath = System.getProperty("user.dir") + "/src/main/resources/static/files/explore/";
+        Files.createDirectories(Path.of(dirPath));
+
+        String originalFilename = file.getOriginalFilename();
+        String ext = (originalFilename != null && originalFilename.contains("."))
+                ? originalFilename.substring(originalFilename.lastIndexOf('.'))
+                : "";
+        String filename = UUID.randomUUID().toString().replace("-", "") + ext;
+
+        Path savePath = Path.of(dirPath, filename);
+        file.transferTo(savePath.toFile());
+
+        // 前端可访问的路径
+        String url = "/files/explore/" + filename;
+
+        // 更新数据库 registrationForm 字段
+        RedExplore explore = exploreService.getOrThrow(id);
+        explore.setRegistrationForm(url);
+        exploreService.save(explore);
+
+        Map<String, Object> resp = new HashMap<>();
+        resp.put("success", true);
+        resp.put("url", url);
+        return resp;
     }
 
     // ========================== 故事管理功能 ==========================

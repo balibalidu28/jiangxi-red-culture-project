@@ -277,41 +277,161 @@
     <section id="explore" class="module-section">
         <h2>活动管理</h2>
         <button onclick="showExploreForm()">新增活动</button>
+
         <!-- 新增/编辑活动表单 -->
         <div id="exploreFormContainer" class="form-container" style="display: none;">
             <h2 id="exploreFormTitle">新增活动</h2>
-            <form id="exploreForm">
-                <!-- 添加这行：隐藏的ID字段 -->
+            <form id="exploreForm" class="form-grid">
+                <!-- 隐藏字段 -->
                 <input type="hidden" id="exploreId">
+                <input type="hidden" id="exploreImageUrlHidden">
+                <input type="hidden" id="exploreRegistrationFormUrlHidden">
 
-                <label for="explore-name">活动名称：</label>
-                <input type="text" id="explore-name" placeholder="请输入活动名称" required>
+                <!-- 第一列 -->
+                <div>
+                    <label for="explore-title" class="required">活动标题：</label>
+                    <input type="text" id="explore-title" placeholder="请输入活动标题" required>
 
-                <label for="explore-location">地点：</label>
-                <input type="text" id="explore-location" placeholder="请输入活动地点" required>
+                    <label for="explore-city" class="required">所在城市：</label>
+                    <input type="text" id="explore-city" placeholder="请输入城市名称" required>
 
-                <label for="explore-date">日期：</label>
-                <textarea id="explore-date" placeholder="请输入活动日期"></textarea>
+                    <label for="explore-location" class="required">活动地点：</label>
+                    <input type="text" id="explore-location" placeholder="请输入具体活动地点" required>
 
-                <button type="button" onclick="saveExplore()">保存</button>
-                <button type="button" onclick="hideExploreForm()">取消</button>
+                    <label for="explore-start-time" class="required">开始时间：</label>
+                    <input type="datetime-local" id="explore-start-time" required>
+
+                    <label for="explore-end-time" class="required">结束时间：</label>
+                    <input type="datetime-local" id="explore-end-time" required>
+
+                    <label for="explore-organization" class="required">主办单位：</label>
+                    <input type="text" id="explore-organization" placeholder="请输入主办单位" required>
+                </div>
+
+                <!-- 第二列 -->
+                <div>
+                    <label for="explore-registration-email" class="required">报名邮箱：</label>
+                    <input type="email" id="explore-registration-email" placeholder="请输入报名联系邮箱" required>
+
+                    <label for="explore-registration-deadline" class="required">报名截止日期：</label>
+                    <input type="date" id="explore-registration-deadline" required>
+
+                    <label for="explore-max-participants" class="required">最大参与人数：</label>
+                    <input type="number" id="explore-max-participants" min="1" max="500" value="50" required>
+
+                    <label for="explore-status" class="required">活动状态：</label>
+                    <select id="explore-status" required>
+                        <option value="upcoming">即将开始</option>
+                        <option value="ongoing">进行中</option>
+                        <option value="ended">已结束</option>
+                    </select>
+
+                    <label for="explore-image">封面图片：</label>
+                    <input type="file" id="explore-image" accept="image/*">
+
+                    <!-- 当前图片预览 -->
+                    <div id="explore-current-image-box" style="margin-top: 12px; padding: 8px; background: #f9f5f5; border-radius: 4px; display: none;">
+                        <span style="font-size: 0.9rem; color: #8a6d6d; font-weight: 600;">当前图片：</span>
+                        <img id="explore-current-image" src="" alt="当前图片" style="width: 100px; height: auto; border-radius: 4px; margin-left: 10px; cursor: pointer;" onclick="previewExploreImage(this.src)">
+                    </div>
+                </div>
+
+                <!-- 全宽区域 -->
+                <div style="grid-column: 1 / -1;">
+                    <label for="explore-description">活动描述：</label>
+                    <textarea id="explore-description" placeholder="请输入活动详细描述" rows="5" style="width: 100%;"></textarea>
+
+                    <!-- 可视化日程安排 -->
+                    <div id="schedule-management">
+                        <label style="display: block; margin: 1rem 0 0.5rem; font-weight: 600;">日程安排：</label>
+                        <div style="background: #f9f5f5; padding: 1rem; border-radius: 6px; border: 1px solid #f0e0e0;">
+                            <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
+                                <div>
+                                    <label style="font-size: 0.85rem; color: #666;">日程标题：</label>
+                                    <input type="text" id="schedule-title" placeholder="例如：第一天" style="width: 120px; padding: 6px;">
+                                </div>
+                                <div>
+                                    <label style="font-size: 0.85rem; color: #666;">开始时间：</label>
+                                    <input type="time" id="schedule-start-time" style="width: 120px; padding: 6px;">
+                                </div>
+                                <div>
+                                    <label style="font-size: 0.85rem; color: #666;">结束时间：</label>
+                                    <input type="time" id="schedule-end-time" style="width: 120px; padding: 6px;">
+                                </div>
+                                <div>
+                                    <label style="font-size: 0.85rem; color: #666;">活动内容：</label>
+                                    <input type="text" id="schedule-content" placeholder="例如：开幕式" style="width: 200px; padding: 6px;">
+                                </div>
+                                <button type="button" onclick="addScheduleItem()" style="background: #4CAF50; padding: 6px 12px; font-size: 0.85rem;">添加</button>
+                            </div>
+
+                            <!-- 日程安排列表 -->
+                            <div id="schedule-list" style="margin-top: 15px; max-height: 200px; overflow-y: auto;">
+                                <div style="display: grid; grid-template-columns: 1fr 2fr 2fr 2fr auto; gap: 8px; padding: 8px; background: #f0e0e0; border-radius: 4px; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem;">
+                                    <div>日程</div>
+                                    <div>开始时间</div>
+                                    <div>结束时间</div>
+                                    <div>活动内容</div>
+                                    <div>操作</div>
+                                </div>
+                                <div id="schedule-items-container">
+                                    <!-- 日程项会动态添加到这里 -->
+                                </div>
+                            </div>
+
+                            <!-- 日程天数管理 -->
+                            <div id="schedule-days-management" style="margin-top: 15px;">
+                                <div style="font-size: 0.85rem; color: #666; margin-bottom: 5px;">按天分组：</div>
+                                <div id="schedule-days-container">
+                                    <!-- 天数会动态添加到这里 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 报名表文件上传 -->
+                    <div style="margin-top: 20px;">
+                        <label style="display: block; margin: 1rem 0 0.5rem; font-weight: 600;">报名表文件：</label>
+                        <input type="file" id="explore-registration-file" accept=".pdf,.doc,.docx,.xls,.xlsx" style="width: 100%; padding: 8px; border: 2px dashed #e0c7c7; border-radius: 6px; background: #fefafa;">
+
+                        <!-- 当前报名表预览 -->
+                        <div id="explore-current-registration-box" style="margin-top: 12px; padding: 8px; background: #f9f5f5; border-radius: 4px; display: none;">
+                            <span style="font-size: 0.9rem; color: #8a6d6d; font-weight: 600;">当前报名表：</span>
+                            <a id="explore-current-registration-link" href="#" target="_blank" style="margin-left: 10px; color: #c21807; text-decoration: none; font-size: 0.9rem;">
+                                <i style="margin-right: 5px;">📄</i>查看报名表
+                            </a>
+                            <button type="button" onclick="clearRegistrationFile()" style="margin-left: 10px; background: #ff9800; padding: 2px 8px; font-size: 0.8rem; border-radius: 3px;">清除</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 按钮区域 -->
+                <div class="form-buttons" style="grid-column: 1 / -1; display: flex; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #f0e0e0;">
+                    <button type="button" onclick="saveExplore()">保存</button>
+                    <button type="button" onclick="hideExploreForm()">取消</button>
+                </div>
             </form>
         </div>
+
+        <!-- 活动列表表格 -->
         <table>
             <thead>
             <tr>
                 <th>ID</th>
-                <th>活动名称</th>
-                <th>日期</th>
+                <th>活动标题</th>
+                <th>城市</th>
+                <th>时间</th>
                 <th>地点</th>
+                <th>状态</th>
+                <th>图片</th>
+                <th>报名表</th>
                 <th>操作</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="exploreTableBody">
             <!-- 动态填充 -->
             </tbody>
         </table>
-
     </section>
 
     <!-- 百科管理模块 -->

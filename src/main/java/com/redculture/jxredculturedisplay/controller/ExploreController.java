@@ -10,6 +10,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/explore") // 用户活动页面接口基础路径
+@CrossOrigin(origins = "http://localhost:63342")
 public class ExploreController {
 
     private final RedExploreService exploreService;
