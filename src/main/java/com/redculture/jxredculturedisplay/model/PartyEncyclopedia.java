@@ -25,15 +25,46 @@ public class PartyEncyclopedia {
     @Column(name = "image_url", length = 255)//配图
     private String imageUrl;
 
-    public Long getId() { return Long.valueOf(id); }// ID 的 Getter (取值)
-    public void setId(Integer id) { this.id = id; }// ID 的 Setter (赋值)
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    // 构造函数
+    public PartyEncyclopedia() {}
 
-    public String getContent() { return content; }
-    public void setContent(String content) { this.content = content; }
+    public PartyEncyclopedia(String title, String content, String imageUrl) {
+        this.title = title;
+        this.content = content;
+        this.imageUrl = imageUrl;
+    }
 
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    // Getter和Setter
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

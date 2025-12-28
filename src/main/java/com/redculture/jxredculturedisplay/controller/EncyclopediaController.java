@@ -13,41 +13,171 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@CrossOrigin(origins = "http://localhost:63342")
+@CrossOrigin(origins = "https://localhost:63343")
+@RequestMapping("/encyclopedia")
 public class EncyclopediaController {
 
     @Autowired
-    private PartyEncyclopediaService service;
+    private PartyEncyclopediaService partyEncyclopediaService;
 
-    @GetMapping("/encyclopedia/list")
+    /**
+     * 党史大百科主页面 - 彻底修复版本
+     */
+    @GetMapping("/list")
     public String listPage(
-            @RequestParam(value = "kw", required = false) String keyword,
             @RequestParam(value = "id", required = false) Long id,
-            Model model
-    ) {
-        // 1. 查询数据
-        var list = service.search(keyword);
+            @RequestParam(value = "kw", required = false) String keyword,
+            Model model) {
 
-        // 【调试打印】请在IDEA控制台看这一行！！！
-        System.out.println("========== 正在查询 ==========");
-        System.out.println("搜索词: " + keyword);
-        System.out.println("查到条数: " + list.size());
+        System.out.println("\n=== 党史大百科页面请求 ===");
+        System.out.println("请求参数: id=" + id + ", kw=" + keyword);
 
-        model.addAttribute("entryList", list);
-        model.addAttribute("currentKw", keyword);
+        String mode = "home";
+        List<PartyEncyclopedia> entryList;
+        PartyEncyclopedia currentItem = null;
+        String currentKw = (keyword != null && !keyword.trim().isEmpty()) ? keyword.trim() : null;
 
-        // 2. 判断模式
-        if (id != null) {
-            var item = service.getOrThrow(Math.toIntExact(id));
-            model.addAttribute("item", item);
-            model.addAttribute("mode", "detail");
-        } else if (keyword != null && !keyword.isEmpty()) {
-            model.addAttribute("mode", "search_result");
-        } else {
-            model.addAttribute("mode", "home");
+        // 情况1：有搜索关键词
+        if (currentKw != null) {
+            System.out.println("🔍 搜索模式，关键词: " + currentKw);
+
+            // 获取搜索结果
+            entryList = partyEncyclopediaService.search(currentKw);
+            System.out.println("搜索结果条数: " + entryList.size());
+
+            // 情况1.1：点击了搜索结果（有id参数）
+            if (id != null) {
+                try {
+                    currentItem = partyEncyclopediaService.findById(id);
+                    System.out.println("✅ 找到详情词条: " + currentItem.getTitle());
+
+                    // 关键修复：确保当前词条在列表中（去重逻辑）
+                    boolean foundInResults = false;
+                    List<PartyEncyclopedia> uniqueList = new ArrayList<>();
+
+                    for (PartyEncyclopedia entry : entryList) {
+                        // 去重逻辑：如果还没有添加过这个词条
+                        if (!uniqueList.stream().anyMatch(e -> e.getId().equals(entry.getId()))) {
+                            uniqueList.add(entry);
+                        }
+                        // 检查是否是当前词条
+                        if (entry.getId().equals(currentItem.getId())) {
+                            foundInResults = true;
+                        }
+                    }
+
+                    entryList = uniqueList; // 使用去重后的列表
+
+                    // 如果当前词条不在搜索结果中，添加到列表开头
+                    if (!foundInResults) {
+                        System.out.println("⚠️ 当前词条不在搜索结果中，添加到列表开头");
+                        entryList.add(0, currentItem);
+                    }
+
+                    mode = "detail";
+                    System.out.println("📄 模式：搜索+详情");
+
+                } catch (RuntimeException e) {
+                    System.out.println("❌ 未找到词条，ID: " + id);
+                    mode = "search_result";
+                }
+            }
+            // 情况1.2：只有搜索关键词，没有点击详情
+            else {
+                System.out.println("📋 模式：纯搜索");
+                mode = "search_result";
+            }
+        }
+        // 情况2：没有搜索关键词，但有id（直接访问词条）
+        else if (id != null) {
+            try {
+                currentItem = partyEncyclopediaService.findById(id);
+                mode = "detail";
+                System.out.println("📄 直接访问词条: " + currentItem.getTitle());
+                // 显示所有词条在左侧
+                entryList = partyEncyclopediaService.search(null);
+            } catch (RuntimeException e) {
+                System.out.println("❌ 未找到词条，ID: " + id);
+                entryList = partyEncyclopediaService.search(null);
+                mode = "home";
+            }
+        }
+        // 情况3：既没有搜索关键词也没有id（首页）
+        else {
+            entryList = partyEncyclopediaService.search(null);
+            mode = "home";
+            System.out.println("🏠 首页模式");
         }
 
+        System.out.println("📊 最终数据：");
+        System.out.println("- 模式: " + mode);
+        System.out.println("- 当前关键词: " + currentKw);
+        System.out.println("- 当前词条: " + (currentItem != null ? currentItem.getTitle() : "无"));
+        System.out.println("- 列表大小: " + entryList.size());
+        System.out.println("=== 请求处理完成 ===\n");
+
+        // 将数据传递给前端模板
+        model.addAttribute("entryList", entryList);
+        model.addAttribute("item", currentItem);
+        model.addAttribute("currentKw", currentKw);
+        model.addAttribute("mode", mode);
+
         return "encyclopedia/list";
+    }
+    // ============== API接口 ==============
+
+    /**
+     * API接口：获取所有词条
+     */
+    @GetMapping("/api/entries")
+    @ResponseBody
+    public ApiResponse<List<PartyEncyclopedia>> getAllEntries() {
+        System.out.println("=== API调用：获取所有词条 ===");
+        try {
+            List<PartyEncyclopedia> entries = partyEncyclopediaService.search(null);
+            System.out.println("API返回数据条数: " + entries.size());
+            return ApiResponse.success("获取成功", entries);
+        } catch (Exception e) {
+            System.out.println("API获取失败: " + e.getMessage());
+            return ApiResponse.error("获取失败: " + e.getMessage());
+        }
+    }
+
+    /**
+     * API接口：搜索词条
+     */
+    @GetMapping("/api/search")
+    @ResponseBody
+    public ApiResponse<List<PartyEncyclopedia>> searchEntries(
+            @RequestParam(value = "keyword", required = false) String keyword) {
+        System.out.println("=== API调用：搜索词条 ===");
+        System.out.println("搜索关键词: " + keyword);
+        try {
+            List<PartyEncyclopedia> results = partyEncyclopediaService.search(keyword);
+            System.out.println("API搜索结果条数: " + results.size());
+            return ApiResponse.success("搜索成功", results);
+        } catch (Exception e) {
+            System.out.println("API搜索失败: " + e.getMessage());
+            return ApiResponse.error("搜索失败: " + e.getMessage());
+        }
+    }
+
+    /**
+     * API接口：获取词条详情
+     */
+    @GetMapping("/api/entry/{id}")
+    @ResponseBody
+    public ApiResponse<PartyEncyclopedia> getEntryApi(@PathVariable Long id) {
+        System.out.println("=== API调用：获取词条详情 ===");
+        System.out.println("词条ID: " + id);
+        try {
+            PartyEncyclopedia entry = partyEncyclopediaService.findById(id);
+            return ApiResponse.success("获取成功", entry);
+        } catch (RuntimeException e) {
+            return ApiResponse.notFound(e.getMessage());
+        } catch (Exception e) {
+            return ApiResponse.error("获取失败: " + e.getMessage());
+        }
     }
     // 添加这个 GET 方法！！！
     @GetMapping("/encyclopedias/{id}")
@@ -157,4 +287,5 @@ public class EncyclopediaController {
             return ResponseEntity.status(500).body(error);
         }
     }
+}
 }

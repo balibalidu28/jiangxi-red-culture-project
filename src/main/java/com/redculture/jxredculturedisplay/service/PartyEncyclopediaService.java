@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PartyEncyclopediaService {
@@ -14,22 +15,44 @@ public class PartyEncyclopediaService {
     private PartyEncyclopediaRepository repository;
 
     /**
-     * 核心搜索逻辑
+     * 修复：搜索逻辑 - 同时搜索标题和内容，并去重
      */
     public List<PartyEncyclopedia> search(String keyword) {
-        // 1. 如果有搜索词，就模糊查询
+        System.out.println("=== Service 搜索调用 ===");
+        System.out.println("搜索关键词: " + keyword);
+
+        // 1. 如果有搜索词，使用Repository的searchByKeyword方法（同时搜索标题和内容）
         if (keyword != null && !keyword.trim().isEmpty()) {
-            return repository.findByTitleContaining(keyword);
+            List<PartyEncyclopedia> results = repository.searchByKeyword(keyword.trim());
+            System.out.println("搜索结果数量: " + results.size());
+
+            // 去重处理（按ID去重）
+            return results.stream()
+                    .distinct() // 去重
+                    .collect(Collectors.toList());
         }
-        // 2. 关键：如果没词（比如刚点进来），一定要返回所有数据！
+        // 2. 如果没有搜索词，返回所有数据并按ID排序
         else {
-            return repository.findAll();
+            List<PartyEncyclopedia> allEntries = repository.findAllByOrderByIdAsc();
+            System.out.println("返回所有词条数量: " + allEntries.size());
+            return allEntries;
         }
     }
 
-    public PartyEncyclopedia getOrThrow(Integer id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("未找到该词条，ID: " + id));
+    /**
+     * 判断词条是否在列表中
+     */
+    public boolean isInList(Long id, List<PartyEncyclopedia> list) {
+        if (id == null || list == null || list.isEmpty()) {
+            return false;
+        }
+        return list.stream().anyMatch(item -> item.getId().equals(id.intValue()));
+    }
+
+
+    public PartyEncyclopedia getOrThrow(Long id) {
+        return repository.findById(id.intValue())
+                .orElseThrow(() -> new RuntimeException("未找到该词条"));
     }
 
     // Admin用的
