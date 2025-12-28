@@ -2,7 +2,7 @@
 async function loadEncyclopedias() {
     console.log("开始加载百科列表...");
 
-    const url = "http://localhost:8080/api/admin/encyclopedias";
+    const url = "http://localhost:8080/api/admin/encyclopedia";
     console.log("请求URL:", url);
 
     try {
@@ -21,11 +21,11 @@ async function loadEncyclopedias() {
             throw new Error(`HTTP错误! 状态: ${response.status} ${response.statusText}`);
         }
 
-        const encyclopedias = await response.json();
-        console.log("获取到的百科数据:", encyclopedias);
+        const encyclopedia = await response.json();
+        console.log("获取到的百科数据:", encyclopedia);
 
-        // 根据您的HTML，选择#encyclopedias section里的第一个table
-        const encyclopediaSection = document.getElementById("encyclopedias");
+        // 根据您的HTML，选择#encyclopedia section里的第一个table
+        const encyclopediaSection = document.getElementById("encyclopedia");
         if (!encyclopediaSection) {
             console.error("找不到百科管理模块");
             return;
@@ -45,7 +45,7 @@ async function loadEncyclopedias() {
 
         tableBody.innerHTML = ""; // 清空旧表格内容
 
-        encyclopedias.forEach(item => {
+        encyclopedia.forEach(item => {
             const row = document.createElement("tr");
 
             // 处理图片显示 - 修复版
@@ -118,7 +118,7 @@ async function loadEncyclopedias() {
             document.head.appendChild(style);
         }
 
-        console.log("百科列表加载完成，共" + encyclopedias.length + "条记录");
+        console.log("百科列表加载完成，共" + encyclopedia.length + "条记录");
     } catch (error) {
         console.error("加载百科列表失败:", error);
         console.error("错误名称:", error.name);
@@ -143,7 +143,7 @@ function showEncyclopediaForm() {
     }
     formContainer.style.display = "block";
     document.getElementById("encyclopediaFormTitle").textContent = "新增百科";
-    document.getElementById("encyclopediasForm").reset();
+    document.getElementById("encyclopediaForm").reset();
     document.getElementById("encyclopediaId").value = ""; // 清空隐藏的ID
     document.getElementById("encyclopediaImageUrlHidden").value = ""; // 清空图片URL
 
@@ -174,7 +174,7 @@ async function uploadEncyclopediaImage(encyclopediaId, imageFile) {
     formData.append('file', imageFile);
 
     try {
-        const response = await fetch(`http://localhost:8080/encyclopedias/api/${encyclopediaId}/upload-image`, {
+        const response = await fetch(`http://localhost:8080/encyclopedia/api/${encyclopediaId}/upload-image`, {
             method: 'POST',
             body: formData
         });
@@ -300,8 +300,8 @@ async function saveEncyclopedia() {
         // 1. 先保存百科基本信息
         const method = id ? "PUT" : "POST";
         const url = id ?
-            `http://localhost:8080/api/admin/encyclopedias/${id}` :
-            "http://localhost:8080/api/admin/encyclopedias";
+            `http://localhost:8080/api/admin/encyclopedia/${id}` :
+            "http://localhost:8080/api/admin/encyclopedia";
 
         console.log("请求基本数据:", method, url);
 
@@ -331,7 +331,7 @@ async function saveEncyclopedia() {
 
                         // 3. 使用PATCH更新图片URL（只更新图片字段）
                         try {
-                            await fetch(`http://localhost:8080/encyclopedias/api/${savedId}`, {
+                            await fetch(`http://localhost:8080/encyclopedia/api/${savedId}`, {
                                 method: 'PATCH',
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify({ imageUrl: imageUrl })
@@ -340,7 +340,7 @@ async function saveEncyclopedia() {
                         } catch (patchError) {
                             console.warn("PATCH失败，使用PUT:", patchError);
                             // 如果PATCH失败，使用PUT更新整个对象
-                            await fetch(`http://localhost:8080/api/admin/encyclopedias/${savedId}`, {
+                            await fetch(`http://localhost:8080/api/admin/encyclopedia/${savedId}`, {
                                 method: 'PUT',
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify({
@@ -384,7 +384,7 @@ async function editEncyclopedia(id) {
     console.log("开始编辑百科，ID:", id);
 
     try {
-        const response = await fetch(`http://localhost:8080/encyclopedias/${id}`);
+        const response = await fetch(`http://localhost:8080/encyclopedia/${id}`);
         if (!response.ok) {
             throw new Error(`获取百科详情失败: ${response.status}`);
         }
@@ -442,7 +442,7 @@ async function deleteEncyclopedia(id) {
     }
 
     try {
-        const response = await fetch(`http://localhost:8080/api/admin/encyclopedias/${id}`, {
+        const response = await fetch(`http://localhost:8080/api/admin/encyclopedia/${id}`, {
             method: "DELETE"
         });
 
@@ -471,7 +471,7 @@ document.addEventListener("DOMContentLoaded", function() {
     loadEncyclopedias();
 
     // 绑定表单提交事件
-    const encyclopediaForm = document.getElementById("encyclopediasForm");
+    const encyclopediaForm = document.getElementById("encyclopediaForm");
     if (encyclopediaForm) {
         encyclopediaForm.addEventListener("submit", function(e) {
             e.preventDefault();

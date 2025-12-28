@@ -64,7 +64,7 @@ function switchModule(moduleName) {
                     console.warn("loadScenicSpots 函数未定义");
                 }
                 break;
-            case 'encyclopedias':
+            case 'encyclopedia':
                 console.log("调用 loadEncyclopedias()");
                 if (window.loadEncyclopedias) {
                     window.loadEncyclopedias();

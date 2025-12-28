@@ -220,25 +220,25 @@ public class AdminController {
     // ========================== 百科管理功能 ==========================
 
     // 获取所有百科条目
-    @GetMapping("/encyclopedias")
+    @GetMapping("/encyclopedia")
     public List<PartyEncyclopedia> getAllEncyclopedias() {
         return encyclopediaService.listAll();
     }
 
     // 创建百科条目
-    @PostMapping("/encyclopedias")
+    @PostMapping("/encyclopedia")
     public PartyEncyclopedia createEncyclopedia(@RequestBody PartyEncyclopedia encyclopedia) {
         return encyclopediaService.save(encyclopedia);
     }
 
     // 更新百科条目
-    @PutMapping("/encyclopedias/{id}")
+    @PutMapping("/encyclopedia/{id}")
     public PartyEncyclopedia updateEncyclopedia(@PathVariable Integer id, @RequestBody PartyEncyclopedia encyclopediaDetails) {
         return encyclopediaService.update(Long.valueOf(id), encyclopediaDetails);
     }
 
     // 删除百科条目
-    @DeleteMapping("/encyclopedias/{id}")
+    @DeleteMapping("/encyclopedia/{id}")
     public void deleteEncyclopedia(@PathVariable Integer id) {
         encyclopediaService.deleteById((id));
     }

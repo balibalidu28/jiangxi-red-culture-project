@@ -182,9 +182,10 @@ public class EncyclopediaController {
             return ApiResponse.error("获取失败: " + e.getMessage());
         }
     }
-    // 添加这个 GET 方法！！！
-    @GetMapping("/encyclopedias/{id}")
-    public ResponseEntity<PartyEncyclopedia> getEncyclopediaById(@PathVariable Integer id) {
+
+    // 添加这个 GET 方法！！！=
+    @GetMapping("/{id}")
+    public ResponseEntity<PartyEncyclopedia> getEncyclopediaById(@PathVariable Long id) {
         try {
             PartyEncyclopedia encyclopedia = partyEncyclopediaService.getOrThrow(Long.valueOf(id));
             return ResponseEntity.ok(encyclopedia);
@@ -192,7 +193,7 @@ public class EncyclopediaController {
             return ResponseEntity.notFound().build(); // 返回 404
         }
     }
-    @PostMapping("/encyclopedias/api/{id}/upload-image")
+    @PostMapping("/api/{id}/upload-image")
     @ResponseBody
     public ResponseEntity<?> uploadEncyclopediaImage(
             @PathVariable Integer id,
@@ -270,7 +271,7 @@ public class EncyclopediaController {
     }
 
     // 添加PATCH接口用于单独更新图片URL
-    @PatchMapping("/encyclopedias/api/{id}")
+    @PatchMapping("/api/{id}")
     @ResponseBody
     public ResponseEntity<?> updateImageUrl(
             @PathVariable Integer id,
