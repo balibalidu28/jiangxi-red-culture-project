@@ -1,5 +1,4 @@
-USE red_culture;
--- 红色英雄表
+-- 1. 红色英雄表
 DROP TABLE IF EXISTS red_hero;
 CREATE TABLE `red_hero` (
                             `id` INT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
@@ -19,7 +18,7 @@ CREATE TABLE `red_hero` (
                             PRIMARY KEY (`id`),
                             UNIQUE KEY `uk_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='红色英雄表';
--- 党史大百科表
+-- 2. 党史大百科表
 DROP TABLE IF EXISTS party_encyclopedia;
 CREATE TABLE IF NOT EXISTS party_encyclopedia (
                                                   id INT AUTO_INCREMENT PRIMARY KEY ,
@@ -28,7 +27,7 @@ CREATE TABLE IF NOT EXISTS party_encyclopedia (
                                                   image_url VARCHAR(255)
 );
 
--- 红色圣地表
+-- 3. 红色圣地表
 DROP TABLE IF EXISTS red_scenic_spot;
 CREATE TABLE IF NOT EXISTS red_scenic_spot (
                                                id INT AUTO_INCREMENT PRIMARY KEY,
@@ -38,7 +37,7 @@ CREATE TABLE IF NOT EXISTS red_scenic_spot (
                                                image_url VARCHAR(255)
 );
 
--- 红色故事表
+-- 2. 红色故事表
 DROP TABLE IF EXISTS `red_story`;
 CREATE TABLE `red_story` (
                              `id` INT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
@@ -55,7 +54,8 @@ CREATE TABLE `red_story` (
                              PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='红色故事表';
 
--- 红色寻访表
+
+-- 5. 红色寻访表
 DROP TABLE IF EXISTS red_explore ;
 CREATE TABLE red_explore
 (
@@ -76,15 +76,16 @@ CREATE TABLE red_explore
     registration_deadline DATE NOT NULL COMMENT '报名截止日期'
 );
 
--- 用户表
 DROP TABLE IF EXISTS users;
 CREATE TABLE IF NOT EXISTS users (
-                                     id INT AUTO_INCREMENT PRIMARY KEY,
-                                     username VARCHAR(50) NOT NULL UNIQUE,
-                                     phone VARCHAR(20) NOT NULL UNIQUE,
-                                     password VARCHAR(255) NOT NULL,
-                                     role VARCHAR(20) NOT NULL,
-                                     is_active TINYINT(1) NOT NULL DEFAULT 1,
-                                     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+                                     id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '用户ID，自增',
+                                     username VARCHAR(50) NOT NULL UNIQUE COMMENT '用户名',
+    phone VARCHAR(11) NOT NULL UNIQUE COMMENT '手机号',
+    password VARCHAR(255) NOT NULL COMMENT '加密后的密码',
+    role VARCHAR(20) DEFAULT 'USER' COMMENT '用户角色：USER, ADMIN',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    is_active BOOLEAN DEFAULT TRUE COMMENT '是否激活',
+    INDEX idx_username (username),
+    INDEX idx_phone (phone)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';

@@ -1,0 +1,449 @@
+/* 红色主题变量 */
+.red-theme {
+    --primary-red: #c62f2f;
+    --dark-red: #8b0000;
+    --light-red: #fff5f5;
+    --medium-red: #ff6b6b;
+    --gold: #d4af37;
+    --dark-gray: #333;
+    --medium-gray: #666;
+    --light-gray: #f5f5f5;
+    --border-color: #e0e0e0;
+    --success-green: #28a745;
+    --warning-orange: #ffc107;
+    --info-blue: #17a2b8;
+}
+
+/* 面包屑导航 */
+.breadcrumb-nav {
+    padding: 15px 0;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.breadcrumb-nav a {
+    color: var(--primary-red);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.breadcrumb-nav a:hover {
+    color: var(--dark-red);
+    text-decoration: underline;
+}
+
+.breadcrumb-nav i {
+    color: var(--medium-gray);
+    font-size: 0.8rem;
+}
+
+.breadcrumb-nav span {
+    color: var(--medium-gray);
+}
+
+/* 详情容器 */
+.activity-detail-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.detail-content {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 25px;
+}
+
+/* 左侧详情区域 */
+.detail-main {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* 活动封面 */
+.activity-cover {
+    position: relative;
+    height: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.cover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cover-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    color: white;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.status-badge {
+    align-self: flex-start;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.status-badge.upcoming {
+    background: var(--gold);
+}
+
+.status-badge.ongoing {
+    background: var(--success-green);
+}
+
+.status-badge.ended {
+    background: var(--medium-gray);
+}
+
+.cover-overlay h1 {
+    font-size: 1.8rem;
+    margin: 0;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* 通用区块样式 */
+.basic-info-section,
+.description-section,
+.schedule-section {
+    background: white;
+    border-radius: 10px;
+    padding: 22px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--border-color);
+}
+
+.section-title {
+    color: var(--dark-red);
+    font-size: 1.3rem;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--light-red);
+}
+
+.section-title i {
+    color: var(--primary-red);
+}
+
+/* 基本信息网格 */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 18px;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.info-item i {
+    color: var(--primary-red);
+    font-size: 1.1rem;
+    margin-top: 2px;
+    width: 20px;
+}
+
+.info-label {
+    display: block;
+    color: var(--medium-gray);
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+
+.info-value {
+    display: block;
+    color: var(--dark-gray);
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+/* 活动介绍 */
+.description-content {
+    color: var(--dark-gray);
+    line-height: 1.7;
+    font-size: 1rem;
+}
+
+.description-content p {
+    margin-bottom: 15px;
+}
+
+/* 活动日程 */
+.schedule-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.schedule-item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.schedule-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.schedule-time {
+    color: var(--primary-red);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.schedule-content h4 {
+    color: var(--dark-gray);
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+
+.schedule-content p {
+    color: var(--medium-gray);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* 右侧报名区域 */
+.registration-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.registration-card,
+.tips-card {
+    background: white;
+    border-radius: 10px;
+    padding: 22px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--border-color);
+}
+
+.registration-title {
+    color: var(--dark-red);
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 邮箱信息 */
+.email-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--light-red);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.email-info i {
+    color: var(--primary-red);
+    font-size: 1.2rem;
+    margin-top: 2px;
+}
+
+.email-label {
+    display: block;
+    color: var(--medium-gray);
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+
+.email-value {
+    display: block;
+    color: var(--dark-red);
+    font-weight: 600;
+    font-size: 1.1rem;
+    word-break: break-all;
+}
+
+/* 名额信息 */
+.quota-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #f8f9fa;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.quota-info i {
+    color: var(--primary-red);
+    font-size: 1.2rem;
+}
+
+.quota-label {
+    color: var(--medium-gray);
+    font-size: 0.95rem;
+}
+
+.quota-value {
+    color: var(--dark-gray);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* 报名步骤 */
+.registration-steps {
+    margin-bottom: 25px;
+}
+
+.registration-steps h4 {
+    color: var(--dark-gray);
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.registration-steps i {
+    color: var(--primary-red);
+}
+
+.steps-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.step {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-red);
+}
+
+.step-number {
+    width: 30px;
+    height: 30px;
+    background: var(--primary-red);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.step-content h5 {
+    color: var(--dark-gray);
+    margin-bottom: 4px;
+    font-size: 1rem;
+}
+
+.step-content p {
+    color: var(--medium-gray);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* 下载按钮区域 */
+.download-section {
+    text-align: center;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: var(--light-red);
+    border-radius: 8px;
+}
+
+.btn-download {
+    background: var(--primary-red);
+    color: white;
+    border: none;
+    padding: 14px 30px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.btn-download:hover {
+    background: var(--dark-red);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(198, 47, 47, 0.3);
+}
+
+.btn-download:active {
+    transform: translateY(0);
+}
+
+.file-info {
+    color: var(--medium-gray);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* 温馨提示 */
+.tips-card h4 {
+    color: var(--dark-red);
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tips-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.tips-list li {
+    padding: 10px 0;
+    color: var(--medium-gray);
+    border-bottom: 1px dashed var(--border-color);
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+}
+
+.tips-list li:before {
+    content: "•";
+    color: var(--primary-red);
+    font-weight: bold;
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+.tips-list li:last-child {
+    border-bottom: none;
+}
