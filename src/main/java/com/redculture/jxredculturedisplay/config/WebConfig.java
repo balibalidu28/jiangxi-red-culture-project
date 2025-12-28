@@ -10,24 +10,51 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 静态资源映射
+        // hero
         registry.addResourceHandler("/images/hero/**")
                 .addResourceLocations(
                         "classpath:/static/images/hero/",
                         "file:./src/main/resources/static/images/hero/",
                         "file:./static/images/hero/"
                 );
+
+        // explore
         registry.addResourceHandler("/images/explore/**")
                 .addResourceLocations(
                         "classpath:/static/images/explore/",
                         "file:./src/main/resources/static/images/explore/",
                         "file:./static/images/explore/"
                 );
+
         registry.addResourceHandler("/files/explore/**")
                 .addResourceLocations(
                         "classpath:/static/files/explore/",
                         "file:./src/main/resources/static/files/explore/",
                         "file:./static/files/explore/"
+                );
+
+        // ✅ stories (注意：你的 StoryController 保存目录是 static/images/stories/，URL 也是 /images/stories/)
+        registry.addResourceHandler("/images/stories/**")
+                .addResourceLocations(
+                        "classpath:/static/images/stories/",
+                        "file:./src/main/resources/static/images/stories/",
+                        "file:./static/images/stories/"
+                );
+
+        // ✅ scenic
+        registry.addResourceHandler("/images/scenic/**")
+                .addResourceLocations(
+                        "classpath:/static/images/scenic/",
+                        "file:./src/main/resources/static/images/scenic/",
+                        "file:./static/images/scenic/"
+                );
+
+        // ✅ encyclopedia
+        registry.addResourceHandler("/images/encyclopedia/**")
+                .addResourceLocations(
+                        "classpath:/static/images/encyclopedia/",
+                        "file:./src/main/resources/static/images/encyclopedia/",
+                        "file:./static/images/encyclopedia/"
                 );
     }
 

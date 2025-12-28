@@ -362,12 +362,8 @@ async function saveEncyclopedia() {
             // 清空文件输入框
             if (fileInput) fileInput.value = "";
 
-            // 延迟3秒后刷新列表
-            setTimeout(() => {
-                hideEncyclopediaForm();
-                loadEncyclopedias();
-            }, 3000);
-
+            hideEncyclopediaForm();
+            await loadEncyclopedias();
         } else {
             const errorText = await response.text();
             console.error("保存失败:", errorText);
