@@ -1,5 +1,6 @@
 package com.redculture.jxredculturedisplay.controller;
 
+import com.redculture.jxredculturedisplay.common.ApiResponse;
 import com.redculture.jxredculturedisplay.model.PartyEncyclopedia;
 import com.redculture.jxredculturedisplay.service.PartyEncyclopediaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -183,7 +186,7 @@ public class EncyclopediaController {
     @GetMapping("/encyclopedias/{id}")
     public ResponseEntity<PartyEncyclopedia> getEncyclopediaById(@PathVariable Integer id) {
         try {
-            PartyEncyclopedia encyclopedia = service.getOrThrow(id);
+            PartyEncyclopedia encyclopedia = partyEncyclopediaService.getOrThrow(Long.valueOf(id));
             return ResponseEntity.ok(encyclopedia);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build(); // 返回 404
@@ -241,9 +244,9 @@ public class EncyclopediaController {
             System.out.println("图片访问URL: " + imageUrl);
 
             // 更新数据库中的图片URL
-            PartyEncyclopedia encyclopedia = service.getOrThrow(id);
+            PartyEncyclopedia encyclopedia = partyEncyclopediaService.getOrThrow(Long.valueOf(id));
             encyclopedia.setImageUrl(imageUrl);
-            service.save(encyclopedia);
+            partyEncyclopediaService.save(encyclopedia);
             System.out.println("数据库已更新图片URL");
 
             // 返回成功响应
@@ -274,10 +277,10 @@ public class EncyclopediaController {
             @RequestBody Map<String, String> updates
     ) {
         try {
-            PartyEncyclopedia encyclopedia = service.getOrThrow(id);
+            PartyEncyclopedia encyclopedia = partyEncyclopediaService.getOrThrow(Long.valueOf(id));
             if (updates.containsKey("imageUrl")) {
                 encyclopedia.setImageUrl(updates.get("imageUrl"));
-                service.save(encyclopedia);
+                partyEncyclopediaService.save(encyclopedia);
             }
             return ResponseEntity.ok(encyclopedia);
         } catch (Exception e) {
@@ -287,5 +290,4 @@ public class EncyclopediaController {
             return ResponseEntity.status(500).body(error);
         }
     }
-}
 }
