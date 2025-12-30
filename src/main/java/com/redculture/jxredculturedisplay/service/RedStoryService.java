@@ -94,4 +94,19 @@ public class RedStoryService {
     public void deleteById(Integer id) {
         redStoryRepository.deleteById(id);
     }
+
+    // 新增：根据英雄名称搜索
+    public List<RedStory> findByHeroName(String heroName) {
+        return redStoryRepository.findByHeroNameContainingIgnoreCase(heroName);
+    }
+
+    // 新增：根据地点搜索
+    public List<RedStory> findByLocation(String location) {
+        return redStoryRepository.findByLocationContainingIgnoreCase(location);
+    }
+
+    // 新增：根据英雄名称和地点搜索
+    public List<RedStory> findByHeroNameAndLocation(String heroName, String location) {
+        return redStoryRepository.findByHeroNameContainingIgnoreCaseAndLocationContainingIgnoreCase(heroName, location);
+    }
 }

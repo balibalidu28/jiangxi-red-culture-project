@@ -9,8 +9,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +34,24 @@ public class StoryController {
                            @RequestParam(required = false) String kw,
                            Model model) {
         Page<RedStory> storyPage = redStoryService.page(page, size, kw);
+
+        // 获取精选故事（最新的3个）
+        List<RedStory> featuredStories = redStoryService.listTop(3);
+
         model.addAttribute("stories", storyPage.getContent());
         model.addAttribute("totalPages", storyPage.getTotalPages());
         model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize", size);
         model.addAttribute("keyword", kw);
+        model.addAttribute("searchKeyword", kw);  // 别名，用于模板
+        model.addAttribute("totalItems", storyPage.getTotalElements());
+        model.addAttribute("featuredStories", featuredStories);
+
+        // 预先计算分页值
+        model.addAttribute("prevPage", Math.max(0, page - 1));
+        model.addAttribute("nextPage", Math.min(storyPage.getTotalPages() - 1, page + 1));
+        model.addAttribute("lastPage", Math.max(0, storyPage.getTotalPages() - 1));
+
         return "story/list";
     }
 
@@ -42,6 +59,15 @@ public class StoryController {
     public String pageDetail(@PathVariable Integer id, Model model) {
         RedStory story = redStoryService.getOrThrow(id);
         model.addAttribute("story", story);
+
+        // 获取相关故事（最新的4个，排除当前故事）
+        List<RedStory> relatedStories = redStoryService.listTop(5); // 多取一个
+        relatedStories.removeIf(s -> s.getId().equals(id));
+        if (relatedStories.size() > 4) {
+            relatedStories = relatedStories.subList(0, 4);
+        }
+        model.addAttribute("relatedStories", relatedStories);
+
         return "story/detail";
     }
 
@@ -51,13 +77,46 @@ public class StoryController {
     public Page<RedStory> apiPage(@RequestParam(defaultValue = "0") int page,
                                   @RequestParam(defaultValue = "10") int size,
                                   @RequestParam(required = false) String kw) {
-        return redStoryService.page(page, size, kw);
+        Page<RedStory> pageResult = redStoryService.page(page, size, kw);
+
+        // 处理图片URL，确保是完整可访问的路径
+        pageResult.getContent().forEach(story -> {
+            if (story.getImageUrl() != null && !story.getImageUrl().startsWith("http")) {
+                story.setImageUrl("http://localhost:8080" +
+                        (story.getImageUrl().startsWith("/") ? "" : "/") +
+                        story.getImageUrl());
+            }
+        });
+
+        return pageResult;
     }
 
     @GetMapping("/api/{id}")
     @ResponseBody
     public RedStory apiDetail(@PathVariable Integer id) {
-        return redStoryService.getOrThrow(id);
+        RedStory story = redStoryService.getOrThrow(id);
+
+        // 处理图片URL，确保是完整可访问的路径
+        if (story.getImageUrl() != null && !story.getImageUrl().startsWith("http")) {
+            String baseUrl = "http://localhost:8080";
+            String imageUrl = story.getImageUrl();
+
+            // 确保URL以/开头
+            if (!imageUrl.startsWith("/")) {
+                imageUrl = "/" + imageUrl;
+            }
+
+            // 检查是否是uploaded-files目录的图片
+            if (imageUrl.contains("uploaded-files")) {
+                // 直接使用绝对路径
+                story.setImageUrl(baseUrl + imageUrl);
+            } else {
+                // 其他情况也使用绝对路径
+                story.setImageUrl(baseUrl + imageUrl);
+            }
+        }
+
+        return story;
     }
 
     // ============ 后台管理API（前端调用的是 /api/admin/stories）============
@@ -98,28 +157,41 @@ public class StoryController {
             @PathVariable Integer id,
             @RequestParam("file") MultipartFile file
     ) throws Exception {
-        if (file.isEmpty()) throw new IllegalArgumentException("文件为空");
 
-        // 保存到 src/main/resources/static/images/story/
-        String dirPath = System.getProperty("user.dir") + "/src/main/resources/static/images/stories/";
-        Files.createDirectories(Path.of(dirPath));
+        // 使用相对路径，确保在静态资源目录下
+        String uploadDir = "src/main/resources/static/images/stories/";
+        File dir = new File(uploadDir);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
 
-        String originalFilename = file.getOriginalFilename();
-        String ext = originalFilename.substring(originalFilename.lastIndexOf('.'));
-        String filename = UUID.randomUUID().toString().replace("-", "") + ext;
-        Path savePath = Path.of(dirPath, filename);
-        file.transferTo(savePath.toFile());
+        // 生成唯一文件名
+        String filename = UUID.randomUUID() + "_" +
+                file.getOriginalFilename().replaceAll("[^a-zA-Z0-9._-]", "_");
 
-        // 供前端访问的路径
-        String url = "/images/stories/" + filename;
+        // 保存文件
+        File dest = new File(dir, filename);
+        file.transferTo(dest);
+
+        // 保存到数据库的路径（相对于静态资源根目录）
+        String imageUrl = "/images/stories/" + filename;
 
         // 更新数据库
         RedStory story = redStoryService.getOrThrow(id);
-        story.setImageUrl(url);
+        story.setImageUrl(imageUrl);
+        story.setImageUrl(imageUrl);
         redStoryService.save(story);
 
+        // 同时复制到target目录，以便在开发中立即生效
+        File targetDir = new File("target/classes/static/images/stories/");
+        targetDir.mkdirs();
+        Files.copy(dest.toPath(), new File(targetDir, filename).toPath());
+
         Map<String, Object> resp = new HashMap<>();
-        resp.put("url", url);
+        resp.put("success", true);
+        resp.put("imageUrl", imageUrl);  // 确保返回这个字段
+        resp.put("filename", filename);
+
         return resp;
     }
 }
