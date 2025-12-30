@@ -1,3 +1,22 @@
+// main.js - 通用函数
+
+// 如果还没有定义，添加这些工具函数
+if (typeof window.formatDate === 'undefined') {
+    window.formatDate = function(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('zh-CN');
+    };
+}
+
+if (typeof window.truncateText === 'undefined') {
+    window.truncateText = function(text, maxLength) {
+        if (!text) return '';
+        if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength) + '...';
+    };
+}
+
 // 首页特定交互
 document.addEventListener('DOMContentLoaded', function() {
     // 卡片悬停效果增强
@@ -111,3 +130,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
+
+
+
