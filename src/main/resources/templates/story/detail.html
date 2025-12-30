@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${story.title} + ' - 红色故事'">红色故事详情 - 江西红色文化信息网</title>
+    <title>红色故事详情 - 江西红色文化信息网</title>
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,9 +13,6 @@
     <!-- 使用与首页相同的CSS -->
     <link rel="stylesheet" href="/static/css/main.css">
     <link rel="stylesheet" href="/static/css/story/detail.css">
-    <style>
-
-    </style>
 </head>
 <body>
 <!-- 导航栏 -->
@@ -48,7 +45,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html">
+                    <a class="nav-link active" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html">
                         <i class="fas fa-book-open me-1"></i> 红色故事
                     </a>
                 </li>
@@ -58,22 +55,21 @@
                     </a>
                 </li>
             </ul>
-
-
         </div>
-    </div>
     </div>
 </nav>
 
 <!-- 面包屑导航 -->
-<div class="container mt-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/index.html">首页</a></li>
-            <li class="breadcrumb-item"><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html">红色故事</a></li>
-            <li class="breadcrumb-item active" aria-current="page" th:text="${story.title}">故事标题</li>
-        </ol>
-    </nav>
+<div class="container-fluid py-3" style="background: linear-gradient(135deg, #fff8e1, #ffebee);">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/index.html" style="text-decoration: none; color: var(--red-primary);">首页</a></li>
+                <li class="breadcrumb-item"><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html">红色故事</a></li>
+                <li class="breadcrumb-item active" aria-current="page" id="breadcrumbTitle">故事详情</li>
+            </ol>
+        </nav>
+    </div>
 </div>
 
 <!-- 故事头部 -->
@@ -81,204 +77,149 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h1 class="story-title" th:text="${story.title}">故事标题</h1>
+                <h1 class="story-title" id="storyTitle">正在加载...</h1>
 
                 <!-- 故事元信息 -->
                 <div class="story-meta">
-                    <div class="meta-item">
+                    <div class="meta-item" id="heroInfo" style="display: none;">
                         <i class="fas fa-user-tie"></i>
                         <span class="meta-label">英雄人物：</span>
-                        <span class="meta-value" th:text="${story.heroName} ?: '多位革命先烈'">方志敏</span>
+                        <span class="meta-value" id="heroName">多位革命先烈</span>
                     </div>
 
-                    <!--                    <div class="meta-item" th:if="${story.author}">-->
-                    <!--                        <i class="fas fa-user-edit"></i>-->
-                    <!--                        <span class="meta-label">作者：</span>-->
-                    <!--                        <span class="meta-value" th:text="${story.author}">整理/讲述人</span>-->
-                    <!--                    </div>-->
-
-                    <div class="meta-item" th:if="${story.storyTime}">
+                    <div class="meta-item" id="timeInfo" style="display: none;">
                         <i class="fas fa-calendar-alt"></i>
                         <span class="meta-label">发生时间：</span>
-                        <span class="meta-value" th:text="${story.storyTime}">1927年</span>
+                        <span class="meta-value" id="storyTime">1927年</span>
                     </div>
 
-                    <div class="meta-item" th:if="${story.location}">
+                    <div class="meta-item" id="locationInfo" style="display: none;">
                         <i class="fas fa-map-marker-alt"></i>
                         <span class="meta-label">发生地点：</span>
-                        <span class="meta-value" th:text="${story.location}">江西井冈山</span>
+                        <span class="meta-value" id="storyLocation">江西井冈山</span>
                     </div>
 
-                    <!--                    <div class="meta-item">-->
-                    <!--                        <i class="fas fa-clock"></i>-->
-                    <!--                        <span class="meta-label">发布时间：</span>-->
-                    <!--                        <span class="meta-value" th:text="${#dates.format(story.createdAt, 'yyyy年MM月dd日')}">2024年3月15日</span>-->
-                    <!--                    </div>-->
+                    <div class="meta-item" id="publishInfo">
+                        <i class="fas fa-clock"></i>
+                        <span class="meta-label">发布时间：</span>
+                        <span class="meta-value" id="publishTime">2024年3月15日</span>
+                    </div>
 
-                    <div class="meta-item" th:if="${story.source}">
+                    <div class="meta-item" id="sourceInfo" style="display: none;">
                         <i class="fas fa-bookmark"></i>
                         <span class="meta-label">来源：</span>
-                        <span class="meta-value" th:text="${story.source}">《江西革命故事集》</span>
+                        <span class="meta-value" id="storySource">《江西革命故事集》</span>
                     </div>
                 </div>
 
                 <!-- 故事简介 -->
-                <div th:if="${story.summary}" class="alert alert-danger" role="alert">
+                <div id="summarySection" class="alert alert-danger" role="alert" style="display: none;">
                     <h5><i class="fas fa-quote-left me-2"></i>故事简介</h5>
-                    <p class="mb-0" th:text="${story.summary}">这是一段感人至深的革命故事...</p>
+                    <p class="mb-0" id="storySummary">这是一段感人至深的革命故事...</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- 主内容区域 -->
+<!-- 主内容区域 - 左侧占据全部宽度 -->
 <div class="container">
     <div class="row">
-        <!-- 左侧内容区域 -->
-        <div class="col-lg-8">
+        <!-- 内容区域现在占据整个宽度 -->
+        <div class="col-12">
             <!-- 返回列表链接 -->
             <div class="back-to-list">
-                <a href="/stories" class="text-danger">
+                <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html" class="text-danger">
                     <i class="fas fa-arrow-left me-2"></i>返回故事列表
                 </a>
             </div>
 
-            <!-- 故事封面图 -->
-            <div th:if="${story.imageUrl}" class="text-center mb-4">
-                <img th:src="${story.imageUrl}"
-                     th:alt="${story.title}"
-                     class="img-fluid rounded shadow-lg"
-                     style="max-height: 500px; width: auto;">
+            <!-- 加载状态 -->
+            <div id="loadingState" class="text-center py-5">
+                <div class="spinner-border text-danger" role="status">
+                    <span class="visually-hidden">加载中...</span>
+                </div>
+                <p class="mt-3">正在加载故事详情...</p>
             </div>
 
-            <!-- 故事内容 -->
-            <div class="card card-red mb-4">
-                <div class="card-body">
-                    <div class="story-content" th:utext="${story.content}">
-                        <!-- 这里显示故事内容 -->
-                        <p>这里是故事的具体内容...</p>
+            <!-- 错误状态 -->
+            <div id="errorState" class="text-center py-5" style="display: none;">
+                <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                <h4>加载失败</h4>
+                <p id="errorMessage">无法加载故事详情，请稍后重试。</p>
+                <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html" class="btn btn-danger">
+                    <i class="fas fa-arrow-left me-2"></i>返回故事列表
+                </a>
+            </div>
+
+            <!-- 故事内容区域 -->
+            <div id="contentArea" style="display: none;">
+                <!-- 故事封面图 -->
+                <div class="text-center mb-4">
+                    <img id="storyImage"
+                         src="https://placehold.co/800x450/8B0000/FFFFFF?text=红色故事"
+                         alt="故事封面"
+                         class="img-fluid rounded shadow-lg"
+                         style="max-height: 500px; width: auto;">
+                </div>
+
+                <!-- 故事内容 -->
+                <div class="card card-red mb-4">
+                    <div class="card-body">
+                        <div class="story-content" id="storyContent">
+                            <!-- 这里显示故事内容 -->
+                        </div>
+
+                        <!-- 统计数据 -->
+                        <div class="story-stats">
+                            <div class="story-stat">
+                                <i class="fas fa-calendar"></i>
+                                <span>最后更新：<span id="updateTime">2024-03-15</span></span>
+                            </div>
+                        </div>
                     </div>
+                </div>
 
-                    <!-- 统计数据 -->
-                    <div class="story-stats">
-                        <div class="story-stat">
-                            <i class="fas fa-eye"></i>
-                            <!--                            <span>阅读次数：<span th:text="${story.viewCount}">256</span></span>-->
-                        </div>
-                        <div class="story-stat">
-                            <i class="fas fa-calendar"></i>
-                            <span>最后更新：<span th:text="${#dates.format(story.updatedAt, 'yyyy-MM-dd')}">2024-03-15</span></span>
-                        </div>
+                <!-- 分享和操作按钮 -->
+                <div class="story-actions">
+                    <div class="text-center mb-3">
+                        <h5 class="text-danger">
+                            <i class="fas fa-share-alt me-2"></i>分享这个故事
+                        </h5>
+                        <p class="text-muted">将这份红色记忆传递给更多人</p>
+                    </div>
+                    <div class="action-buttons">
+                        <a href="#" class="share-button wechat" onclick="shareToWechat()">
+                            <i class="fab fa-weixin"></i> 微信
+                        </a>
+                        <a href="#" class="share-button weibo" onclick="shareToWeibo()">
+                            <i class="fab fa-weibo"></i> 微博
+                        </a>
+                        <a href="#" class="share-button qq" onclick="shareToQQ()">
+                            <i class="fab fa-qq"></i> QQ
+                        </a>
+                        <a href="#" class="share-button print" onclick="window.print()">
+                            <i class="fas fa-print"></i> 打印
+                        </a>
                     </div>
                 </div>
-            </div>
 
-            <!-- 分享和操作按钮 -->
-            <div class="story-actions">
-                <div class="text-center mb-3">
-                    <h5 class="text-danger">
-                        <i class="fas fa-share-alt me-2"></i>分享这个故事
-                    </h5>
-                    <p class="text-muted">将这份红色记忆传递给更多人</p>
-                </div>
-                <div class="action-buttons">
-                    <a href="#" class="share-button wechat" onclick="shareToWechat()">
-                        <i class="fab fa-weixin"></i> 微信
-                    </a>
-                    <a href="#" class="share-button weibo" onclick="shareToWeibo()">
-                        <i class="fab fa-weibo"></i> 微博
-                    </a>
-                    <a href="#" class="share-button qq" onclick="shareToQQ()">
-                        <i class="fab fa-qq"></i> QQ
-                    </a>
-                    <a href="#" class="share-button print" onclick="window.print()">
-                        <i class="fas fa-print"></i> 打印
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- 右侧边栏 -->
-        <div class="col-lg-4">
-            <!-- 英雄人物简介 -->
-            <div th:if="${story.heroName}" class="hero-profile">
-                <h5 class="hero-profile-title">
-                    <i class="fas fa-user-shield me-2"></i>
-                    英雄人物简介
-                </h5>
-                <div class="text-center mb-3">
-                    <img th:src="'/static/images/heroes/' + ${story.heroName} + '.jpg'"
-                         src="https://placehold.co/150x150/8B0000/FFFFFF?text=英雄头像"
-                         th:alt="${story.heroName}"
-                         class="rounded-circle shadow-sm"
-                         style="width: 150px; height: 150px; object-fit: cover;">
-                </div>
-                <h6 class="text-center text-danger mb-2" th:text="${story.heroName}">方志敏</h6>
-                <p class="text-center mb-3">
-                    <span th:text="${story.heroName}">方志敏</span>同志是中国共产党的优秀党员，江西农民运动的杰出领导人...
-                </p>
-                <div class="text-center">
-                    <a th:href="@{/heroes?kw={name}(name=${story.heroName})}" class="btn btn-sm btn-danger">
-                        <i class="fas fa-user-circle me-1"></i> 了解更多
-                    </a>
-                </div>
-            </div>
-
-
-
-            <!-- 快速搜索 -->
-            <div class="card card-red mb-4">
-                <div class="card-body">
-                    <h5 class="card-title-red mb-3">
-                        <i class="fas fa-search me-2"></i> 搜索更多故事
-                    </h5>
-                    <form th:action="@{/stories}" method="get" class="mb-3">
-                        <div class="input-group">
-                            <input type="text" class="form-control" name="kw" placeholder="关键词...">
-                            <button class="btn btn-danger" type="submit">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                    </form>
-                    <div class="d-flex flex-wrap gap-2">
-                        <a th:href="@{/stories?kw=井冈山}" class="btn btn-sm btn-outline-danger">井冈山</a>
-                        <a th:href="@{/stories?kw=长征}" class="btn btn-sm btn-outline-danger">长征</a>
-                        <a th:href="@{/stories?kw=瑞金}" class="btn btn-sm btn-outline-danger">瑞金</a>
-                        <a th:href="@{/stories?kw=革命}" class="btn btn-sm btn-outline-danger">革命</a>
+                <!-- 相关故事 -->
+                <div id="relatedStoriesSection" class="related-stories" style="display: none;">
+                    <h4 class="related-title">
+                        <i class="fas fa-book-open me-2"></i>相关故事
+                    </h4>
+                    <div id="relatedStoriesList">
+                        <!-- 相关故事将在这里动态加载 -->
                     </div>
                 </div>
             </div>
-
-            <!--            &lt;!&ndash; 统计信息 &ndash;&gt;-->
-            <!--            <div class="card card-red">-->
-            <!--                <div class="card-body">-->
-            <!--                    <h5 class="card-title-red mb-3">-->
-            <!--                        <i class="fas fa-chart-bar me-2"></i> 故事统计-->
-            <!--                    </h5>-->
-            <!--                    <div class="text-center">-->
-            <!--                        <div class="display-6 text-danger mb-2" th:text="${story.viewCount}">256</div>-->
-            <!--                        <p class="text-muted mb-3">累计阅读次数</p>-->
-            <!--                        <hr>-->
-            <!--                        <p class="mb-1">-->
-            <!--                            <i class="fas fa-book me-2 text-danger"></i>-->
-            <!--                            <strong>故事类型：</strong> 革命历史-->
-            <!--                        </p>-->
-            <!--                        <p class="mb-0">-->
-            <!--                            <i class="fas fa-tag me-2 text-danger"></i>-->
-            <!--                            <strong>标签：</strong>-->
-            <!--                            <span th:text="${story.heroName}" class="badge bg-danger me-1"></span>-->
-            <!--                            <span th:text="${story.location}" class="badge bg-danger"></span>-->
-            <!--                        </p>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
         </div>
     </div>
 </div>
 
-<!-- 页脚 -->
-<footer class="py-5 mt-5">
+<!-- 完整的页脚 -->
+<footer class="footer-red py-5 mt-5">
     <div class="container">
         <div class="row">
             <div class="col-md-4 mb-4">
@@ -286,10 +227,13 @@
                     <i class="fas fa-landmark me-2"></i>
                     <strong>江西红色文化信息网</strong>
                 </h4>
-                <p style="color: rgba(255,255,255,0.8);">聆听革命故事，传承红色基因，弘扬革命精神。</p>
+                <p style="color: rgba(255,255,255,0.8);">
+                    聆听革命故事，传承红色基因，弘扬革命精神。我们致力于传播江西丰富的红色文化资源，让革命精神代代相传。
+                </p>
                 <div class="mt-3">
                     <a href="#" class="text-white me-3"><i class="fab fa-weixin fa-lg"></i></a>
                     <a href="#" class="text-white me-3"><i class="fab fa-weibo fa-lg"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-qq fa-lg"></i></a>
                     <a href="#" class="text-white"><i class="fas fa-envelope fa-lg"></i></a>
                 </div>
             </div>
@@ -297,36 +241,56 @@
             <div class="col-md-4 mb-4">
                 <h5 class="mb-4" style="color: white;">快速链接</h5>
                 <div class="footer-links">
-                    <p><a href="/heroes">红色英雄</a></p>
-                    <p><a href="/encyclopedias">党史大百科</a></p>
-                    <p><a href="/scenicspots">红色圣地</a></p>
-                    <p><a href="/stories">红色故事</a></p>
-                    <p><a href="/explore">红色寻访</a></p>
+                    <p><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/hero/list.html">红色英雄</a></p>
+                    <p><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/encyclopedia/list.html">党史大百科</a></p>
+                    <p><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/RedScenicSpot/list.html">红色圣地</a></p>
+                    <p><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html">红色故事</a></p>
+                    <p><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/explore/list.html">红色寻访</a></p>
                 </div>
             </div>
 
             <div class="col-md-4 mb-4">
                 <h5 class="mb-4" style="color: white;">联系我们</h5>
-                <p style="color: rgba(255,255,255,0.8);"><i class="fas fa-map-marker-alt me-2"></i> 江西省南昌市红谷滩区</p>
-                <p style="color: rgba(255,255,255,0.8);"><i class="fas fa-phone me-2"></i> 0791-12345678</p>
-                <p style="color: rgba(255,255,255,0.8);"><i class="fas fa-envelope me-2"></i> contact@jxredculture.com</p>
+                <p style="color: rgba(255,255,255,0.8);">
+                    <i class="fas fa-map-marker-alt me-2"></i>
+                    江西省南昌市红谷滩区赣江中大道688号
+                </p>
+                <p style="color: rgba(255,255,255,0.8);">
+                    <i class="fas fa-phone me-2"></i>
+                    服务热线：0791-12345678
+                </p>
+                <p style="color: rgba(255,255,255,0.8);">
+                    <i class="fas fa-envelope me-2"></i>
+                    电子邮箱：contact@jxredculture.com
+                </p>
+                <p style="color: rgba(255,255,255,0.8);">
+                    <i class="fas fa-clock me-2"></i>
+                    工作时间：周一至周五 9:00-17:00
+                </p>
             </div>
         </div>
 
-        <hr style="background-color: rgba(255,255,255,0.2);">
+        <hr style="background-color: rgba(255,255,255,0.2); margin: 2rem 0;">
 
         <div class="row">
             <div class="col-md-6">
                 <p class="mb-0" style="color: rgba(255,255,255,0.7);">
-                    © 2024 江西红色文化信息网. 保留所有权利.
-                    <br>
-                    <small>当前故事："<span th:text="${story.title}"></span>"</small>
+                    <i class="fas fa-copyright me-1"></i>
+                    2024 江西红色文化信息网. 保留所有权利.
+                </p>
+                <p class="mb-0 mt-2" style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">
+                    赣ICP备12345678号 | 赣公网安备 36010002000001号
                 </p>
             </div>
-            <div class="col-md-6 text-end">
+            <div class="col-md-6 text-md-end">
                 <p class="mb-0">
+                    <a href="#" class="text-light text-decoration-none me-3">关于我们</a>
                     <a href="#" class="text-light text-decoration-none me-3">隐私政策</a>
-                    <a href="#" class="text-light text-decoration-none">使用条款</a>
+                    <a href="#" class="text-light text-decoration-none me-3">使用条款</a>
+                    <a href="#" class="text-light text-decoration-none">网站地图</a>
+                </p>
+                <p class="mb-0 mt-2" style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">
+                    技术支持：江西红色文化研究院 | 版本：V2.1.0
                 </p>
             </div>
         </div>
@@ -336,11 +300,296 @@
 <!-- Bootstrap JS Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- 自定义JS -->
-<script src="/static/js/story/story-detail.js"></script>
-
 <script>
+    // 从URL获取故事ID
+    function getStoryIdFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('id');
+    }
 
+    // 格式化日期
+    function formatDate(dateString) {
+        if (!dateString) return '';
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+            return date.toLocaleDateString('zh-CN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        } catch (e) {
+            return dateString;
+        }
+    }
+
+    // 分享功能
+    function shareToWechat() {
+        const storyTitle = document.getElementById('storyTitle').textContent;
+        alert(`请使用微信扫描二维码分享"${storyTitle}"`);
+    }
+
+    function shareToWeibo() {
+        const url = encodeURIComponent(window.location.href);
+        const title = encodeURIComponent(document.title);
+        window.open(`http://service.weibo.com/share/share.php?url=${url}&title=${title}`, '_blank');
+    }
+
+    function shareToQQ() {
+        const url = encodeURIComponent(window.location.href);
+        const title = encodeURIComponent(document.title);
+        window.open(`http://connect.qq.com/widget/shareqq/index.html?url=${url}&title=${title}`, '_blank');
+    }
+
+    // 通用函数：处理图片URL
+    function processImageUrl(imageUrl) {
+        if (!imageUrl) {
+            return 'https://placehold.co/800x450/8B0000/FFFFFF?text=红色故事';
+        }
+
+        // 如果已经是完整URL，直接返回
+        if (imageUrl.startsWith('http')) {
+            return imageUrl;
+        }
+
+        // 添加服务器地址
+        const baseUrl = 'http://localhost:8080';
+        if (imageUrl.startsWith('/')) {
+            return baseUrl + imageUrl;
+        } else {
+            return baseUrl + '/' + imageUrl;
+        }
+    }
+
+    // 加载故事详情
+    async function loadStoryDetail(storyId) {
+        try {
+            // 显示加载状态
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('errorState').style.display = 'none';
+            document.getElementById('contentArea').style.display = 'none';
+
+            // 调用后端API获取故事详情
+            const response = await fetch(`http://localhost:8080/stories/api/${storyId}`);
+
+            if (!response.ok) {
+                throw new Error(`HTTP错误! 状态: ${response.status}`);
+            }
+
+            const story = await response.json();
+
+            // 处理图片URL
+            if (story.imageUrl) {
+                story.imageUrl = processImageUrl(story.imageUrl);
+            }
+
+            // 更新页面内容
+            updateStoryContent(story);
+
+            // 获取相关故事
+            await loadRelatedStories(storyId, story.heroName);
+
+        } catch (error) {
+            console.error('加载故事详情失败:', error);
+            showError('无法加载故事详情：' + error.message);
+        } finally {
+            document.getElementById('loadingState').style.display = 'none';
+        }
+    }
+
+    // 更新故事内容
+    function updateStoryContent(story) {
+        // 更新标题
+        document.title = `${story.title} - 红色故事`;
+        document.getElementById('storyTitle').textContent = story.title;
+        document.getElementById('breadcrumbTitle').textContent = story.title;
+
+        // 更新元信息
+        if (story.heroName) {
+            document.getElementById('heroInfo').style.display = 'block';
+            document.getElementById('heroName').textContent = story.heroName;
+        }
+
+        if (story.storyTime) {
+            document.getElementById('timeInfo').style.display = 'block';
+            document.getElementById('storyTime').textContent = story.storyTime;
+        }
+
+        if (story.location) {
+            document.getElementById('locationInfo').style.display = 'block';
+            document.getElementById('storyLocation').textContent = story.location;
+        }
+
+        if (story.createdAt) {
+            document.getElementById('publishTime').textContent = formatDate(story.createdAt);
+            // publishDate不再需要，因为对应的HTML元素已删除
+        }
+
+        if (story.updatedAt) {
+            document.getElementById('updateTime').textContent = story.updatedAt.split('T')[0];
+        }
+
+        if (story.source) {
+            document.getElementById('sourceInfo').style.display = 'block';
+            document.getElementById('storySource').textContent = story.source;
+        }
+
+        // 更新简介
+        if (story.summary) {
+            document.getElementById('summarySection').style.display = 'block';
+            document.getElementById('storySummary').textContent = story.summary;
+        }
+
+        // 更新图片
+        if (story.imageUrl) {
+            document.getElementById('storyImage').src = story.imageUrl;
+            document.getElementById('storyImage').alt = story.title;
+        }
+
+        // 更新内容
+        if (story.content) {
+            document.getElementById('storyContent').innerHTML = story.content;
+        }
+
+        // 显示内容区域
+        document.getElementById('contentArea').style.display = 'block';
+    }
+
+    // 加载相关故事
+    async function loadRelatedStories(currentStoryId, heroName) {
+        try {
+            let apiUrl = 'http://localhost:8080/stories/api?page=0&size=4';
+            if (heroName) {
+                apiUrl += `&kw=${encodeURIComponent(heroName)}`;
+            }
+
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+
+            if (data.content && data.content.length > 0) {
+                // 过滤掉当前故事
+                const relatedStories = data.content.filter(story => story.id != currentStoryId);
+
+                if (relatedStories.length > 0) {
+                    // 处理相关故事的图片URL
+                    relatedStories.forEach(story => {
+                        if (story.imageUrl) {
+                            story.imageUrl = processImageUrl(story.imageUrl);
+                        }
+                    });
+
+                    displayRelatedStories(relatedStories);
+                    document.getElementById('relatedStoriesSection').style.display = 'block';
+                }
+            }
+        } catch (error) {
+            console.error('加载相关故事失败:', error);
+        }
+    }
+
+    // 显示相关故事
+    function displayRelatedStories(stories) {
+        const container = document.getElementById('relatedStoriesList');
+        container.innerHTML = '';
+
+        stories.forEach(story => {
+            const storyCard = document.createElement('div');
+            storyCard.className = 'related-story-card';
+
+            const storyDate = story.createdAt ? story.createdAt.split('T')[0] : '';
+
+            storyCard.innerHTML = `
+                <div class="related-story-image">
+                    <img src="${story.imageUrl || 'https://placehold.co/100x80/8B0000/FFFFFF?text=故事'}"
+                         alt="${story.title}"
+                         style="width: 100px; height: 80px; object-fit: cover; border-radius: 5px; float: left; margin-right: 15px;">
+                </div>
+                <h5 class="related-story-title">${story.title}</h5>
+                <div class="related-story-meta">
+                    ${story.heroName ? `
+                        <span><i class="fas fa-user-tie me-1"></i>${story.heroName}</span>
+                    ` : ''}
+                    ${story.location ? `
+                        <span class="ms-3"><i class="fas fa-map-marker-alt me-1"></i>${story.location}</span>
+                    ` : ''}
+                    ${storyDate ? `
+                        <span class="ms-3"><i class="fas fa-calendar me-1"></i>${storyDate}</span>
+                    ` : ''}
+                </div>
+                <p class="related-story-summary">${story.summary || (story.content ? story.content.substring(0, 120) + '...' : '')}</p>
+                <div style="clear: both;"></div>
+                <a href="http://localhost:63342/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/detail.html?id=${story.id}" class="btn btn-sm btn-danger mt-2">
+                    阅读详情 <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            `;
+
+            container.appendChild(storyCard);
+        });
+    }
+
+    // 显示错误信息
+    function showError(message) {
+        document.getElementById('errorMessage').textContent = message;
+        document.getElementById('errorState').style.display = 'block';
+    }
+
+    // 页面加载完成后的操作
+    document.addEventListener('DOMContentLoaded', function() {
+        const storyId = getStoryIdFromUrl();
+
+        if (!storyId) {
+            showError('未找到故事ID，请从故事列表页面进入');
+            return;
+        }
+
+        loadStoryDetail(storyId);
+
+        // 添加相关故事卡片的悬停效果
+        setTimeout(() => {
+            const relatedCards = document.querySelectorAll('.related-story-card');
+            relatedCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateX(5px)';
+                    this.style.transition = 'transform 0.3s ease';
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateX(0)';
+                });
+            });
+        }, 1000);
+
+        // 打印样式优化
+        const printButton = document.querySelector('[onclick="window.print()"]');
+        if (printButton) {
+            printButton.addEventListener('click', function(e) {
+                setTimeout(() => {
+                    const printStyle = document.createElement('style');
+                    printStyle.textContent = `
+                        @media print {
+                            nav, footer, .story-actions, .back-to-list, .related-stories {
+                                display: none !important;
+                            }
+                            .container {
+                                max-width: 100% !important;
+                            }
+                            .story-content {
+                                font-size: 16px !important;
+                                line-height: 1.6 !important;
+                            }
+                            .story-header {
+                                padding: 1rem 0 !important;
+                            }
+                            .story-title {
+                                font-size: 24px !important;
+                            }
+                        }
+                    `;
+                    document.head.appendChild(printStyle);
+                }, 100);
+            });
+        }
+    });
 </script>
 </body>
 </html>
