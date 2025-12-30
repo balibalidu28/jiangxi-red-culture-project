@@ -18,7 +18,8 @@
 <!-- 导航栏 -->
 <nav class="navbar navbar-expand-lg navbar-dark navbar-red sticky-top">
     <div class="container">
-        <a class="navbar-brand" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/index.html">
+        <!-- 修改点：跳转回首页使用相对路径 ../ -->
+        <a class="navbar-brand" href="../index.html">
             <i class="fas fa-landmark me-2"></i>
             <strong>江西红色文化</strong>
         </a>
@@ -29,28 +30,36 @@
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
+                <!-- 首页链接 -->
                 <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/hero/list.html">
+                    <a class="nav-link" href="../index.html">
+                        <i class="fas fa-home me-1"></i> 首页
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="../hero/list.html">
                         <i class="fas fa-user-shield me-1"></i> 红色英雄
                     </a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/encyclopedia/list.html">
+                    <a class="nav-link active" href="../encyclopedia/list.html">
                         <i class="fas fa-book me-1"></i> 党史大百科
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/RedScenicSpot/list.html">
+                    <a class="nav-link" href="../RedScenicSpot/list.html">
                         <i class="fas fa-map-marked-alt me-1"></i> 红色圣地
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html">
+                    <a class="nav-link" href="../story/list.html">
                         <i class="fas fa-book-open me-1"></i> 红色故事
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/explore/list.html">
+                    <a class="nav-link" href="../explore/list.html">
                         <i class="fas fa-hiking me-1"></i> 红色寻访
                     </a>
                 </li>
@@ -64,8 +73,8 @@
     <div class="container">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/index.html" style="text-decoration: none; color: var(--red-primary);">首页</a></li>
-                <li class="breadcrumb-item"><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html">红色故事</a></li>
+                <li class="breadcrumb-item"><a href="../index.html" style="text-decoration: none; color: var(--red-primary);">首页</a></li>
+                <li class="breadcrumb-item"><a href="../story/list.html">红色故事</a></li>
                 <li class="breadcrumb-item active" aria-current="page" id="breadcrumbTitle">故事详情</li>
             </ol>
         </nav>
@@ -129,7 +138,7 @@
         <div class="col-12">
             <!-- 返回列表链接 -->
             <div class="back-to-list">
-                <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html" class="text-danger">
+                <a href="../story/list.html" class="text-danger">
                     <i class="fas fa-arrow-left me-2"></i>返回故事列表
                 </a>
             </div>
@@ -147,7 +156,7 @@
                 <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
                 <h4>加载失败</h4>
                 <p id="errorMessage">无法加载故事详情，请稍后重试。</p>
-                <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html" class="btn btn-danger">
+                <a href="../story/list.html" class="btn btn-danger">
                     <i class="fas fa-arrow-left me-2"></i>返回故事列表
                 </a>
             </div>

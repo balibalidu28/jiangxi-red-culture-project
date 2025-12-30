@@ -101,21 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // 渲染分页
             renderPagination(currentPage, totalPages, params);
 
-            // 如果没有数据
-            if (pageHeroes.length === 0) {
-                document.getElementById('heroes-container').innerHTML = `
-                    <div class="col-12">
-                        <div class="no-results text-center py-5">
-                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                            <h4 class="mb-3" style="color: #666;">${params.kw ? '未找到相关英雄' : '暂无英雄数据'}</h4>
-                            <p class="text-muted mb-4">${params.kw ? '尝试使用不同的关键词搜索，或者浏览所有英雄' : '请先添加英雄数据'}</p>
-                            ${params.kw ? `<button type="button" onclick="resetSearch()" class="btn btn-danger">
-                                <i class="fas fa-users me-2"></i> 查看所有英雄
-                            </button>` : ''}
-                        </div>
-                    </div>
-                `;
-            }
+
 
         } catch (error) {
             console.error('加载英雄数据失败:', error);
@@ -144,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 : '暂无简介';
 
             // 详情页链接 - 使用文件路径
-            const detailUrl = `/jiangxi-red-culture-project/JXRedCultureDisplay/templates/hero/detail.html?id=${hero.id}`;
+            const detailUrl = `../hero/detail.html?id=${hero.id}`;
 
             html += `
                 <div class="col-md-6 col-lg-4">

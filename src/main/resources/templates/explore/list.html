@@ -27,28 +27,33 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/hero/list.html">
+                    <a class="nav-link" href="../index.html">
+                        <i class="fas fa-home me-1"></i> 首页
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../hero/list.html">
                         <i class="fas fa-user-shield me-1"></i> 红色英雄
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/encyclopedia/list.html">
+                    <a class="nav-link" href="../encyclopedia/list.html">
                         <i class="fas fa-book me-1"></i> 党史大百科
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/RedScenicSpot/list.html">
+                    <a class="nav-link" href="../RedScenicSpot/list.html">
                         <i class="fas fa-map-marked-alt me-1"></i> 红色圣地
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html">
+                    <a class="nav-link" href="../story/list.html">
                         <i class="fas fa-book-open me-1"></i> 红色故事
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/explore/list.html">
+                    <a class="nav-link" href="../explore/list.html">
                         <i class="fas fa-hiking me-1"></i> 红色寻访
                     </a>
                 </li>
@@ -56,16 +61,12 @@
 
             <!-- 登录图标 -->
             <div class="login-icon-container">
-                <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/entry/register.html" class="login-icon" title="登录">
+                <a href="../entry/register.html" class="login-icon" title="登录">
                     <i class="fas fa-user-circle fa-lg"></i>
                     <!--                        <span class="login-text">登录</span>-->
                 </a>
             </div>
-            <li class="nav-item">
-                <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/index.html">
-                    首页
-                </a>
-            </li>
+
         </div>
     </div>
 </nav>
@@ -200,31 +201,64 @@
 </div>
 
 <!-- 底部信息 -->
-<footer class="footer">
+<footer class="py-5">
     <div class="container">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>江西红色文化信息网</h4>
-                <p>传承红色基因，弘扬革命精神</p>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h4 class="mb-4" style="color: white;">
+                    <i class="fas fa-landmark me-2"></i>
+                    <strong>江西红色文化信息网</strong>
+                </h4>
+                <p style="color: rgba(255,255,255,0.8);">致力于传承和弘扬江西红色文化，提供革命历史学习资源，组织红色文化实践活动。</p>
+                <div class="mt-3">
+                    <a href="#" class="text-white me-3"><i class="fab fa-weixin fa-lg"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-weibo fa-lg"></i></a>
+                    <a href="#" class="text-white"><i class="fas fa-envelope fa-lg"></i></a>
+                </div>
             </div>
-            <div class="footer-section">
-                <h4>快速链接</h4>
-                <ul>
-                    <li><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/index.html">网站首页</a></li>
-                    <li><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/hero/list.html">红色英雄</a></li>
-                    <li><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/encyclopedia/list.html">党史大百科</a></li>
-                    <li><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/RedScenicSpot/list.html">红色圣地</a></li>
-                    <li><a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html">红色故事</a></li>
-                </ul>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="mb-4" style="color: white;">快速链接</h5>
+                <div class="footer-links">
+                    <p><a href="../hero/list.html">红色英雄</a></p>
+                    <p><a href="../encyclopedia/list.html">党史大百科</a></p>
+                    <p><a href="../RedScenicSpot/list.html">红色圣地</a></p>
+                    <p><a href="../story/list.html">红色故事</a></p>
+                    <p><a href="../explore/list.html">红色寻访</a></p>
+
+                </div>
             </div>
-            <div class="footer-section">
-                <h4>联系我们</h4>
-                <p>联系电话：0791-XXXXXXX</p>
-                <p>电子邮箱：jxredculture@example.com</p>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="mb-4" style="color: white;">联系我们</h5>
+                <p style="color: rgba(255,255,255,0.8);"><i class="fas fa-map-marker-alt me-2"></i> 江西省南昌市红谷滩区</p>
+                <p style="color: rgba(255,255,255,0.8);"><i class="fas fa-phone me-2"></i> 0791-12345678</p>
+                <p style="color: rgba(255,255,255,0.8);"><i class="fas fa-envelope me-2"></i> contact@jxredculture.com</p>
+
+                <div class="mt-4">
+                    <h6 style="color: white;">开发团队</h6>
+                    <p class="small" style="color: rgba(255,255,255,0.7);">
+                        A - 红色英雄 & 故事<br>
+                        B - 党史百科 & 圣地<br>
+                        C - 红色寻访 & 用户<br>
+                        D - 管理端 & 首页
+                    </p>
+                </div>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>© 2025 江西红色文化信息网 版权所有</p>
+
+        <hr style="background-color: rgba(255,255,255,0.2);">
+
+        <div class="row">
+            <div class="col-md-6">
+                <p class="mb-0" style="color: rgba(255,255,255,0.7);">© 2024 江西红色文化信息网. 保留所有权利.</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <p class="mb-0">
+                    <a href="#" class="text-light text-decoration-none me-3">隐私政策</a>
+                    <a href="#" class="text-light text-decoration-none">使用条款</a>
+                </p>
+            </div>
         </div>
     </div>
 </footer>

@@ -9,6 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@CrossOrigin(origins = "https://localhost:63343")
+// 修改跨域配置，允许63342端口访问
+@CrossOrigin(origins = {"http://localhost:63342", "http://127.0.0.1:63342"})
 @RequestMapping("/encyclopedia")
 public class EncyclopediaController {
 
@@ -127,6 +131,7 @@ public class EncyclopediaController {
 
         return "encyclopedia/list";
     }
+
     // ============== API接口 ==============
 
     /**
@@ -139,6 +144,10 @@ public class EncyclopediaController {
         try {
             List<PartyEncyclopedia> entries = partyEncyclopediaService.search(null);
             System.out.println("API返回数据条数: " + entries.size());
+
+            // 处理图片URL - 为静态页面提供完整URL
+            entries = processImageUrls(entries);
+
             return ApiResponse.success("获取成功", entries);
         } catch (Exception e) {
             System.out.println("API获取失败: " + e.getMessage());
@@ -158,6 +167,10 @@ public class EncyclopediaController {
         try {
             List<PartyEncyclopedia> results = partyEncyclopediaService.search(keyword);
             System.out.println("API搜索结果条数: " + results.size());
+
+            // 处理图片URL - 为静态页面提供完整URL
+            results = processImageUrls(results);
+
             return ApiResponse.success("搜索成功", results);
         } catch (Exception e) {
             System.out.println("API搜索失败: " + e.getMessage());
@@ -175,6 +188,12 @@ public class EncyclopediaController {
         System.out.println("词条ID: " + id);
         try {
             PartyEncyclopedia entry = partyEncyclopediaService.findById(id);
+
+            // 处理图片URL - 为静态页面提供完整URL
+            if (entry.getImageUrl() != null && !entry.getImageUrl().startsWith("http")) {
+                entry = processSingleImageUrl(entry);
+            }
+
             return ApiResponse.success("获取成功", entry);
         } catch (RuntimeException e) {
             return ApiResponse.notFound(e.getMessage());
@@ -183,7 +202,54 @@ public class EncyclopediaController {
         }
     }
 
-    // 添加这个 GET 方法！！！=
+    /**
+     * 处理单个词条的图片URL
+     */
+    private PartyEncyclopedia processSingleImageUrl(PartyEncyclopedia entry) {
+        String imageUrl = entry.getImageUrl();
+        if (imageUrl != null && !imageUrl.startsWith("http")) {
+            // 如果是相对路径，转换为绝对路径
+            String baseUrl = "http://localhost:8080";
+            if (imageUrl.startsWith("/")) {
+                entry.setImageUrl(baseUrl + imageUrl);
+            } else {
+                entry.setImageUrl(baseUrl + "/" + imageUrl);
+            }
+        }
+        return entry;
+    }
+
+    /**
+     * 处理多个词条的图片URL
+     */
+    private List<PartyEncyclopedia> processImageUrls(List<PartyEncyclopedia> entries) {
+        String baseUrl = "http://localhost:8080";
+        List<PartyEncyclopedia> processedEntries = new ArrayList<>();
+
+        for (PartyEncyclopedia entry : entries) {
+            if (entry.getImageUrl() != null && !entry.getImageUrl().startsWith("http")) {
+                PartyEncyclopedia processedEntry = new PartyEncyclopedia();
+                processedEntry.setId(entry.getId());
+                processedEntry.setTitle(entry.getTitle());
+                processedEntry.setContent(entry.getContent());
+
+                // 处理图片URL
+                if (entry.getImageUrl().startsWith("/")) {
+                    processedEntry.setImageUrl(baseUrl + entry.getImageUrl());
+                } else {
+                    processedEntry.setImageUrl(baseUrl + "/" + entry.getImageUrl());
+                }
+                processedEntries.add(processedEntry);
+            } else {
+                processedEntries.add(entry);
+            }
+        }
+        return processedEntries;
+    }
+
+
+    //admin用
+    // 添加这个 GET 方法！！！
     @GetMapping("/{id}")
     public ResponseEntity<PartyEncyclopedia> getEncyclopediaById(@PathVariable Long id) {
         try {

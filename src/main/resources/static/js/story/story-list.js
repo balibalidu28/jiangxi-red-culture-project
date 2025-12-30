@@ -117,7 +117,7 @@ function displayStories(stories) {
                             ` : ''}
                         </div>
                         <div class="text-center mt-3">
-                            <a href="http://localhost:63342/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/detail.html?id=${story.id}" class="read-more-btn">
+                            <a href="../story/detail.html?id=${story.id}" class="read-more-btn">
                                   阅读详情 <i class="fas fa-arrow-right ms-1"></i>
                             </a>
                         </div>

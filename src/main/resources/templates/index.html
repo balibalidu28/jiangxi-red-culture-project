@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -7,7 +7,8 @@
 
     <!-- Bootstrap 5 CSS (CDN) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome 图标 -->
+    <!-- Font
+     Awesome 图标 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- 自定义CSS -->
@@ -18,7 +19,7 @@
 <!-- 导航栏 - 红色主题 -->
 <nav class="navbar navbar-expand-lg navbar-dark navbar-red sticky-top">
     <div class="container">
-        <a class="navbar-brand" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/index.html">
+        <a class="navbar-brand" href="index.html">
             <i class="fas fa-landmark me-2"></i>
             <strong>江西红色文化</strong>
         </a>
@@ -30,28 +31,28 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/hero/list.html">
+                    <a class="nav-link" href="hero/list.html">
                         <i class="fas fa-user-shield me-1"></i> 红色英雄
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/encyclopedia/list.html">
+                    <a class="nav-link" href="encyclopedia/list.html">
                         <i class="fas fa-book me-1"></i> 党史大百科
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/RedScenicSpot/list.html">
+                    <a class="nav-link" href="RedScenicSpot/list.html">
                         <i class="fas fa-map-marked-alt me-1"></i> 红色圣地
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html">
+                    <a class="nav-link" href="story/list.html">
                         <i class="fas fa-book-open me-1"></i> 红色故事
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/explore.html">
+                    <a class="nav-link" href="explore/list.html">
                         <i class="fas fa-hiking me-1"></i> 红色寻访
                     </a>
                 </li>
@@ -429,7 +430,7 @@
                 </div>
                 <h4 style="color: var(--red-primary);">红色英雄</h4>
                 <p>了解革命先烈的英勇事迹，传承红色精神</p>
-                <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/hero/list.html" class="btn btn-sm btn-outline-danger mt-2">了解更多</a>
+                <a href="hero/list.html" class="btn btn-sm btn-outline-danger mt-2">了解更多</a>
             </div>
             <div class="col-md-3 mb-4">
                 <div class="feature-icon">
@@ -437,7 +438,7 @@
                 </div>
                 <h4 style="color: var(--red-primary);">红色圣地</h4>
                 <p>探访红色革命遗址，追寻历史足迹</p>
-                <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/RedScenicSpot/list.html" class="btn btn-sm btn-outline-danger mt-2">了解更多</a>
+                <a href="RedScenicSpot/list.html" class="btn btn-sm btn-outline-danger mt-2">了解更多</a>
             </div>
             <div class="col-md-3 mb-4">
                 <div class="feature-icon">
@@ -445,7 +446,7 @@
                 </div>
                 <h4 style="color: var(--red-primary);">党史大百科</h4>
                 <p>学习党史知识，增强历史使命感</p>
-                <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/encyclopedias/entry.html" class="btn btn-sm btn-outline-danger mt-2">了解更多</a>
+                <a href="encyclopedia/list.html" class="btn btn-sm btn-outline-danger mt-2">了解更多</a>
             </div>
             <div class="col-md-3 mb-4">
                 <div class="feature-icon">
@@ -453,7 +454,7 @@
                 </div>
                 <h4 style="color: var(--red-primary);">红色寻访</h4>
                 <p>参与实践活动，体验革命历程</p>
-                <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/explore.html" class="btn btn-sm btn-outline-danger mt-2">了解更多</a>
+                <a href="explore/list.html" class="btn btn-sm btn-outline-danger mt-2">了解更多</a>
             </div>
             <div class="col-md-3 mb-4">
                 <div class="feature-icon">
@@ -461,7 +462,7 @@
                 </div>
                 <h4 style="color: var(--red-primary);">红色故事</h4>
                 <p>探访红色</p>
-                <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/list.html" class="btn btn-sm btn-outline-danger mt-2">了解更多</a>
+                <a href="story/list.html" class="btn btn-sm btn-outline-danger mt-2">了解更多</a>
             </div>
         </div>
     </div>
@@ -629,8 +630,8 @@
         </div>
     </section>
 
-    <!-- 首页党史百科搜索框 -->
-    <!-- zzm修改了 -->
+    <!-- 首页党史百科搜索框区域 -->
+    <!-- 修改重点区域 -->
     <section class="mb-5">
         <div class="card card-red">
             <div class="card-body">
@@ -641,18 +642,14 @@
 
                         <div class="search-box mt-4">
                             <!--
-                                1. action="/encyclopedia/list" : 明确告诉浏览器要去哪里
-                                2. method="get" : 告诉浏览器把参数放在 URL 后面 (?kw=xxx)
+                               修改点：
+                               1. action 指向静态页面 encyclopedia/list.html (相对路径)
+                               2. method="get" 使得浏览器跳转到 list.html?kw=用户输入
+                               3. list.html 中的 JS 会读取这个 kw 参数并调用 8080 接口
                             -->
-                            <form action="/encyclopedia/list" method="get" class="input-group input-group-lg">
-
-                                <!-- name="kw" : 这个名字决不能错，后端 Controller 里的 @RequestParam("kw") 等着它呢 -->
-                                <input type="text" class="form-control" name="kw"
-                                       placeholder="输入党史关键词（如：南昌起义）..." required>
-
-                                <button class="btn btn-danger" type="submit">
-                                    <i class="fas fa-search"></i> 搜索
-                                </button>
+                            <form action="encyclopedia/list.html" method="get" class="input-group input-group-lg">
+                                <input type="text" class="form-control" name="kw" placeholder="输入党史关键词（如：南昌起义）..." required>
+                                <button class="btn btn-danger" type="submit"><i class="fas fa-search"></i> 搜索</button>
                             </form>
                         </div>
                     </div>
@@ -663,8 +660,9 @@
             </div>
         </div>
     </section>
-</div>
 
+
+</div>
 <!-- 页脚 -->
 <footer class="py-5">
     <div class="container">
@@ -685,11 +683,12 @@
             <div class="col-md-4 mb-4">
                 <h5 class="mb-4" style="color: white;">快速链接</h5>
                 <div class="footer-links">
-                    <p><a th:href="@{/heroes}">红色英雄</a></p>
-                    <p><a th:href="@{/encyclopedias}">党史大百科</a></p>
-                    <p><a th:href="@{/scenicspots}">红色圣地</a></p>
-                    <p><a th:href="@{/stories}">红色故事</a></p>
-                    <p><a th:href="@{/explore}">红色寻访</a></p>
+                    <p><a href="hero/list.html">红色英雄</a></p>
+                    <p><a href="encyclopedia/list.html">党史大百科</a></p>
+                    <p><a href="RedScenicSpot/list.html">红色圣地</a></p>
+                    <p><a href="story/list.html">红色故事</a></p>
+                    <p><a href="explore/list.html">红色寻访</a></p>
+
                 </div>
             </div>
 

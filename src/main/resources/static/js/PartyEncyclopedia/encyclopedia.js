@@ -1,377 +1,448 @@
 /**
- * 党史大百科页面JavaScript - 环境检测和自动跳转
+ * 党史大百科静态版 - 在63342端口运行，通过AJAX调用8080端口
  */
 
-// 页面加载完成后初始化
+// 全局变量
+let currentEntryId = null;
+let currentKeyword = null;
+let allEntries = [];
+let searchResults = [];
+
+// 页面加载完成
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. 首先检测环境，如果是本地文件则跳转
-    if (checkEnvironmentAndRedirect()) {
-        // 2. 如果是在服务器环境，初始化页面功能
-        initEncyclopediaPage();
-    }
+    console.log('📖 党史大百科静态版启动（63342端口）');
+    console.log('当前URL:', window.location.href);
+
+    // 强制显示加载中状态
+    showLoadingState();
+
+    // 延迟一点执行，确保DOM完全加载
+    setTimeout(() => {
+        initPage();
+    }, 100);
 });
 
 /**
- * 检测当前环境，如果是本地文件则跳转到服务器
- * @returns {boolean} true=服务器环境，false=需要跳转
+ * 初始化页面
  */
-function checkEnvironmentAndRedirect() {
-    // 情况1：本地文件（file://协议）
-    if (window.location.protocol === 'file:') {
-        console.log('📁 检测到本地文件环境，跳转到服务器...');
-        redirectToServer();
-        return false;
-    }
+function initPage() {
+    // 1. 处理URL参数
+    handleUrlParams();
 
-    // 情况2：静态服务器（没有端口或端口不对）
-    if (window.location.hostname === 'localhost' &&
-        (window.location.port === '' || window.location.port === '63342')) {
-        console.log('🌐 检测到静态服务器，跳转到Spring Boot服务器...');
-        redirectToServer();
-        return false;
-    }
+    // 2. 加载所有词条
+    loadAllEntries();
 
-    // 情况3：直接访问HTML文件（没有Thymeleaf数据）
-    const hasThymeleafData = document.querySelector('[th\\:text]') ||
-        document.querySelector('[th\\:if]') ||
-        document.querySelector('[th\\:each]');
+    // 3. 绑定搜索事件
+    bindSearchEvent();
 
-    if (!hasThymeleafData && window.location.pathname.includes('.html')) {
-        console.log('⚡ 检测到直接访问HTML文件，跳转到服务器...');
-        redirectToServer();
-        return false;
-    }
-
-    console.log('✅ 服务器环境检测通过，初始化页面功能');
-    return true;
+    // 4. 监听URL变化
+    window.addEventListener('popstate', function() {
+        handleUrlParams();
+    });
 }
 
 /**
- * 跳转到服务器地址
+ * 显示加载状态
  */
-function redirectToServer() {
-    const serverUrl = 'http://localhost:8080/encyclopedia/list';
-
-    // 显示友好的跳转提示
-    showRedirectMessage(serverUrl);
-
-    // 3秒后自动跳转
-    setTimeout(() => {
-        window.location.href = serverUrl;
-    }, 3000);
-}
-
-/**
- * 显示跳转提示
- */
-function showRedirectMessage(serverUrl) {
-    // 清空页面内容，显示跳转提示
-    document.body.innerHTML = `
-        <div class="redirect-container">
-            <div class="redirect-content">
-                <div class="redirect-icon">
-                    <i class="fas fa-sync-alt fa-spin"></i>
+function showLoadingState() {
+    const listContainer = document.getElementById('encyclopediaList');
+    if (listContainer) {
+        listContainer.innerHTML = `
+            <div class="p-4 text-center">
+                <div class="spinner-border text-danger" role="status">
+                    <span class="visually-hidden">加载中...</span>
                 </div>
-                <h2>正在跳转到党史大百科...</h2>
-                <p>检测到您正在访问本地文件，正在跳转到服务器版本</p>
-                
-                <div class="redirect-progress">
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                             style="width: 100%"></div>
-                    </div>
-                </div>
-                
-                <div class="redirect-info">
-                    <p><strong>目标地址：</strong></p>
-                    <code class="server-url">${serverUrl}</code>
-                    
-                    <div class="mt-4">
-                        <a href="${serverUrl}" class="btn btn-danger btn-lg">
-                            <i class="fas fa-external-link-alt me-2"></i>立即跳转
-                        </a>
-                        <button onclick="location.reload()" class="btn btn-outline-secondary btn-lg ms-2">
-                            <i class="fas fa-redo me-2"></i>重新检测
-                        </button>
-                    </div>
-                    
-                    <div class="mt-4 text-start">
-                        <h5><i class="fas fa-info-circle me-2"></i>如果跳转失败：</h5>
-                        <ul>
-                            <li>确保Spring Boot应用已启动</li>
-                            <li>检查端口8080是否被占用</li>
-                            <li>或者修改端口号：在<code>application.properties</code>中设置<code>server.port=8081</code></li>
-                        </ul>
-                    </div>
-                </div>
+                <p class="mt-2 text-muted">正在加载词条列表...</p>
             </div>
-        </div>
-    `;
-
-    // 添加样式
-    addRedirectStyles();
-}
-
-/**
- * 添加跳转提示的样式
- */
-function addRedirectStyles() {
-    const style = document.createElement('style');
-    style.textContent = `
-        .redirect-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            padding: 20px;
-        }
-        
-        .redirect-content {
-            background: white;
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            max-width: 600px;
-            width: 100%;
-            text-align: center;
-        }
-        
-        .redirect-icon {
-            font-size: 48px;
-            color: #d9534f;
-            margin-bottom: 20px;
-        }
-        
-        .redirect-progress {
-            margin: 30px 0;
-        }
-        
-        .server-url {
-            display: inline-block;
-            background: #f8f9fa;
-            padding: 8px 15px;
-            border-radius: 5px;
-            color: #d9534f;
-            font-weight: bold;
-            margin: 10px 0;
-            word-break: break-all;
-        }
-        
-        .redirect-info {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #dee2e6;
-        }
-    `;
-    document.head.appendChild(style);
-}
-
-/**
- * 初始化党史大百科页面功能
- */
-function initEncyclopediaPage() {
-    console.log('🚀 初始化党史大百科页面功能');
-
-    // 初始化搜索功能
-    initSearchFunctionality();
-
-    // 高亮当前选中的词条
-    highlightCurrentItem();
-
-    // 绑定键盘快捷键
-    bindKeyboardShortcuts();
-}
-
-// 其他原有的功能函数保持不变...
-// initSearchFunctionality, highlightCurrentItem等函数保持原样
-
-/**
- * 初始化搜索功能
- */
-function initSearch() {
-    const searchForm = document.getElementById('searchForm');
-    const searchInput = document.getElementById('searchInput');
-
-    if (!searchForm || !searchInput) return;
-
-    // 表单提交处理
-    searchForm.addEventListener('submit', function(e) {
-        // 如果搜索框为空，阻止提交
-        if (searchInput.value.trim() === '') {
-            e.preventDefault();
-            alert('请输入搜索关键词');
-            searchInput.focus();
-        }
-    });
-
-    // 实时搜索建议
-    let timer;
-    searchInput.addEventListener('input', function() {
-        clearTimeout(timer);
-
-        const keyword = this.value.trim();
-        if (keyword.length >= 2) {
-            timer = setTimeout(() => {
-                fetchSearchSuggestions(keyword);
-            }, 500);
-        } else {
-            hideSuggestions();
-        }
-    });
-
-    // 点击页面其他地方隐藏建议框
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.search-container')) {
-            hideSuggestions();
-        }
-    });
-}
-
-/**
- * 获取搜索建议
- */
-async function fetchSearchSuggestions(keyword) {
-    try {
-        const response = await fetch(`/encyclopedia/api/search?keyword=${encodeURIComponent(keyword)}`);
-        const data = await response.json();
-
-        if (data.success && data.data.length > 0) {
-            showSearchSuggestions(data.data, keyword);
-        } else {
-            hideSuggestions();
-        }
-    } catch (error) {
-        console.error('获取建议失败:', error);
-    }
-}
-
-/**
- * 显示搜索建议
- */
-function showSearchSuggestions(results, keyword) {
-    let container = document.getElementById('searchSuggestions');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'searchSuggestions';
-        container.className = 'search-suggestions';
-
-        const searchContainer = document.querySelector('.search-container');
-        if (searchContainer) {
-            searchContainer.appendChild(container);
-        }
-    }
-
-    let html = '<ul class="suggestions-list">';
-
-    // 限制显示5条建议
-    results.slice(0, 5).forEach(item => {
-        const highlightedTitle = highlightText(item.title, keyword);
-        html += `
-            <li onclick="selectSearchSuggestion('${item.title.replace(/'/g, "\\'")}')">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-book me-2 text-muted"></i>
-                    <div>${highlightedTitle}</div>
-                </div>
-            </li>
         `;
-    });
-
-    html += '</ul>';
-    container.innerHTML = html;
-    container.style.display = 'block';
-}
-
-/**
- * 选择搜索建议
- */
-function selectSearchSuggestion(keyword) {
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.value = keyword;
-
-        // 提交搜索表单
-        const searchForm = document.getElementById('searchForm');
-        if (searchForm) {
-            searchForm.submit();
-        }
     }
 
-    hideSuggestions();
+    // 确保显示欢迎页
+    document.getElementById('welcomeContent').style.display = 'block';
+    document.getElementById('searchResultContent').style.display = 'none';
+    document.getElementById('detailContent').style.display = 'none';
 }
 
 /**
- * 隐藏搜索建议
+ * 绑定搜索事件
  */
-function hideSuggestions() {
-    const container = document.getElementById('searchSuggestions');
-    if (container) {
-        container.style.display = 'none';
-    }
-}
-
-/**
- * 高亮当前选中的词条
- */
-function highlightCurrentItem() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const currentId = urlParams.get('id');
-
-    if (currentId) {
-        // 移除所有active类
-        document.querySelectorAll('.list-group-item').forEach(item => {
-            item.classList.remove('active');
-        });
-
-        // 为当前词条添加active类
-        const currentItem = document.querySelector(`a[href*="id=${currentId}"]`);
-        if (currentItem) {
-            currentItem.classList.add('active');
-
-            // 滚动到可见区域
-            setTimeout(() => {
-                currentItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, 100);
-        }
-    }
-}
-
-/**
- * 绑定键盘快捷键
- */
-function bindKeyboardShortcuts() {
-    document.addEventListener('keydown', function(e) {
-        // Ctrl + F 聚焦搜索框
-        if (e.ctrlKey && e.key === 'f') {
+function bindSearchEvent() {
+    const searchForm = document.getElementById('searchForm');
+    if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
-                searchInput.focus();
-                searchInput.select();
+                const keyword = searchInput.value.trim();
+                if (keyword) {
+                    searchEntries(keyword);
+                    // 更新URL（不刷新页面）
+                    updateUrlParams({ kw: keyword });
+                }
             }
-        }
-
-        // ESC 隐藏建议框
-        if (e.key === 'Escape') {
-            hideSuggestions();
-        }
-    });
+        });
+    }
 }
 
 /**
- * 高亮文本中的关键词
+ * 处理URL参数
  */
-function highlightText(text, keyword) {
-    if (!text || !keyword) return escapeHtml(text);
+function handleUrlParams() {
+    // 先从URL中获取参数
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    const kw = urlParams.get('kw');
 
-    const regex = new RegExp(`(${escapeRegExp(keyword)})`, 'gi');
-    return escapeHtml(text).replace(regex, '<span class="highlight">$1</span>');
+    console.log('📋 URL参数:', { id, kw });
+
+    // 设置当前参数
+    currentEntryId = id;
+    currentKeyword = kw;
+
+    // 如果有搜索关键词，更新搜索框
+    if (kw) {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.value = kw;
+        }
+    }
+
+    // 如果是直接打开页面，可能需要从hash中获取参数
+    if (!id && !kw && window.location.hash) {
+        const hash = window.location.hash.substring(1);
+        const hashParams = new URLSearchParams(hash);
+        const hashId = hashParams.get('id');
+        const hashKw = hashParams.get('kw');
+
+        if (hashId || hashKw) {
+            console.log('🔍 从hash中获取参数:', { hashId, hashKw });
+            currentEntryId = hashId;
+            currentKeyword = hashKw;
+        }
+    }
+}
+
+/**
+ * 更新URL参数（处理跨端口跳转问题）
+ */
+function updateUrlParams(params) {
+    // 对于63342端口，我们使用hash来避免刷新页面
+    const url = new URL(window.location);
+
+    // 构建hash参数
+    let hash = '';
+    if (params.id || params.kw) {
+        const hashParams = new URLSearchParams();
+        if (params.id) hashParams.set('id', params.id);
+        if (params.kw) hashParams.set('kw', params.kw);
+        hash = '#' + hashParams.toString();
+    }
+
+    // 更新hash（不会刷新页面）
+    window.location.hash = hash;
+}
+
+/**
+ * 加载所有词条
+ */
+async function loadAllEntries() {
+    try {
+        console.log('🔄 正在从8080端口加载词条...');
+
+        // 从8080端口获取数据
+        const response = await fetch('http://localhost:8080/encyclopedia/api/entries');
+
+        if (!response.ok) {
+            throw new Error(`HTTP错误: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('📊 API响应:', result);
+
+        if (result.success) {
+            allEntries = result.data;
+            console.log(`✅ 成功加载 ${allEntries.length} 个词条`);
+
+            // 渲染列表
+            renderEntryList(allEntries);
+
+            // 检查是否需要显示详情
+            if (currentEntryId) {
+                // 有ID参数，加载详情
+                await loadEntryDetail(currentEntryId);
+            } else if (currentKeyword) {
+                // 有关键词参数，执行搜索
+                await searchEntries(currentKeyword);
+            } else {
+                // 无参数，显示欢迎页
+                showWelcomePage();
+            }
+        } else {
+            showError('加载词条列表失败: ' + result.message);
+        }
+    } catch (error) {
+        console.error('❌ 加载词条失败:', error);
+        showError('无法连接到服务器，请确保：<br>1. Spring Boot应用已启动（8080端口）<br>2. 没有跨域问题');
+    }
+}
+
+/**
+ * 搜索词条
+ */
+async function searchEntries(keyword) {
+    currentKeyword = keyword;
+
+    try {
+        console.log(`🔍 正在搜索: ${keyword}`);
+
+        const response = await fetch(`http://localhost:8080/encyclopedia/api/search?keyword=${encodeURIComponent(keyword)}`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP错误: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.success) {
+            searchResults = result.data;
+            console.log(`✅ 搜索"${keyword}"找到 ${searchResults.length} 个结果`);
+
+            // 渲染搜索结果
+            renderEntryList(searchResults);
+
+            // 显示搜索结果提示
+            showSearchResultHint(keyword);
+
+            // 检查是否需要显示详情
+            if (currentEntryId) {
+                await loadEntryDetail(currentEntryId);
+            }
+        } else {
+            showError('搜索失败: ' + result.message);
+        }
+    } catch (error) {
+        console.error('搜索失败:', error);
+        showError('搜索失败，请检查网络连接');
+    }
+}
+
+/**
+ * 渲染词条列表
+ */
+function renderEntryList(entries) {
+    const listContainer = document.getElementById('encyclopediaList');
+    if (!listContainer) {
+        console.error('❌ 找不到词条列表容器');
+        return;
+    }
+
+    if (!entries || entries.length === 0) {
+        listContainer.innerHTML = `
+            <div class="p-4 text-center text-muted">
+                <i class="fas fa-inbox fa-2x mb-3 opacity-25"></i>
+                <p class="mb-0">暂无相关内容</p>
+            </div>
+        `;
+        return;
+    }
+
+    let html = '';
+    entries.forEach(entry => {
+        const isActive = currentEntryId && currentEntryId == entry.id;
+        html += `
+            <a href="javascript:void(0)" 
+               onclick="selectEntry(${entry.id})"
+               class="list-group-item list-group-item-action encyclopedia-item ${isActive ? 'active' : ''}"
+               data-id="${entry.id}">
+                <i class="fas fa-book-open me-2 small ${isActive ? 'text-white' : 'text-muted'}"></i>
+                <span>${escapeHtml(entry.title)}</span>
+            </a>
+        `;
+    });
+
+    listContainer.innerHTML = html;
+
+    // 滚动到选中的词条
+    if (currentEntryId) {
+        setTimeout(() => {
+            const activeItem = document.querySelector(`.encyclopedia-item[data-id="${currentEntryId}"]`);
+            if (activeItem) {
+                activeItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 300);
+    }
+}
+
+/**
+ * 选择词条
+ */
+async function selectEntry(id) {
+    console.log(`📄 选择词条: ${id}`);
+    currentEntryId = id;
+
+    // 更新URL
+    updateUrlParams({ id: id, kw: currentKeyword });
+
+    // 高亮选中的词条
+    document.querySelectorAll('.encyclopedia-item').forEach(item => {
+        item.classList.remove('active');
+        const icon = item.querySelector('i');
+        if (icon) {
+            icon.classList.remove('text-white');
+            icon.classList.add('text-muted');
+        }
+    });
+
+    const selectedItem = document.querySelector(`.encyclopedia-item[data-id="${id}"]`);
+    if (selectedItem) {
+        selectedItem.classList.add('active');
+        const icon = selectedItem.querySelector('i');
+        if (icon) {
+            icon.classList.remove('text-muted');
+            icon.classList.add('text-white');
+        }
+    }
+
+    // 加载详情
+    await loadEntryDetail(id);
+}
+
+/**
+ * 加载词条详情
+ */
+async function loadEntryDetail(id) {
+    try {
+        console.log(`📖 正在加载词条详情: ${id}`);
+
+        const response = await fetch(`http://localhost:8080/encyclopedia/api/entry/${id}`);
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('词条不存在');
+            }
+            throw new Error(`HTTP错误: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.success) {
+            const entry = result.data;
+            console.log(`✅ 加载详情成功: ${entry.title}`);
+            renderEntryDetail(entry);
+        } else {
+            showError('加载详情失败: ' + result.message);
+        }
+    } catch (error) {
+        console.error('加载详情失败:', error);
+        showError('无法加载词条详情: ' + error.message);
+    }
+}
+
+/**
+ * 渲染词条详情
+ */
+function renderEntryDetail(entry) {
+    const detailContainer = document.getElementById('detailContent');
+    if (!detailContainer) {
+        console.error('❌ 找不到详情容器');
+        return;
+    }
+
+    // 处理图片URL - 处理跨端口问题
+    let imageUrl = entry.imageUrl;
+    if (imageUrl && !imageUrl.startsWith('http')) {
+        // 如果是相对路径，需要转换为绝对路径
+        if (imageUrl.startsWith('/')) {
+            // 假设图片在8080端口的静态资源中
+            imageUrl = 'http://localhost:8080' + imageUrl;
+        } else if (imageUrl.startsWith('images/')) {
+            imageUrl = 'http://localhost:8080/' + imageUrl;
+        }
+    }
+
+    let imageHtml = '';
+    if (imageUrl) {
+        imageHtml = `
+            <div class="mb-4 text-center">
+                <img src="${imageUrl}" 
+                     onerror="this.src='https://placehold.co/800x400/dc3545/ffffff?text=图片加载失败'"
+                     class="img-fluid rounded shadow-sm encyclopedia-img" 
+                     alt="${escapeHtml(entry.title)}">
+                <p class="text-muted small mt-2">${escapeHtml(entry.title)}</p>
+            </div>
+        `;
+    }
+
+    detailContainer.innerHTML = `
+        <h1 class="display-5 fw-bold mb-4 border-bottom pb-3 text-danger">${escapeHtml(entry.title)}</h1>
+        ${imageHtml}
+        <div class="encyclopedia-content">${formatContent(entry.content)}</div>
+    `;
+
+    showDetailPage();
+}
+
+/**
+ * 格式化内容（处理换行）
+ */
+function formatContent(content) {
+    if (!content) return '';
+    return escapeHtml(content).replace(/\n/g, '<br>');
+}
+
+/**
+ * 显示欢迎页
+ */
+function showWelcomePage() {
+    document.getElementById('welcomeContent').style.display = 'block';
+    document.getElementById('searchResultContent').style.display = 'none';
+    document.getElementById('detailContent').style.display = 'none';
+}
+
+/**
+ * 显示搜索结果提示
+ */
+function showSearchResultHint(keyword) {
+    document.getElementById('welcomeContent').style.display = 'none';
+    document.getElementById('searchResultContent').style.display = 'block';
+    document.getElementById('detailContent').style.display = 'none';
+
+    const keywordElement = document.getElementById('searchKeyword');
+    if (keywordElement) {
+        keywordElement.textContent = keyword;
+    }
+}
+
+/**
+ * 显示详情页
+ */
+function showDetailPage() {
+    document.getElementById('welcomeContent').style.display = 'none';
+    document.getElementById('searchResultContent').style.display = 'none';
+    document.getElementById('detailContent').style.display = 'block';
+}
+
+/**
+ * 显示错误信息
+ */
+function showError(message) {
+    const listContainer = document.getElementById('encyclopediaList');
+    if (listContainer) {
+        listContainer.innerHTML = `
+            <div class="p-4 text-center text-danger">
+                <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                <p class="mb-0">${message}</p>
+                <button onclick="location.reload()" class="btn btn-sm btn-outline-danger mt-2">刷新页面</button>
+            </div>
+        `;
+    }
 }
 
 /**
  * 转义HTML
  */
 function escapeHtml(text) {
+    if (!text) return '';
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
@@ -385,65 +456,13 @@ function escapeRegExp(string) {
 }
 
 /**
- * AJAX加载词条详情
+ * 调试函数：查看图片是否可访问
  */
-async function loadEntryDetail(id) {
+async function checkImageAccessibility(url) {
     try {
-        const response = await fetch(`/encyclopedia/api/entry/${id}`);
-        const data = await response.json();
-
-        if (data.success) {
-            displayEntryDetail(data.data);
-        } else {
-            alert('加载失败: ' + data.message);
-        }
+        const response = await fetch(url, { method: 'HEAD' });
+        return response.ok;
     } catch (error) {
-        console.error('加载详情失败:', error);
-        alert('网络错误，请稍后重试');
+        return false;
     }
-}
-
-/**
- * 显示词条详情（用于AJAX加载）
- */
-function displayEntryDetail(entry) {
-    const contentBox = document.querySelector('.content-box');
-    if (!contentBox) return;
-
-    let html = `
-        <h1 class="display-5 fw-bold text-danger mb-4">${escapeHtml(entry.title)}</h1>
-    `;
-
-    if (entry.imageUrl) {
-        html += `
-            <div class="mb-4">
-                <img src="${entry.imageUrl}" class="img-fluid rounded" alt="${escapeHtml(entry.title)}">
-            </div>
-        `;
-    }
-
-    html += `
-        <div class="encyclopedia-content">
-            ${entry.content.replace(/\n/g, '<br>')}
-        </div>
-        <div class="mt-4 pt-3 border-top">
-            <button onclick="history.back()" class="btn btn-outline-danger">
-                <i class="fas fa-arrow-left me-2"></i>返回
-            </button>
-        </div>
-    `;
-
-    contentBox.innerHTML = html;
-}
-
-/**
- * 复制当前URL（分享功能）
- */
-function shareCurrentPage() {
-    const url = window.location.href;
-    navigator.clipboard.writeText(url).then(() => {
-        alert('页面链接已复制到剪贴板！');
-    }).catch(err => {
-        console.error('复制失败:', err);
-    });
 }

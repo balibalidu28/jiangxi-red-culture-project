@@ -108,11 +108,7 @@ body {
 .share-weibo { background: #e6162d; }
 .share-qq { background: #12b7f5; }
 
-footer {
-    background: linear-gradient(135deg, var(--red-dark), var(--red-primary));
-    color: white;
-    margin-top: 4rem;
-}
+
 
 .breadcrumb {
     background: transparent;

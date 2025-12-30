@@ -12,7 +12,7 @@ function getHeroId() {
 // ============ 新增：返回英雄列表功能 ============
 function goBackToList() {
     // 直接跳转到英雄列表页
-    window.location.href = '/jiangxi-red-culture-project/JXRedCultureDisplay/templates/hero/list.html';
+    window.location.href = '../hero/list.html';
 }
 
 // 格式化日期
@@ -189,7 +189,7 @@ async function loadHeroData() {
         if (currentIndex > 0) {
             const prevHero = allHeroes[currentIndex - 1];
             navHtml += `
-                <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/hero/detail.html?id=${prevHero.id}" class="btn btn-outline-danger me-2">
+                <a href="../hero/detail.html?id=${prevHero.id}" class="btn btn-outline-danger me-2">
                     <i class="fas fa-chevron-left me-2"></i> 上一位英雄
                 </a>
             `;
@@ -198,7 +198,7 @@ async function loadHeroData() {
         if (currentIndex < allHeroes.length - 1 && currentIndex !== -1) {
             const nextHero = allHeroes[currentIndex + 1];
             navHtml += `
-                <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/hero/detail.html?id=${nextHero.id}" class="btn btn-outline-danger">
+                <a href="../hero/detail.html?id=${nextHero.id}" class="btn btn-outline-danger">
                     下一位英雄 <i class="fas fa-chevron-right ms-2"></i>
                 </a>
             `;
