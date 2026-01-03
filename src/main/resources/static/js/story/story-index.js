@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // 获取故事详情页的完整路径
 function getStoryDetailUrl(storyId) {
     // 使用前端页面的本地路径
-    return `http://localhost:63342/jiangxi-red-culture-project/JXRedCultureDisplay/templates/story/detail.html?id=${storyId}`;
+    return `story/detail.html?id=${storyId}`;
 }
 
 // 获取资源URL（处理图片路径）
