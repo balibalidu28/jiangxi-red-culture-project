@@ -7,6 +7,7 @@ let currentEntryId = null;
 let currentKeyword = null;
 let allEntries = [];
 let searchResults = [];
+let isSearching = false; // 新增：标记是否在搜索状态
 
 // 页面加载完成
 document.addEventListener('DOMContentLoaded', function() {
@@ -78,9 +79,39 @@ function bindSearchEvent() {
                     searchEntries(keyword);
                     // 更新URL（不刷新页面）
                     updateUrlParams({ kw: keyword });
+                } else {
+                    // 如果搜索框为空，返回所有词条
+                    showAllEntries();
                 }
             }
         });
+
+        // 监听搜索框输入
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                if (!this.value.trim()) {
+                    // 搜索框为空时，返回所有词条
+                    showAllEntries();
+                }
+            });
+        }
+    }
+}
+
+/**
+ * 显示所有词条
+ */
+function showAllEntries() {
+    isSearching = false;
+    currentKeyword = null;
+    renderEntryList(allEntries);
+    showWelcomePage();
+
+    // 清空搜索框
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.value = '';
     }
 }
 
@@ -191,6 +222,7 @@ async function loadAllEntries() {
  */
 async function searchEntries(keyword) {
     currentKeyword = keyword;
+    isSearching = true;
 
     try {
         console.log(`🔍 正在搜索: ${keyword}`);
@@ -208,10 +240,10 @@ async function searchEntries(keyword) {
             console.log(`✅ 搜索"${keyword}"找到 ${searchResults.length} 个结果`);
 
             // 渲染搜索结果
-            renderEntryList(searchResults);
+            renderEntryList(searchResults, true, keyword);
 
             // 显示搜索结果提示
-            showSearchResultHint(keyword);
+            showSearchResultHint(keyword, searchResults.length);
 
             // 检查是否需要显示详情
             if (currentEntryId) {
@@ -229,15 +261,42 @@ async function searchEntries(keyword) {
 /**
  * 渲染词条列表
  */
-function renderEntryList(entries) {
+function renderEntryList(entries, isSearchResult = false, keyword = '') {
     const listContainer = document.getElementById('encyclopediaList');
     if (!listContainer) {
         console.error('❌ 找不到词条列表容器');
         return;
     }
 
+    // 清空容器
+    listContainer.innerHTML = '';
+
+    // 添加统计信息
+    const totalCount = isSearchResult ? searchResults.length : allEntries.length;
+    const statsHtml = `
+        <div class="list-stats">
+            <i class="fas fa-book me-1"></i>
+            共收录 <span class="badge bg-danger">${totalCount}</span> 个词条
+            ${isSearchResult ? `，找到 <span class="badge bg-warning text-dark">${totalCount}</span> 条结果` : ''}
+        </div>
+    `;
+    listContainer.innerHTML = statsHtml;
+
+    // 如果是搜索结果，添加返回所有词条按钮
+    if (isSearchResult && keyword) {
+        const backButtonHtml = `
+            <div class="back-to-all-container">
+                <button onclick="showAllEntries()" class="back-to-all-btn">
+                    <i class="fas fa-arrow-left me-1"></i>返回所有词条
+                </button>
+                <span class="ms-3 text-muted small">当前搜索: "${keyword}"</span>
+            </div>
+        `;
+        listContainer.innerHTML += backButtonHtml;
+    }
+
     if (!entries || entries.length === 0) {
-        listContainer.innerHTML = `
+        listContainer.innerHTML += `
             <div class="p-4 text-center text-muted">
                 <i class="fas fa-inbox fa-2x mb-3 opacity-25"></i>
                 <p class="mb-0">暂无相关内容</p>
@@ -249,18 +308,26 @@ function renderEntryList(entries) {
     let html = '';
     entries.forEach(entry => {
         const isActive = currentEntryId && currentEntryId == entry.id;
+
+        // 处理标题高亮（如果是搜索结果且有关键词）
+        let displayTitle = escapeHtml(entry.title);
+        if (isSearchResult && keyword) {
+            const regex = new RegExp(`(${escapeRegExp(keyword)})`, 'gi');
+            displayTitle = displayTitle.replace(regex, '<span class="search-highlight">$1</span>');
+        }
+
         html += `
             <a href="javascript:void(0)" 
                onclick="selectEntry(${entry.id})"
                class="list-group-item list-group-item-action encyclopedia-item ${isActive ? 'active' : ''}"
                data-id="${entry.id}">
                 <i class="fas fa-book-open me-2 small ${isActive ? 'text-white' : 'text-muted'}"></i>
-                <span>${escapeHtml(entry.title)}</span>
+                <span>${displayTitle}</span>
             </a>
         `;
     });
 
-    listContainer.innerHTML = html;
+    listContainer.innerHTML += html;
 
     // 滚动到选中的词条
     if (currentEntryId) {
@@ -360,23 +427,48 @@ function renderEntryDetail(entry) {
         }
     }
 
+    // 处理正文内容高亮
+    let contentHtml = formatContent(entry.content);
+    if (currentKeyword && currentKeyword.length > 0) {
+        const regex = new RegExp(`(${escapeRegExp(currentKeyword)})`, 'gi');
+        contentHtml = contentHtml.replace(regex, '<span class="content-highlight">$1</span>');
+    }
+
     let imageHtml = '';
     if (imageUrl) {
         imageHtml = `
             <div class="mb-4 text-center">
                 <img src="${imageUrl}" 
-                     onerror="this.src='https://placehold.co/800x400/dc3545/ffffff?text=图片加载失败'"
-                     class="img-fluid rounded shadow-sm encyclopedia-img" 
+                     onerror="this.src='https://placehold.co/500x300/dc3545/ffffff?text=图片加载失败'"
+                     class="encyclopedia-img" 
                      alt="${escapeHtml(entry.title)}">
                 <p class="text-muted small mt-2">${escapeHtml(entry.title)}</p>
             </div>
         `;
     }
 
+    // 如果是搜索结果，显示搜索提示
+    let searchStatsHtml = '';
+    if (isSearching && currentKeyword) {
+        searchStatsHtml = `
+            <div class="search-stats">
+                <i class="fas fa-search me-2"></i>
+                正在查看关于 "<strong class="text-warning">${escapeHtml(currentKeyword)}</strong>" 的搜索结果
+                <button onclick="showAllEntries()" class="btn btn-sm btn-outline-success ms-3">
+                    <i class="fas fa-arrow-left me-1"></i>返回所有词条
+                </button>
+            </div>
+        `;
+    }
+
     detailContainer.innerHTML = `
-        <h1 class="display-5 fw-bold mb-4 border-bottom pb-3 text-danger">${escapeHtml(entry.title)}</h1>
+        ${searchStatsHtml}
+        <h1 class="display-5 fw-bold mb-4 border-bottom pb-3 text-danger">
+            ${escapeHtml(entry.title)}
+            ${isSearching && currentKeyword ? `<small class="fs-6 text-muted ms-2">(包含"${escapeHtml(currentKeyword)}")</small>` : ''}
+        </h1>
         ${imageHtml}
-        <div class="encyclopedia-content">${formatContent(entry.content)}</div>
+        <div class="encyclopedia-content">${contentHtml}</div>
     `;
 
     showDetailPage();
@@ -402,7 +494,7 @@ function showWelcomePage() {
 /**
  * 显示搜索结果提示
  */
-function showSearchResultHint(keyword) {
+function showSearchResultHint(keyword, resultCount) {
     document.getElementById('welcomeContent').style.display = 'none';
     document.getElementById('searchResultContent').style.display = 'block';
     document.getElementById('detailContent').style.display = 'none';
@@ -410,6 +502,12 @@ function showSearchResultHint(keyword) {
     const keywordElement = document.getElementById('searchKeyword');
     if (keywordElement) {
         keywordElement.textContent = keyword;
+    }
+
+    // 更新搜索结果提示文本
+    const resultText = document.querySelector('#searchResultContent .lead');
+    if (resultText) {
+        resultText.innerHTML = `关于 "<span class="text-danger fw-bold">${escapeHtml(keyword)}</span>" 找到 <span class="badge bg-warning text-dark">${resultCount}</span> 条结果，已列在左侧。`;
     }
 }
 
@@ -453,16 +551,4 @@ function escapeHtml(text) {
  */
 function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-/**
- * 调试函数：查看图片是否可访问
- */
-async function checkImageAccessibility(url) {
-    try {
-        const response = await fetch(url, { method: 'HEAD' });
-        return response.ok;
-    } catch (error) {
-        return false;
-    }
 }

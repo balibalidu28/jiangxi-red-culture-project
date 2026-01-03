@@ -1,110 +1,53 @@
 <!DOCTYPE html>
-<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <title>红色圣地 - 江西红色文化</title>
+    <!-- 引入Bootstrap和FontAwesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/static/css/main.css">
+
+    <!-- 引入外部CSS -->
+    <link rel="stylesheet" href="../../static/css/main.css">
+    <link rel="stylesheet" href="../../static/css/RedScenicSpot/list.css">
 
     <style>
-        /* 头部背景 */
-        .scenic-header {
-            background: linear-gradient(rgba(139, 0, 0, 0.8), rgba(50, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1599571234909-29ed5d1321d6?q=80&w=1920');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 60px 0;
-            margin-bottom: 30px;
-        }
-
-        /* 筛选区容器样式 */
-        .filter-section {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 40px;
-        }
-
-        /* 城市按钮样式 */
-        .city-btn {
-            display: inline-block;
-            padding: 6px 16px;
-            margin: 5px;
-            color: #555;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            text-decoration: none;
-            transition: all 0.2s;
-            font-size: 0.95rem;
-            background: #fff;
-        }
-
-        /* 鼠标悬停 */
-        .city-btn:hover {
-            border-color: #d9534f;
-            color: #d9534f;
-            background-color: #fff5f5;
-        }
-
-        /* 选中激活状态 - 红色实心 */
-        .city-btn.active {
-            background-color: #d9534f;
-            color: white;
-            border-color: #d9534f;
-            font-weight: bold;
-        }
-
-        /* 热门标签（井冈山、瑞金）特殊样式 */
-        .hot-tag {
-            border-color: #ffc107 !important;
-            color: #b35600;
-        }
-        .hot-tag.active {
-            background-color: #ffc107 !important;
-            color: #000 !important;
-            border-color: #ffc107 !important;
-        }
+        /* 保持原有的内联样式作为后备 */
+        body { background-color: #f8f9fa; }
+        .navbar-red { background-color: #8B0000; }
     </style>
 </head>
 <body class="bg-light">
 
-<!-- 导航栏 -->
+
 <nav class="navbar navbar-expand-lg navbar-dark navbar-red sticky-top">
     <div class="container">
-        <!-- 修改点：跳转回首页使用相对路径 ../ -->
         <a class="navbar-brand" href="../index.html">
             <i class="fas fa-landmark me-2"></i>
             <strong>江西红色文化</strong>
         </a>
-
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
-                <!-- 首页链接 -->
                 <li class="nav-item">
                     <a class="nav-link" href="../index.html">
                         <i class="fas fa-home me-1"></i> 首页
                     </a>
                 </li>
-
                 <li class="nav-item">
                     <a class="nav-link" href="../hero/list.html">
                         <i class="fas fa-user-shield me-1"></i> 红色英雄
                     </a>
                 </li>
-
                 <li class="nav-item">
-                    <a class="nav-link active" href="../encyclopedia/list.html">
+                    <a class="nav-link" href="../encyclopedia/list.html">
                         <i class="fas fa-book me-1"></i> 党史大百科
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="../RedScenicSpot/list.html">
+                    <a class="nav-link active" href="../RedScenicSpot/list.html">
                         <i class="fas fa-map-marked-alt me-1"></i> 红色圣地
                     </a>
                 </li>
@@ -123,95 +66,167 @@
     </div>
 </nav>
 
-
 <!-- 头部横幅 -->
 <div class="scenic-header text-center">
     <div class="container">
-        <h2 class="display-5 fw-bold"><i class="fas fa-map-signs me-3"></i>江西红色地图</h2>
+        <h2 class="display-5 fw-bold"><i class="fas fa-map-signs me-3"></i>江西红色圣地</h2>
         <p class="lead mt-2">遍布赣鄱大地的革命足迹</p>
     </div>
 </div>
 
 <div class="container pb-5">
 
-    <!-- 【核心修改】分类搜索区域 -->
-    <div class="filter-section">
-        <div class="row align-items-center">
-            <div class="col-md-2 text-md-end border-end border-danger border-3">
-                <h5 class="mb-0 fw-bold text-danger">
-                    <i class="fas fa-filter me-2"></i>地区筛选
-                </h5>
-            </div>
-            <div class="col-md-10 ps-md-4">
-                <!-- 1. 全部 -->
-                <a th:href="@{/scenicspots}"
-                   class="city-btn"
-                   th:classappend="${currentLoc == null} ? 'active'">
-                    <i class="fas fa-th-large me-1"></i>全部
-                </a>
 
-                <div class="my-2 border-top"></div> <!-- 分隔线 -->
-
-                <!-- 2. 重点推荐 (保留井冈山和瑞金，因为它们太重要了) -->
-                <span class="text-muted small me-2">热门:</span>
-                <a th:href="@{/scenicspots(loc='井冈山')}" class="city-btn hot-tag" th:classappend="${currentLoc == '井冈山'} ? 'active'">井冈山</a>
-                <a th:href="@{/scenicspots(loc='瑞金')}" class="city-btn hot-tag" th:classappend="${currentLoc == '瑞金'} ? 'active'">瑞金</a>
-                <a th:href="@{/scenicspots(loc='于都')}" class="city-btn hot-tag" th:classappend="${currentLoc == '于都'} ? 'active'">于都</a>
-
-                <div class="my-2 border-top"></div> <!-- 分隔线 -->
-
-                <!-- 3. 江西11个地级市全排列 -->
-                <span class="text-muted small me-2">按市:</span>
-
-                <a th:href="@{/scenicspots(loc='南昌')}" class="city-btn" th:classappend="${currentLoc == '南昌'} ? 'active'">南昌市</a>
-                <a th:href="@{/scenicspots(loc='九江')}" class="city-btn" th:classappend="${currentLoc == '九江'} ? 'active'">九江市</a>
-                <a th:href="@{/scenicspots(loc='景德镇')}" class="city-btn" th:classappend="${currentLoc == '景德镇'} ? 'active'">景德镇市</a>
-                <a th:href="@{/scenicspots(loc='萍乡')}" class="city-btn" th:classappend="${currentLoc == '萍乡'} ? 'active'">萍乡市</a>
-                <a th:href="@{/scenicspots(loc='新余')}" class="city-btn" th:classappend="${currentLoc == '新余'} ? 'active'">新余市</a>
-                <a th:href="@{/scenicspots(loc='鹰潭')}" class="city-btn" th:classappend="${currentLoc == '鹰潭'} ? 'active'">鹰潭市</a>
-                <a th:href="@{/scenicspots(loc='赣州')}" class="city-btn" th:classappend="${currentLoc == '赣州'} ? 'active'">赣州市</a>
-                <a th:href="@{/scenicspots(loc='吉安')}" class="city-btn" th:classappend="${currentLoc == '吉安'} ? 'active'">吉安市</a>
-                <a th:href="@{/scenicspots(loc='宜春')}" class="city-btn" th:classappend="${currentLoc == '宜春'} ? 'active'">宜春市</a>
-                <a th:href="@{/scenicspots(loc='抚州')}" class="city-btn" th:classappend="${currentLoc == '抚州'} ? 'active'">抚州市</a>
-                <a th:href="@{/scenicspots(loc='上饶')}" class="city-btn" th:classappend="${currentLoc == '上饶'} ? 'active'">上饶市</a>
-            </div>
+    <!-- ========== 新增：搜索框 ========== -->
+    <div class="search-section">
+        <div class="input-group input-group-lg">
+            <span class="input-group-text bg-danger text-white border-danger">
+                <i class="fas fa-search"></i>
+            </span>
+            <input type="text"
+                   class="form-control border-danger"
+                   id="searchInput"
+                   placeholder="搜索圣地名称或地区...">
+            <button class="btn btn-danger" type="button" id="searchBtn">
+                <i class="fas fa-search me-1"></i>搜索
+            </button>
+        </div>
+        <div class="mt-2">
+            <small class="text-muted">
+                支持搜索：圣地名称（如"井冈山"）、地区（如"南昌"）、省份（如"江西"）
+            </small>
         </div>
     </div>
 
-    <!-- 列表展示区域 (保持不变，只是为了完整性贴在这里) -->
-    <div class="row g-4">
-        <div class="col-md-6 col-lg-4" th:each="spot : ${spots}">
-            <div class="card h-100 border-0 shadow-sm card-red hover-shadow">
-                <div class="position-relative">
-                    <img th:src="${spot.imageUrl != null} ? ${spot.imageUrl} : 'https://placehold.co/600x400/8B0000/FFFFFF?text=暂无图片'"
-                         class="card-img-top" style="height: 200px; object-fit: cover;">
-                    <span class="position-absolute top-0 end-0 m-2 badge bg-danger shadow">
-                            <i class="fas fa-map-marker-alt me-1"></i>[[${spot.location}]]
-                        </span>
+
+
+    <!-- ========== 修改：一级筛选标签 ========== -->
+    <div class="primary-filter-tabs mb-4">
+        <div class="bg-white rounded-3 p-3 shadow-sm">
+            <div class="d-flex align-items-center mb-3">
+                <h5 class="mb-0 me-3 text-danger">
+                    <i class="fas fa-filter me-2"></i>范围筛选
+                </h5>
+                <div class="d-flex">
+                    <button class="btn btn-outline-danger btn-sm me-2 active" data-filter="all">
+                        <i class="fas fa-th-large me-1"></i>全部圣地
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm me-2" data-filter="jiangxi">
+                        <i class="fas fa-map-marker-alt me-1"></i>江西圣地
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm" data-filter="other">
+                        <i class="fas fa-globe-asia me-1"></i>省外圣地
+                    </button>
                 </div>
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title fw-bold text-danger" th:text="${spot.name}">景点名</h5>
-                    <p class="card-text text-muted small flex-grow-1" th:text="${#strings.abbreviate(spot.description, 55)}">简介...</p>
-                    <div class="text-end mt-3">
-                        <a th:href="@{/scenicspots/{id}(id=${spot.id})}" class="btn btn-sm btn-outline-danger w-100">
-                            走进圣地 <i class="fas fa-chevron-right ms-1"></i>
-                        </a>
+            </div>
+
+            <!-- 动态筛选内容区域 -->
+            <div class="filter-content">
+                <!-- 默认显示全部筛选（江西省内+省外） -->
+                <div id="filter-all" class="filter-pane active">
+                    <div class="mb-3">
+                        <span class="text-muted small me-2">热门:</span>
+                        <a href="javascript:void(0)" class="city-btn hot-tag" data-loc="井冈山">井冈山</a>
+                        <a href="javascript:void(0)" class="city-btn hot-tag" data-loc="瑞金">瑞金</a>
+                        <a href="javascript:void(0)" class="city-btn hot-tag" data-loc="于都">于都</a>
+                        <a href="javascript:void(0)" class="city-btn hot-tag" data-loc="延安">延安</a>
+
+                    </div>
+                    <div>
+                        <span class="text-muted small me-2">可按省份筛选:</span>
+                        <a href="javascript:void(0)" class="city-btn province-filter" data-province="江西">江西省</a>
+                        <a href="javascript:void(0)" class="city-btn province-filter" data-province="陕西">陕西省</a>
+                        <a href="javascript:void(0)" class="city-btn province-filter" data-province="河北">河北省</a>
+                        <a href="javascript:void(0)" class="city-btn province-filter" data-province="贵州">贵州省</a>
+                        <a href="javascript:void(0)" class="city-btn province-filter" data-province="湖南">湖南省</a>
+                        <a href="javascript:void(0)" class="city-btn province-filter" data-province="其他">其他省份</a>
+                    </div>
+                </div>
+
+                <!-- 江西省内筛选 -->
+                <div id="filter-jiangxi" class="filter-pane" style="display: none;">
+                    <div class="mb-3">
+                        <span class="text-muted small me-2">热门:</span>
+                        <a href="javascript:void(0)" class="city-btn hot-tag" data-loc="井冈山">井冈山</a>
+                        <a href="javascript:void(0)" class="city-btn hot-tag" data-loc="瑞金">瑞金</a>
+                        <a href="javascript:void(0)" class="city-btn hot-tag" data-loc="于都">于都</a>
+                    </div>
+                    <div>
+                        <span class="text-muted small me-2">按市筛选:</span>
+                        <a href="javascript:void(0)" class="city-btn" data-loc="南昌市">南昌市</a>
+                        <a href="javascript:void(0)" class="city-btn" data-loc="九江市">九江市</a>
+                        <a href="javascript:void(0)" class="city-btn" data-loc="景德镇市">景德镇市</a>
+                        <a href="javascript:void(0)" class="city-btn" data-loc="萍乡市">萍乡市</a>
+                        <a href="javascript:void(0)" class="city-btn" data-loc="新余市">新余市</a>
+                        <a href="javascript:void(0)" class="city-btn" data-loc="鹰潭市">鹰潭市</a>
+                        <a href="javascript:void(0)" class="city-btn" data-loc="赣州市">赣州市</a>
+                        <a href="javascript:void(0)" class="city-btn" data-loc="吉安市">吉安市</a>
+                        <a href="javascript:void(0)" class="city-btn" data-loc="宜春市">宜春市</a>
+                        <a href="javascript:void(0)" class="city-btn" data-loc="抚州市">抚州市</a>
+                        <a href="javascript:void(0)" class="city-btn" data-loc="上饶市">上饶市</a>
+                    </div>
+                </div>
+
+                <!-- 省外筛选 -->
+                <div id="filter-other" class="filter-pane" style="display: none;">
+                    <div class="mb-3">
+                        <span class="text-muted small me-2">热门省外圣地:</span>
+                        <a href="javascript:void(0)" class="city-btn hot-tag" data-loc="延安">延安</a>
+
+                        <a href="javascript:void(0)" class="city-btn hot-tag" data-loc="遵义">遵义</a>
+                        <a href="javascript:void(0)" class="city-btn hot-tag" data-loc="韶山">韶山</a>
+                    </div>
+                    <div>
+                        <span class="text-muted small me-2">按省份筛选:</span>
+                        <a href="javascript:void(0)" class="city-btn province-filter" data-province="陕西">陕西省</a>
+                        <a href="javascript:void(0)" class="city-btn province-filter" data-province="河北">河北省</a>
+                        <a href="javascript:void(0)" class="city-btn province-filter" data-province="贵州">贵州省</a>
+                        <a href="javascript:void(0)" class="city-btn province-filter" data-province="湖南">湖南省</a>
+                        <a href="javascript:void(0)" class="city-btn province-filter" data-province="湖北">湖北省</a>
+                        <a href="javascript:void(0)" class="city-btn province-filter" data-province="四川">四川省</a>
+                        <a href="javascript:void(0)" class="city-btn province-filter" data-province="其他">其他省份</a>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- 空状态 -->
-        <div th:if="${#lists.isEmpty(spots)}" class="col-12 text-center py-5">
-            <div class="bg-white p-5 rounded shadow-sm">
-                <i class="fas fa-map-marked-alt fa-4x text-muted mb-3"></i>
-                <h4 class="text-secondary">该城市暂无录入数据</h4>
-                <p class="text-muted">管理员正在努力收录该地区的红色资源...</p>
-                <a th:href="@{/scenicspots}" class="btn btn-outline-danger mt-2">查看全部</a>
+    <!-- ========== 新增：结果计数 ========== -->
+    <div class="results-count">
+        共找到 <strong id="resultsCount">0</strong> 个圣地
+    </div>
+
+
+    <!-- 列表展示区域（JS动态渲染） -->
+    <div class="row g-4" id="spotListContainer">
+        <div class="col-12 text-center py-5">
+            <div class="spinner-border text-danger" role="status">
+                <span class="visually-hidden">加载中...</span>
             </div>
+            <p class="mt-2 text-muted">正在加载圣地列表...</p>
         </div>
     </div>
 </div>
+
+<!-- ========== 新增：显示更多按钮 ========== -->
+<div class="row mt-5" id="loadMoreSection" style="display: none;">
+    <div class="col-12 text-center">
+        <button id="loadMoreBtn" class="btn btn-outline-danger btn-lg px-5">
+            <i class="fas fa-chevron-down me-2"></i>显示更多
+        </button>
+        <div class="mt-3" id="loadingMore" style="display: none;">
+            <div class="spinner-border text-danger" role="status">
+                <span class="visually-hidden">加载中...</span>
+            </div>
+            <p class="mt-2 text-muted">正在加载更多圣地...</p>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+
 <!-- 页脚 -->
 <footer class="py-5">
     <div class="container">
@@ -237,7 +252,6 @@
                     <p><a href="../RedScenicSpot/list.html">红色圣地</a></p>
                     <p><a href="../story/list.html">红色故事</a></p>
                     <p><a href="../explore/list.html">红色寻访</a></p>
-
                 </div>
             </div>
 
@@ -275,7 +289,8 @@
     </div>
 </footer>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../../static/js/RedScenicSpot/list.js"></script>
+
 </body>
 </html>

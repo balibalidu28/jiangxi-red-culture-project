@@ -69,7 +69,7 @@
 
                 <!-- 登录图标 -->
                 <div class="login-icon-container">
-                    <a href="/jiangxi-red-culture-project/JXRedCultureDisplay/templates/entry/register.html" class="login-icon" title="登录">
+                    <a href="‘’entry/register.html" class="login-icon" title="登录">
                         <i class="fas fa-user-circle fa-lg"></i>
                         <!--                        <span class="login-text">登录</span>-->
                     </a>
@@ -505,42 +505,21 @@
     <!-- 红色圣地推荐 -->
     <section class="mb-5">
         <h3 class="section-title">圣地推荐</h3>
-        <div class="row g-4">
-            <div class="col-md-4" th:each="spot : ${scenicSpots}">
-                <div class="card card-red">
-                    <img th:src="${spot.imageUrl} != null ? ${spot.imageUrl} : 'https://placehold.co/400x300/8B0000/FFFFFF?text=红色圣地'"
-                         class="card-img-top" th:alt="${spot.name}">
-                    <div class="card-body">
-                        <h5 class="card-title card-title-red" th:text="${spot.name}">井冈山革命博物馆</h5>
-                        <p class="card-text">
-                            <i class="fas fa-map-marker-alt text-danger me-2"></i>
-                            <span th:text="${spot.location}">江西省井冈山市</span>
-                        </p>
-                        <p class="card-text" th:text="${#strings.abbreviate(spot.description, 100)}">
-                            中国第一个地方性革命史类博物馆，馆藏文物丰富...
-                        </p>
-                        <a th:href="@{/scenicspots/{id}(id=${spot.id})}" class="btn btn-outline-red btn-sm">
-                            查看详情 <i class="fas fa-external-link-alt ms-1"></i>
-                        </a>
-                    </div>
+        <div class="row g-4" id="home-scenic-spots-container">
+            <!-- JavaScript会动态加载圣地推荐 -->
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-danger" role="status">
+                    <span class="visually-hidden">加载中...</span>
                 </div>
-            </div>
-
-            <!-- 如果没有数据 -->
-            <div th:if="${#lists.isEmpty(scenicSpots)}" class="col-12">
-                <div class="alert alert-info text-center">
-                    <i class="fas fa-info-circle me-2"></i>
-                    暂无圣地数据，管理员正在添加中...
-                </div>
+                <p class="mt-3">正在加载圣地推荐...</p>
             </div>
         </div>
         <div class="text-center mt-4">
-            <a th:href="@{/scenicspots}" class="btn btn-danger">
+            <a href="RedScenicSpot/list.html" class="btn btn-danger">
                 <i class="fas fa-map-marked-alt me-2"></i> 探索更多圣地
             </a>
         </div>
     </section>
-
     <!-- 寻访预告 -->
     <section class="mb-5">
         <h3 class="section-title">寻访预告</h3>
@@ -692,6 +671,7 @@
 <script src="/static/js/main.js"></script>
 <script src="/static/js/hero/hero-index.js"></script>
 <script src="/static/js/story/story-index.js"></script>
+<script src="/static/js/RedScenicSpot/scenic-spot-index.js"></script>
 
 </body>
 </html>

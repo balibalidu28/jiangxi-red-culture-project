@@ -1,0 +1,286 @@
+/* D:\zzm\JavaEE\ks\JX-RedCultureDisplay\src\main\resources\static\css\RedScenicSpot\list.css */
+
+/* 头部背景 */
+.scenic-header {
+    background: linear-gradient(rgba(139, 0, 0, 0.8), rgba(50, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1599571234909-29ed5d1321d6?q=80&w=1920');/*Unsplash图库的一张免费图片*/
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 60px 0;
+    margin-bottom: 30px;
+}
+
+/* 筛选区容器样式 */
+.filter-section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 40px;
+}
+
+/* 城市按钮样式 */
+.city-btn {
+    display: inline-block;
+    padding: 6px 16px;
+    margin: 5px;
+    color: #555;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    background: #fff;
+    cursor: pointer;
+}
+
+/* 鼠标悬停 */
+.city-btn:hover {
+    border-color: #d9534f;
+    color: #d9534f;
+    background-color: #fff5f5;
+}
+
+/* 选中激活状态 - 红色实心 */
+.city-btn.active {
+    background-color: #d9534f;
+    color: white;
+    border-color: #d9534f;
+    font-weight: bold;
+}
+
+/* 热门标签（井冈山、瑞金）特殊样式 */
+.city-btn.hot-tag {
+    border-color: #ffc107 !important;
+    color: #b35600;
+}
+.city-btn.hot-tag.active {
+    background-color: #ffc107 !important;
+    color: #000 !important;
+    border-color: #ffc107 !important;
+}
+
+/* 省份筛选标签特殊样式 */
+.city-btn.province-filter {
+    border-color: #6f42c1 !important;
+    color: #6f42c1;
+}
+.city-btn.province-filter.active {
+    background-color: #6f42c1 !important;
+    color: white !important;
+    border-color: #6f42c1 !important;
+}
+
+/* 卡片样式 */
+.card-red {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #f0f0f0;
+}
+
+.card-red:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(217, 83, 79, 0.15) !important;
+}
+
+/* 分隔线 */
+.filter-section .border-top {
+    border-color: rgba(217, 83, 79, 0.2) !important;
+}
+
+/* 空状态 */
+.empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+    background: white;
+    border-radius: 10px;
+    border: 2px dashed #e0e0e0;
+}
+
+
+/* 搜索框样式 */
+.search-section {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+}
+
+.search-section .input-group-lg {
+    box-shadow: 0 4px 12px rgba(217, 83, 79, 0.15);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.search-section .input-group-text {
+    border-right: none;
+    background: linear-gradient(135deg, #d9534f 0%, #c12e2a 100%);
+    color: white;
+    font-size: 1.1rem;
+}
+
+#searchInput {
+    border: 2px solid #dee2e6;
+    border-left: none;
+    border-right: none;
+    padding-left: 15px;
+    font-size: 1rem;
+}
+
+#searchInput:focus {
+    border-color: #d9534f;
+    box-shadow: none;
+    outline: none;
+}
+
+#searchBtn {
+    min-width: 100px;
+    background: linear-gradient(135deg, #d9534f 0%, #c12e2a 100%);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+#searchBtn:hover {
+    background: linear-gradient(135deg, #c12e2a 0%, #a62a25 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(193, 46, 42, 0.3);
+}
+
+.search-section small {
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+/* 一级筛选区域样式 */
+.province-cards-container {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+}
+
+.province-card {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 25px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.province-card:hover {
+    transform: translateY(-5px);
+    border-color: #d9534f;
+    box-shadow: 0 8px 25px rgba(217, 83, 79, 0.15);
+}
+
+.province-card.active {
+    background: linear-gradient(135deg, #d9534f 0%, #c12e2a 100%);
+    border-color: #d9534f;
+    color: white;
+    box-shadow: 0 10px 30px rgba(217, 83, 79, 0.25);
+}
+
+.province-card.active .province-icon {
+    color: white;
+}
+
+.province-icon {
+    font-size: 2.5rem;
+    color: #d9534f;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.province-title {
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 1.3rem;
+}
+
+.province-desc {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+
+.province-card.active .province-desc {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* 筛选内容区域 */
+.filter-content {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    border: 1px solid #e9ecef;
+}
+
+.filter-pane {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.filter-content .text-muted {
+    font-weight: 500;
+    color: #6c757d !important;
+}
+
+/* 显示更多按钮样式 */
+#loadMoreSection {
+    margin-top: 40px;
+}
+
+#loadMoreBtn {
+    border-width: 2px;
+    border-radius: 50px;
+    padding: 12px 40px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border-color: #d9534f;
+    color: #d9534f;
+    background: white;
+}
+
+#loadMoreBtn:hover {
+    background: linear-gradient(135deg, #d9534f 0%, #c12e2a 100%);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(217, 83, 79, 0.3);
+    border-color: transparent;
+}
+
+#loadingMore {
+    color: #6c757d;
+}
+
+#loadingMore .spinner-border {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+/* 结果计数样式 */
+.results-count {
+    color: #6c757d;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    background: white;
+    border-radius: 8px;
+    border-left: 4px solid #d9534f;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.results-count strong {
+    color: #d9534f;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
