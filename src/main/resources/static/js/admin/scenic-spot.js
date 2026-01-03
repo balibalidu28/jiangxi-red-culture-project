@@ -8,49 +8,6 @@ function getFullImageUrl(path) {
     return 'http://localhost:8080' + (path.startsWith('/') ? path : '/' + path);
 }
 
-// 图片预览函数
-function previewImage(imgSrc, title) {
-    const modalHtml = `
-        <div id="imageModal" style="
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        ">
-            <div style="
-                background: white;
-                padding: 20px;
-                border-radius: 8px;
-                max-width: 90%;
-                max-height: 90%;
-                overflow: auto;
-            ">
-                <h3 style="margin-top:0;">${title || '图片预览'}</h3>
-                <img src="${imgSrc}" alt="预览" style="max-width: 800px; max-height: 500px;">
-                <div style="text-align:right; margin-top:10px;">
-                    <button onclick="document.getElementById('imageModal').remove()" 
-                            style="padding: 5px 15px; cursor:pointer;">
-                        关闭
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
-
-    // 移除已存在的模态框
-    const existingModal = document.getElementById('imageModal');
-    if (existingModal) existingModal.remove();
-
-    // 添加新的模态框
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
-}
-
 // ============== 加载圣地列表 ==============
 async function loadScenicSpots() {
     console.log("开始加载圣地列表...");
