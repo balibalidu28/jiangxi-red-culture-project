@@ -89,3 +89,10 @@ CREATE TABLE IF NOT EXISTS users (
     INDEX idx_username (username),
     INDEX idx_phone (phone)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+
+
+DROP TABLE IF EXISTS video;
+CREATE TABLE videos (
+                        id INT PRIMARY KEY AUTO_INCREMENT,
+                        video_url VARCHAR(500) NOT NULL,  -- 视频文件路径
+);
